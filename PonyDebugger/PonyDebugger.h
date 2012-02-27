@@ -6,8 +6,6 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-@interface PonyDebugger : NSObject
-
-@end
+#import <PonyDebugger/PDNetworkDomainController.h>
+#import <PonyDebugger/PDDatabaseDomainController.h>
+#import <PonyDebugger/PDDebugger.h>

@@ -1,0 +1,8 @@
+.idea/
+.env/
+*.egg-info
+reports/
+build/
+nohup.out
+.DS_Store
+xcuserdata/

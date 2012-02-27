@@ -7,19 +7,325 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F60EBE3A14FC83360095B011 /* PDTweet.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE3914FC83360095B011 /* PDTweet.m */; };
+		F60EBE8B14FC87340095B011 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */; };
+		F60EBE9514FC878B0095B011 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE6814FC86A70095B011 /* AFHTTPClient.m */; };
+		F60EBE9814FC87A70095B011 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE7714FC86A70095B011 /* AFURLConnectionOperation.m */; };
+		F60EBE9914FC87A70095B011 /* AFJSONUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE7014FC86A70095B011 /* AFJSONUtilities.m */; };
+		F60EBE9A14FC87A70095B011 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE6A14FC86A70095B011 /* AFHTTPRequestOperation.m */; };
+		F60EBE9B14FC87A70095B011 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE7914FC86A70095B011 /* AFXMLRequestOperation.m */; };
+		F60EBE9C14FC87A70095B011 /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE6E14FC86A70095B011 /* AFJSONRequestOperation.m */; };
+		F60EBE9D14FC87A70095B011 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE7B14FC86A70095B011 /* UIImageView+AFNetworking.m */; };
+		F60EBE9E14FC87A70095B011 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE6C14FC86A70095B011 /* AFImageRequestOperation.m */; };
+		F60EBE9F14FC87A70095B011 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE7214FC86A70095B011 /* AFNetworkActivityIndicatorManager.m */; };
+		F60EBEA014FC87A70095B011 /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBE7514FC86A70095B011 /* AFPropertyListRequestOperation.m */; };
+		F60EBEA214FC87EE0095B011 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F60EBEA114FC87EE0095B011 /* CoreData.framework */; };
+		F60EBEA314FC880B0095B011 /* libAFNetworkingForTestingOnly.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F60EBE8A14FC87340095B011 /* libAFNetworkingForTestingOnly.a */; };
+		F60EBEA914FC92590095B011 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F60EBEA714FC92450095B011 /* CFNetwork.framework */; };
+		F60EBEAB14FC92630095B011 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F60EBEAA14FC92630095B011 /* libicucore.dylib */; };
+		F60EBEAD14FC926E0095B011 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F60EBEAC14FC926E0095B011 /* Security.framework */; };
+		F60EBEB414FC99080095B011 /* PDNetworkDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = F60EBEB114FC94C90095B011 /* PDNetworkDomainController.m */; };
+		F66E1D7D14FC26B9000E0707 /* PDObject.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1D7B14FC26B9000E0707 /* PDObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1D7E14FC26B9000E0707 /* PDObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1D7C14FC26B9000E0707 /* PDObject.m */; };
+		F66E1D8314FC26EE000E0707 /* PDDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1D7F14FC26EE000E0707 /* PDDebugger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1D8514FC26EE000E0707 /* PDDynamicDebuggerDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1D8114FC26EE000E0707 /* PDDynamicDebuggerDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1D8614FC26EE000E0707 /* PDDynamicDebuggerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1D8214FC26EE000E0707 /* PDDynamicDebuggerDomain.m */; };
+		F66E1E2714FC3461000E0707 /* PDApplicationCacheDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DE914FC3461000E0707 /* PDApplicationCacheDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E2814FC3461000E0707 /* PDApplicationCacheDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DEA14FC3461000E0707 /* PDApplicationCacheDomain.m */; };
+		F66E1E2914FC3461000E0707 /* PDApplicationCacheTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DEB14FC3461000E0707 /* PDApplicationCacheTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E2A14FC3461000E0707 /* PDApplicationCacheTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DEC14FC3461000E0707 /* PDApplicationCacheTypes.m */; };
+		F66E1E2B14FC3461000E0707 /* PDConsoleDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DED14FC3461000E0707 /* PDConsoleDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E2C14FC3461000E0707 /* PDConsoleDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DEE14FC3461000E0707 /* PDConsoleDomain.m */; };
+		F66E1E2D14FC3461000E0707 /* PDConsoleTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DEF14FC3461000E0707 /* PDConsoleTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E2E14FC3461000E0707 /* PDConsoleTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DF014FC3461000E0707 /* PDConsoleTypes.m */; };
+		F66E1E2F14FC3461000E0707 /* PDCSSDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DF114FC3461000E0707 /* PDCSSDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E3014FC3461000E0707 /* PDCSSDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DF214FC3461000E0707 /* PDCSSDomain.m */; };
+		F66E1E3114FC3461000E0707 /* PDCSSTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DF314FC3461000E0707 /* PDCSSTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E3214FC3461000E0707 /* PDCSSTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DF414FC3461000E0707 /* PDCSSTypes.m */; };
+		F66E1E3314FC3461000E0707 /* PDDatabaseDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DF514FC3461000E0707 /* PDDatabaseDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E3414FC3461000E0707 /* PDDatabaseDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DF614FC3461000E0707 /* PDDatabaseDomain.m */; };
+		F66E1E3514FC3461000E0707 /* PDDatabaseTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DF714FC3461000E0707 /* PDDatabaseTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E3614FC3461000E0707 /* PDDatabaseTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DF814FC3461000E0707 /* PDDatabaseTypes.m */; };
+		F66E1E3714FC3461000E0707 /* PDDebuggerDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DF914FC3461000E0707 /* PDDebuggerDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E3814FC3461000E0707 /* PDDebuggerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DFA14FC3461000E0707 /* PDDebuggerDomain.m */; };
+		F66E1E3914FC3461000E0707 /* PDDebuggerTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DFB14FC3461000E0707 /* PDDebuggerTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E3A14FC3461000E0707 /* PDDebuggerTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DFC14FC3461000E0707 /* PDDebuggerTypes.m */; };
+		F66E1E3B14FC3461000E0707 /* PDDOMDebuggerDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DFD14FC3461000E0707 /* PDDOMDebuggerDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E3C14FC3461000E0707 /* PDDOMDebuggerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1DFE14FC3461000E0707 /* PDDOMDebuggerDomain.m */; };
+		F66E1E3D14FC3461000E0707 /* PDDOMDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1DFF14FC3461000E0707 /* PDDOMDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E3E14FC3461000E0707 /* PDDOMDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E0014FC3461000E0707 /* PDDOMDomain.m */; };
+		F66E1E3F14FC3461000E0707 /* PDDOMStorageDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E0114FC3461000E0707 /* PDDOMStorageDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E4014FC3461000E0707 /* PDDOMStorageDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E0214FC3461000E0707 /* PDDOMStorageDomain.m */; };
+		F66E1E4114FC3461000E0707 /* PDDOMStorageTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E0314FC3461000E0707 /* PDDOMStorageTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E4214FC3461000E0707 /* PDDOMStorageTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E0414FC3461000E0707 /* PDDOMStorageTypes.m */; };
+		F66E1E4314FC3461000E0707 /* PDDOMTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E0514FC3461000E0707 /* PDDOMTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E4414FC3461000E0707 /* PDDOMTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E0614FC3461000E0707 /* PDDOMTypes.m */; };
+		F66E1E4514FC3461000E0707 /* PDFileSystemDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E0714FC3461000E0707 /* PDFileSystemDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E4614FC3461000E0707 /* PDFileSystemDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E0814FC3461000E0707 /* PDFileSystemDomain.m */; };
+		F66E1E4714FC3461000E0707 /* PDIndexedDBDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E0914FC3461000E0707 /* PDIndexedDBDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E4814FC3461000E0707 /* PDIndexedDBDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E0A14FC3461000E0707 /* PDIndexedDBDomain.m */; };
+		F66E1E4914FC3461000E0707 /* PDIndexedDBTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E0B14FC3461000E0707 /* PDIndexedDBTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E4A14FC3461000E0707 /* PDIndexedDBTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E0C14FC3461000E0707 /* PDIndexedDBTypes.m */; };
+		F66E1E4B14FC3461000E0707 /* PDInspectorDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E0D14FC3461000E0707 /* PDInspectorDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E4C14FC3461000E0707 /* PDInspectorDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E0E14FC3461000E0707 /* PDInspectorDomain.m */; };
+		F66E1E4D14FC3461000E0707 /* PDMemoryDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E0F14FC3461000E0707 /* PDMemoryDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E4E14FC3461000E0707 /* PDMemoryDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E1014FC3461000E0707 /* PDMemoryDomain.m */; };
+		F66E1E4F14FC3461000E0707 /* PDMemoryTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E1114FC3461000E0707 /* PDMemoryTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E5014FC3461000E0707 /* PDMemoryTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E1214FC3461000E0707 /* PDMemoryTypes.m */; };
+		F66E1E5114FC3461000E0707 /* PDNetworkDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E1314FC3461000E0707 /* PDNetworkDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E5214FC3461000E0707 /* PDNetworkDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E1414FC3461000E0707 /* PDNetworkDomain.m */; };
+		F66E1E5314FC3461000E0707 /* PDNetworkTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E1514FC3461000E0707 /* PDNetworkTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E5414FC3461000E0707 /* PDNetworkTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E1614FC3461000E0707 /* PDNetworkTypes.m */; };
+		F66E1E5514FC3461000E0707 /* PDPageDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E1714FC3461000E0707 /* PDPageDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E5614FC3461000E0707 /* PDPageDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E1814FC3461000E0707 /* PDPageDomain.m */; };
+		F66E1E5714FC3461000E0707 /* PDPageTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E1914FC3461000E0707 /* PDPageTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E5814FC3461000E0707 /* PDPageTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E1A14FC3461000E0707 /* PDPageTypes.m */; };
+		F66E1E5914FC3461000E0707 /* PDProfilerDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E1B14FC3461000E0707 /* PDProfilerDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E5A14FC3461000E0707 /* PDProfilerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E1C14FC3461000E0707 /* PDProfilerDomain.m */; };
+		F66E1E5B14FC3461000E0707 /* PDRuntimeDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E1D14FC3461000E0707 /* PDRuntimeDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E5C14FC3461000E0707 /* PDRuntimeDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E1E14FC3461000E0707 /* PDRuntimeDomain.m */; };
+		F66E1E5D14FC3461000E0707 /* PDRuntimeTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E1F14FC3461000E0707 /* PDRuntimeTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E5E14FC3461000E0707 /* PDRuntimeTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E2014FC3461000E0707 /* PDRuntimeTypes.m */; };
+		F66E1E5F14FC3461000E0707 /* PDTimelineDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E2114FC3461000E0707 /* PDTimelineDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E6014FC3461000E0707 /* PDTimelineDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E2214FC3461000E0707 /* PDTimelineDomain.m */; };
+		F66E1E6114FC3461000E0707 /* PDTimelineTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E2314FC3461000E0707 /* PDTimelineTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E6214FC3461000E0707 /* PDTimelineTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E2414FC3461000E0707 /* PDTimelineTypes.m */; };
+		F66E1E6314FC3461000E0707 /* PDWorkerDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E2514FC3461000E0707 /* PDWorkerDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E6414FC3461000E0707 /* PDWorkerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E2614FC3461000E0707 /* PDWorkerDomain.m */; };
+		F66E1E6614FC6B67000E0707 /* PDDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1D8014FC26EE000E0707 /* PDDebugger.m */; };
+		F66E1E8F14FC7ABC000E0707 /* PDDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = F66E1E8D14FC7AB9000E0707 /* PDDomainController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F66E1E9014FC7ABC000E0707 /* PDDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1E8E14FC7ABA000E0707 /* PDDomainController.m */; };
+		F66E1ED014FC7CF0000E0707 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F66E1ECF14FC7CF0000E0707 /* UIKit.framework */; };
+		F66E1ED114FC7CF0000E0707 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */; };
+		F66E1ED314FC7CF0000E0707 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F66E1ED214FC7CF0000E0707 /* CoreGraphics.framework */; };
+		F66E1ED914FC7CF0000E0707 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F66E1ED714FC7CF0000E0707 /* InfoPlist.strings */; };
+		F66E1EDB14FC7CF0000E0707 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1EDA14FC7CF0000E0707 /* main.m */; };
+		F66E1EDF14FC7CF0000E0707 /* PDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1EDE14FC7CF0000E0707 /* PDAppDelegate.m */; };
+		F66E1EE214FC7CF0000E0707 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F66E1EE014FC7CF0000E0707 /* MainStoryboard.storyboard */; };
+		F66E1EE514FC7CF0000E0707 /* PDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F66E1EE414FC7CF0000E0707 /* PDViewController.m */; };
+		F66E1EE914FC7CFB000E0707 /* libPonyDebugger.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F683ADAC14FC1B4C008EBBA7 /* libPonyDebugger.a */; };
+		F66E1EEA14FC7CFE000E0707 /* libSocketRocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F66E1E9E14FC7B56000E0707 /* libSocketRocket.a */; };
+		F66E1EFA14FC7D9B000E0707 /* PDTwitterTest.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F66E1EF514FC7D9B000E0707 /* PDTwitterTest.xcdatamodeld */; };
 		F683ADB014FC1B4D008EBBA7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */; };
-		F683ADB614FC1B4D008EBBA7 /* PonyDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = F683ADB514FC1B4D008EBBA7 /* PonyDebugger.m */; };
+		F6E1351414FDB5A7004F0927 /* PDNetworkDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = F60EBEB014FC94C90095B011 /* PDNetworkDomainController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F6E761E414FEC2C90043BEA6 /* PDIndexedDBDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = F6E761E214FEC2C90043BEA6 /* PDIndexedDBDomainController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F6E761E514FEC2C90043BEA6 /* PDIndexedDBDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E761E314FEC2C90043BEA6 /* PDIndexedDBDomainController.m */; };
+		F6E761F414FEDBFF0043BEA6 /* PDDatabaseDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = F6E761F214FEDBFF0043BEA6 /* PDDatabaseDomainController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F6E761F514FEDBFF0043BEA6 /* PDDatabaseDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E761F314FEDBFF0043BEA6 /* PDDatabaseDomainController.m */; };
+		F6E761F614FEDCDF0043BEA6 /* PonyDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = F683ADB414FC1B4D008EBBA7 /* PonyDebugger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		F60EBEA414FC88100095B011 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F683ADA314FC1B4C008EBBA7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F60EBE8914FC87340095B011;
+			remoteInfo = AFNetworkingForTestingOnly;
+		};
+		F60EBEAE14FC942B0095B011 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F683ADA314FC1B4C008EBBA7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F683ADAB14FC1B4C008EBBA7;
+			remoteInfo = PonyDebugger;
+		};
+		F66E1E9D14FC7B56000E0707 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F66E1E6714FC74E1000E0707 /* SocketRocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F6B2082D1450F597009315AF;
+			remoteInfo = SocketRocket;
+		};
+		F66E1E9F14FC7B56000E0707 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F66E1E6714FC74E1000E0707 /* SocketRocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F6BDA802145900D200FE3253;
+			remoteInfo = SRWebSocketTests;
+		};
+		F66E1EA114FC7B56000E0707 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F66E1E6714FC74E1000E0707 /* SocketRocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F62417E314D52F3C003CE997;
+			remoteInfo = TestChat;
+		};
+		F66E1EA814FC7BB2000E0707 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F66E1E6714FC74E1000E0707 /* SocketRocket.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F6B2082C1450F597009315AF;
+			remoteInfo = SocketRocket;
+		};
+		F66E1EEB14FC7D06000E0707 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F683ADA314FC1B4C008EBBA7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F683ADAB14FC1B4C008EBBA7;
+			remoteInfo = PonyDebugger;
+		};
+		F66E1EED14FC7D06000E0707 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F66E1E6714FC74E1000E0707 /* SocketRocket.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F6B2082C1450F597009315AF;
+			remoteInfo = SocketRocket;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		F60EBE3814FC83360095B011 /* PDTweet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDTweet.h; sourceTree = "<group>"; };
+		F60EBE3914FC83360095B011 /* PDTweet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDTweet.m; sourceTree = "<group>"; };
+		F60EBE6714FC86A70095B011 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPClient.h; path = ../AFNetworking/AFNetworking/AFHTTPClient.h; sourceTree = "<group>"; };
+		F60EBE6814FC86A70095B011 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPClient.m; path = ../AFNetworking/AFNetworking/AFHTTPClient.m; sourceTree = "<group>"; };
+		F60EBE6914FC86A70095B011 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPRequestOperation.h; path = ../AFNetworking/AFNetworking/AFHTTPRequestOperation.h; sourceTree = "<group>"; };
+		F60EBE6A14FC86A70095B011 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPRequestOperation.m; path = ../AFNetworking/AFNetworking/AFHTTPRequestOperation.m; sourceTree = "<group>"; };
+		F60EBE6B14FC86A70095B011 /* AFImageRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFImageRequestOperation.h; path = ../AFNetworking/AFNetworking/AFImageRequestOperation.h; sourceTree = "<group>"; };
+		F60EBE6C14FC86A70095B011 /* AFImageRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFImageRequestOperation.m; path = ../AFNetworking/AFNetworking/AFImageRequestOperation.m; sourceTree = "<group>"; };
+		F60EBE6D14FC86A70095B011 /* AFJSONRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFJSONRequestOperation.h; path = ../AFNetworking/AFNetworking/AFJSONRequestOperation.h; sourceTree = "<group>"; };
+		F60EBE6E14FC86A70095B011 /* AFJSONRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFJSONRequestOperation.m; path = ../AFNetworking/AFNetworking/AFJSONRequestOperation.m; sourceTree = "<group>"; };
+		F60EBE6F14FC86A70095B011 /* AFJSONUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFJSONUtilities.h; path = ../AFNetworking/AFNetworking/AFJSONUtilities.h; sourceTree = "<group>"; };
+		F60EBE7014FC86A70095B011 /* AFJSONUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFJSONUtilities.m; path = ../AFNetworking/AFNetworking/AFJSONUtilities.m; sourceTree = "<group>"; };
+		F60EBE7114FC86A70095B011 /* AFNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworkActivityIndicatorManager.h; path = ../AFNetworking/AFNetworking/AFNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
+		F60EBE7214FC86A70095B011 /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFNetworkActivityIndicatorManager.m; path = ../AFNetworking/AFNetworking/AFNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
+		F60EBE7314FC86A70095B011 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworking.h; path = ../AFNetworking/AFNetworking/AFNetworking.h; sourceTree = "<group>"; };
+		F60EBE7414FC86A70095B011 /* AFPropertyListRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFPropertyListRequestOperation.h; path = ../AFNetworking/AFNetworking/AFPropertyListRequestOperation.h; sourceTree = "<group>"; };
+		F60EBE7514FC86A70095B011 /* AFPropertyListRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFPropertyListRequestOperation.m; path = ../AFNetworking/AFNetworking/AFPropertyListRequestOperation.m; sourceTree = "<group>"; };
+		F60EBE7614FC86A70095B011 /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFURLConnectionOperation.h; path = ../AFNetworking/AFNetworking/AFURLConnectionOperation.h; sourceTree = "<group>"; };
+		F60EBE7714FC86A70095B011 /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFURLConnectionOperation.m; path = ../AFNetworking/AFNetworking/AFURLConnectionOperation.m; sourceTree = "<group>"; };
+		F60EBE7814FC86A70095B011 /* AFXMLRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFXMLRequestOperation.h; path = ../AFNetworking/AFNetworking/AFXMLRequestOperation.h; sourceTree = "<group>"; };
+		F60EBE7914FC86A70095B011 /* AFXMLRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFXMLRequestOperation.m; path = ../AFNetworking/AFNetworking/AFXMLRequestOperation.m; sourceTree = "<group>"; };
+		F60EBE7A14FC86A70095B011 /* UIImageView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+AFNetworking.h"; path = "../AFNetworking/AFNetworking/UIImageView+AFNetworking.h"; sourceTree = "<group>"; };
+		F60EBE7B14FC86A70095B011 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+AFNetworking.m"; path = "../AFNetworking/AFNetworking/UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
+		F60EBE8A14FC87340095B011 /* libAFNetworkingForTestingOnly.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAFNetworkingForTestingOnly.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F60EBE8E14FC87340095B011 /* AFNetworkingForTestingOnly-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AFNetworkingForTestingOnly-Prefix.pch"; sourceTree = "<group>"; };
+		F60EBEA114FC87EE0095B011 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		F60EBEA714FC92450095B011 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		F60EBEAA14FC92630095B011 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		F60EBEAC14FC926E0095B011 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		F60EBEB014FC94C90095B011 /* PDNetworkDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDNetworkDomainController.h; sourceTree = "<group>"; };
+		F60EBEB114FC94C90095B011 /* PDNetworkDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDNetworkDomainController.m; sourceTree = "<group>"; };
+		F66E1D7B14FC26B9000E0707 /* PDObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDObject.h; sourceTree = "<group>"; };
+		F66E1D7C14FC26B9000E0707 /* PDObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDObject.m; sourceTree = "<group>"; };
+		F66E1D7F14FC26EE000E0707 /* PDDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDebugger.h; sourceTree = "<group>"; };
+		F66E1D8014FC26EE000E0707 /* PDDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDebugger.m; sourceTree = "<group>"; };
+		F66E1D8114FC26EE000E0707 /* PDDynamicDebuggerDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDynamicDebuggerDomain.h; sourceTree = "<group>"; };
+		F66E1D8214FC26EE000E0707 /* PDDynamicDebuggerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDynamicDebuggerDomain.m; sourceTree = "<group>"; };
+		F66E1DE914FC3461000E0707 /* PDApplicationCacheDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDApplicationCacheDomain.h; sourceTree = "<group>"; };
+		F66E1DEA14FC3461000E0707 /* PDApplicationCacheDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDApplicationCacheDomain.m; sourceTree = "<group>"; };
+		F66E1DEB14FC3461000E0707 /* PDApplicationCacheTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDApplicationCacheTypes.h; sourceTree = "<group>"; };
+		F66E1DEC14FC3461000E0707 /* PDApplicationCacheTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDApplicationCacheTypes.m; sourceTree = "<group>"; };
+		F66E1DED14FC3461000E0707 /* PDConsoleDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDConsoleDomain.h; sourceTree = "<group>"; };
+		F66E1DEE14FC3461000E0707 /* PDConsoleDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDConsoleDomain.m; sourceTree = "<group>"; };
+		F66E1DEF14FC3461000E0707 /* PDConsoleTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDConsoleTypes.h; sourceTree = "<group>"; };
+		F66E1DF014FC3461000E0707 /* PDConsoleTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDConsoleTypes.m; sourceTree = "<group>"; };
+		F66E1DF114FC3461000E0707 /* PDCSSDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDCSSDomain.h; sourceTree = "<group>"; };
+		F66E1DF214FC3461000E0707 /* PDCSSDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDCSSDomain.m; sourceTree = "<group>"; };
+		F66E1DF314FC3461000E0707 /* PDCSSTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDCSSTypes.h; sourceTree = "<group>"; };
+		F66E1DF414FC3461000E0707 /* PDCSSTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDCSSTypes.m; sourceTree = "<group>"; };
+		F66E1DF514FC3461000E0707 /* PDDatabaseDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDatabaseDomain.h; sourceTree = "<group>"; };
+		F66E1DF614FC3461000E0707 /* PDDatabaseDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDatabaseDomain.m; sourceTree = "<group>"; };
+		F66E1DF714FC3461000E0707 /* PDDatabaseTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDatabaseTypes.h; sourceTree = "<group>"; };
+		F66E1DF814FC3461000E0707 /* PDDatabaseTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDatabaseTypes.m; sourceTree = "<group>"; };
+		F66E1DF914FC3461000E0707 /* PDDebuggerDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDebuggerDomain.h; sourceTree = "<group>"; };
+		F66E1DFA14FC3461000E0707 /* PDDebuggerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDebuggerDomain.m; sourceTree = "<group>"; };
+		F66E1DFB14FC3461000E0707 /* PDDebuggerTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDebuggerTypes.h; sourceTree = "<group>"; };
+		F66E1DFC14FC3461000E0707 /* PDDebuggerTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDebuggerTypes.m; sourceTree = "<group>"; };
+		F66E1DFD14FC3461000E0707 /* PDDOMDebuggerDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDOMDebuggerDomain.h; sourceTree = "<group>"; };
+		F66E1DFE14FC3461000E0707 /* PDDOMDebuggerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDOMDebuggerDomain.m; sourceTree = "<group>"; };
+		F66E1DFF14FC3461000E0707 /* PDDOMDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDOMDomain.h; sourceTree = "<group>"; };
+		F66E1E0014FC3461000E0707 /* PDDOMDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDOMDomain.m; sourceTree = "<group>"; };
+		F66E1E0114FC3461000E0707 /* PDDOMStorageDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDOMStorageDomain.h; sourceTree = "<group>"; };
+		F66E1E0214FC3461000E0707 /* PDDOMStorageDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDOMStorageDomain.m; sourceTree = "<group>"; };
+		F66E1E0314FC3461000E0707 /* PDDOMStorageTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDOMStorageTypes.h; sourceTree = "<group>"; };
+		F66E1E0414FC3461000E0707 /* PDDOMStorageTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDOMStorageTypes.m; sourceTree = "<group>"; };
+		F66E1E0514FC3461000E0707 /* PDDOMTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDOMTypes.h; sourceTree = "<group>"; };
+		F66E1E0614FC3461000E0707 /* PDDOMTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDOMTypes.m; sourceTree = "<group>"; };
+		F66E1E0714FC3461000E0707 /* PDFileSystemDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFileSystemDomain.h; sourceTree = "<group>"; };
+		F66E1E0814FC3461000E0707 /* PDFileSystemDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFileSystemDomain.m; sourceTree = "<group>"; };
+		F66E1E0914FC3461000E0707 /* PDIndexedDBDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDIndexedDBDomain.h; sourceTree = "<group>"; };
+		F66E1E0A14FC3461000E0707 /* PDIndexedDBDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDIndexedDBDomain.m; sourceTree = "<group>"; };
+		F66E1E0B14FC3461000E0707 /* PDIndexedDBTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDIndexedDBTypes.h; sourceTree = "<group>"; };
+		F66E1E0C14FC3461000E0707 /* PDIndexedDBTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDIndexedDBTypes.m; sourceTree = "<group>"; };
+		F66E1E0D14FC3461000E0707 /* PDInspectorDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDInspectorDomain.h; sourceTree = "<group>"; };
+		F66E1E0E14FC3461000E0707 /* PDInspectorDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDInspectorDomain.m; sourceTree = "<group>"; };
+		F66E1E0F14FC3461000E0707 /* PDMemoryDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDMemoryDomain.h; sourceTree = "<group>"; };
+		F66E1E1014FC3461000E0707 /* PDMemoryDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDMemoryDomain.m; sourceTree = "<group>"; };
+		F66E1E1114FC3461000E0707 /* PDMemoryTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDMemoryTypes.h; sourceTree = "<group>"; };
+		F66E1E1214FC3461000E0707 /* PDMemoryTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDMemoryTypes.m; sourceTree = "<group>"; };
+		F66E1E1314FC3461000E0707 /* PDNetworkDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDNetworkDomain.h; sourceTree = "<group>"; };
+		F66E1E1414FC3461000E0707 /* PDNetworkDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDNetworkDomain.m; sourceTree = "<group>"; };
+		F66E1E1514FC3461000E0707 /* PDNetworkTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDNetworkTypes.h; sourceTree = "<group>"; };
+		F66E1E1614FC3461000E0707 /* PDNetworkTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDNetworkTypes.m; sourceTree = "<group>"; };
+		F66E1E1714FC3461000E0707 /* PDPageDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDPageDomain.h; sourceTree = "<group>"; };
+		F66E1E1814FC3461000E0707 /* PDPageDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDPageDomain.m; sourceTree = "<group>"; };
+		F66E1E1914FC3461000E0707 /* PDPageTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDPageTypes.h; sourceTree = "<group>"; };
+		F66E1E1A14FC3461000E0707 /* PDPageTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDPageTypes.m; sourceTree = "<group>"; };
+		F66E1E1B14FC3461000E0707 /* PDProfilerDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDProfilerDomain.h; sourceTree = "<group>"; };
+		F66E1E1C14FC3461000E0707 /* PDProfilerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDProfilerDomain.m; sourceTree = "<group>"; };
+		F66E1E1D14FC3461000E0707 /* PDRuntimeDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDRuntimeDomain.h; sourceTree = "<group>"; };
+		F66E1E1E14FC3461000E0707 /* PDRuntimeDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDRuntimeDomain.m; sourceTree = "<group>"; };
+		F66E1E1F14FC3461000E0707 /* PDRuntimeTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDRuntimeTypes.h; sourceTree = "<group>"; };
+		F66E1E2014FC3461000E0707 /* PDRuntimeTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDRuntimeTypes.m; sourceTree = "<group>"; };
+		F66E1E2114FC3461000E0707 /* PDTimelineDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDTimelineDomain.h; sourceTree = "<group>"; };
+		F66E1E2214FC3461000E0707 /* PDTimelineDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDTimelineDomain.m; sourceTree = "<group>"; };
+		F66E1E2314FC3461000E0707 /* PDTimelineTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDTimelineTypes.h; sourceTree = "<group>"; };
+		F66E1E2414FC3461000E0707 /* PDTimelineTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDTimelineTypes.m; sourceTree = "<group>"; };
+		F66E1E2514FC3461000E0707 /* PDWorkerDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDWorkerDomain.h; sourceTree = "<group>"; };
+		F66E1E2614FC3461000E0707 /* PDWorkerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDWorkerDomain.m; sourceTree = "<group>"; };
+		F66E1E6714FC74E1000E0707 /* SocketRocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SocketRocket.xcodeproj; path = SocketRocket/SocketRocket.xcodeproj; sourceTree = "<group>"; };
+		F66E1E8D14FC7AB9000E0707 /* PDDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDomainController.h; sourceTree = "<group>"; };
+		F66E1E8E14FC7ABA000E0707 /* PDDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDomainController.m; sourceTree = "<group>"; };
+		F66E1ECD14FC7CF0000E0707 /* PDTwitterTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDTwitterTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F66E1ECF14FC7CF0000E0707 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		F66E1ED214FC7CF0000E0707 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		F66E1ED614FC7CF0000E0707 /* PDTwitterTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PDTwitterTest-Info.plist"; sourceTree = "<group>"; };
+		F66E1ED814FC7CF0000E0707 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F66E1EDA14FC7CF0000E0707 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F66E1EDC14FC7CF0000E0707 /* PDTwitterTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PDTwitterTest-Prefix.pch"; sourceTree = "<group>"; };
+		F66E1EDD14FC7CF0000E0707 /* PDAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PDAppDelegate.h; sourceTree = "<group>"; };
+		F66E1EDE14FC7CF0000E0707 /* PDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PDAppDelegate.m; sourceTree = "<group>"; };
+		F66E1EE114FC7CF0000E0707 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		F66E1EE314FC7CF0000E0707 /* PDViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PDViewController.h; sourceTree = "<group>"; };
+		F66E1EE414FC7CF0000E0707 /* PDViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PDViewController.m; sourceTree = "<group>"; };
+		F66E1EF614FC7D9B000E0707 /* PDTwitterTest.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PDTwitterTest.xcdatamodel; sourceTree = "<group>"; };
 		F683ADAC14FC1B4C008EBBA7 /* libPonyDebugger.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPonyDebugger.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		F683ADB314FC1B4D008EBBA7 /* PonyDebugger-Prefix.pch */ = {isa = PBXFileReference; path = "PonyDebugger-Prefix.pch"; sourceTree = "<group>"; };
-		F683ADB414FC1B4D008EBBA7 /* PonyDebugger.h */ = {isa = PBXFileReference; path = PonyDebugger.h; sourceTree = "<group>"; };
-		F683ADB514FC1B4D008EBBA7 /* PonyDebugger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PonyDebugger.m; sourceTree = "<group>"; };
+		F683ADB314FC1B4D008EBBA7 /* PonyDebugger-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PonyDebugger-Prefix.pch"; sourceTree = "<group>"; };
+		F683ADB414FC1B4D008EBBA7 /* PonyDebugger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PonyDebugger.h; sourceTree = "<group>"; };
+		F6E761E214FEC2C90043BEA6 /* PDIndexedDBDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDIndexedDBDomainController.h; sourceTree = "<group>"; };
+		F6E761E314FEC2C90043BEA6 /* PDIndexedDBDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDIndexedDBDomainController.m; sourceTree = "<group>"; };
+		F6E761F214FEDBFF0043BEA6 /* PDDatabaseDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDatabaseDomainController.h; sourceTree = "<group>"; };
+		F6E761F314FEDBFF0043BEA6 /* PDDatabaseDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDatabaseDomainController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		F60EBE8714FC87340095B011 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F60EBE8B14FC87340095B011 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F66E1ECA14FC7CF0000E0707 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F60EBEAD14FC926E0095B011 /* Security.framework in Frameworks */,
+				F60EBEAB14FC92630095B011 /* libicucore.dylib in Frameworks */,
+				F60EBEA914FC92590095B011 /* CFNetwork.framework in Frameworks */,
+				F60EBEA314FC880B0095B011 /* libAFNetworkingForTestingOnly.a in Frameworks */,
+				F60EBEA214FC87EE0095B011 /* CoreData.framework in Frameworks */,
+				F66E1EEA14FC7CFE000E0707 /* libSocketRocket.a in Frameworks */,
+				F66E1EE914FC7CFB000E0707 /* libPonyDebugger.a in Frameworks */,
+				F66E1ED014FC7CF0000E0707 /* UIKit.framework in Frameworks */,
+				F66E1ED114FC7CF0000E0707 /* Foundation.framework in Frameworks */,
+				F66E1ED314FC7CF0000E0707 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F683ADA914FC1B4C008EBBA7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -31,10 +337,155 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F60EBE8C14FC87340095B011 /* AFNetworkingForTestingOnly */ = {
+			isa = PBXGroup;
+			children = (
+				F60EBE6714FC86A70095B011 /* AFHTTPClient.h */,
+				F60EBE6814FC86A70095B011 /* AFHTTPClient.m */,
+				F60EBE6914FC86A70095B011 /* AFHTTPRequestOperation.h */,
+				F60EBE6A14FC86A70095B011 /* AFHTTPRequestOperation.m */,
+				F60EBE6B14FC86A70095B011 /* AFImageRequestOperation.h */,
+				F60EBE6C14FC86A70095B011 /* AFImageRequestOperation.m */,
+				F60EBE6D14FC86A70095B011 /* AFJSONRequestOperation.h */,
+				F60EBE6E14FC86A70095B011 /* AFJSONRequestOperation.m */,
+				F60EBE6F14FC86A70095B011 /* AFJSONUtilities.h */,
+				F60EBE7014FC86A70095B011 /* AFJSONUtilities.m */,
+				F60EBE7114FC86A70095B011 /* AFNetworkActivityIndicatorManager.h */,
+				F60EBE7214FC86A70095B011 /* AFNetworkActivityIndicatorManager.m */,
+				F60EBE7314FC86A70095B011 /* AFNetworking.h */,
+				F60EBE7414FC86A70095B011 /* AFPropertyListRequestOperation.h */,
+				F60EBE7514FC86A70095B011 /* AFPropertyListRequestOperation.m */,
+				F60EBE7614FC86A70095B011 /* AFURLConnectionOperation.h */,
+				F60EBE7714FC86A70095B011 /* AFURLConnectionOperation.m */,
+				F60EBE7814FC86A70095B011 /* AFXMLRequestOperation.h */,
+				F60EBE7914FC86A70095B011 /* AFXMLRequestOperation.m */,
+				F60EBE7A14FC86A70095B011 /* UIImageView+AFNetworking.h */,
+				F60EBE7B14FC86A70095B011 /* UIImageView+AFNetworking.m */,
+				F60EBE8D14FC87340095B011 /* Supporting Files */,
+			);
+			path = AFNetworkingForTestingOnly;
+			sourceTree = "<group>";
+		};
+		F60EBE8D14FC87340095B011 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F60EBE8E14FC87340095B011 /* AFNetworkingForTestingOnly-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F66E1D3114FC255F000E0707 /* DerivedSources */ = {
+			isa = PBXGroup;
+			children = (
+				F66E1DE914FC3461000E0707 /* PDApplicationCacheDomain.h */,
+				F66E1DEA14FC3461000E0707 /* PDApplicationCacheDomain.m */,
+				F66E1DEB14FC3461000E0707 /* PDApplicationCacheTypes.h */,
+				F66E1DEC14FC3461000E0707 /* PDApplicationCacheTypes.m */,
+				F66E1DED14FC3461000E0707 /* PDConsoleDomain.h */,
+				F66E1DEE14FC3461000E0707 /* PDConsoleDomain.m */,
+				F66E1DEF14FC3461000E0707 /* PDConsoleTypes.h */,
+				F66E1DF014FC3461000E0707 /* PDConsoleTypes.m */,
+				F66E1DF114FC3461000E0707 /* PDCSSDomain.h */,
+				F66E1DF214FC3461000E0707 /* PDCSSDomain.m */,
+				F66E1DF314FC3461000E0707 /* PDCSSTypes.h */,
+				F66E1DF414FC3461000E0707 /* PDCSSTypes.m */,
+				F66E1DF514FC3461000E0707 /* PDDatabaseDomain.h */,
+				F66E1DF614FC3461000E0707 /* PDDatabaseDomain.m */,
+				F66E1DF714FC3461000E0707 /* PDDatabaseTypes.h */,
+				F66E1DF814FC3461000E0707 /* PDDatabaseTypes.m */,
+				F66E1DF914FC3461000E0707 /* PDDebuggerDomain.h */,
+				F66E1DFA14FC3461000E0707 /* PDDebuggerDomain.m */,
+				F66E1DFB14FC3461000E0707 /* PDDebuggerTypes.h */,
+				F66E1DFC14FC3461000E0707 /* PDDebuggerTypes.m */,
+				F66E1DFD14FC3461000E0707 /* PDDOMDebuggerDomain.h */,
+				F66E1DFE14FC3461000E0707 /* PDDOMDebuggerDomain.m */,
+				F66E1DFF14FC3461000E0707 /* PDDOMDomain.h */,
+				F66E1E0014FC3461000E0707 /* PDDOMDomain.m */,
+				F66E1E0114FC3461000E0707 /* PDDOMStorageDomain.h */,
+				F66E1E0214FC3461000E0707 /* PDDOMStorageDomain.m */,
+				F66E1E0314FC3461000E0707 /* PDDOMStorageTypes.h */,
+				F66E1E0414FC3461000E0707 /* PDDOMStorageTypes.m */,
+				F66E1E0514FC3461000E0707 /* PDDOMTypes.h */,
+				F66E1E0614FC3461000E0707 /* PDDOMTypes.m */,
+				F66E1E0714FC3461000E0707 /* PDFileSystemDomain.h */,
+				F66E1E0814FC3461000E0707 /* PDFileSystemDomain.m */,
+				F66E1E0914FC3461000E0707 /* PDIndexedDBDomain.h */,
+				F66E1E0A14FC3461000E0707 /* PDIndexedDBDomain.m */,
+				F66E1E0B14FC3461000E0707 /* PDIndexedDBTypes.h */,
+				F66E1E0C14FC3461000E0707 /* PDIndexedDBTypes.m */,
+				F66E1E0D14FC3461000E0707 /* PDInspectorDomain.h */,
+				F66E1E0E14FC3461000E0707 /* PDInspectorDomain.m */,
+				F66E1E0F14FC3461000E0707 /* PDMemoryDomain.h */,
+				F66E1E1014FC3461000E0707 /* PDMemoryDomain.m */,
+				F66E1E1114FC3461000E0707 /* PDMemoryTypes.h */,
+				F66E1E1214FC3461000E0707 /* PDMemoryTypes.m */,
+				F66E1E1314FC3461000E0707 /* PDNetworkDomain.h */,
+				F66E1E1414FC3461000E0707 /* PDNetworkDomain.m */,
+				F66E1E1514FC3461000E0707 /* PDNetworkTypes.h */,
+				F66E1E1614FC3461000E0707 /* PDNetworkTypes.m */,
+				F66E1E1714FC3461000E0707 /* PDPageDomain.h */,
+				F66E1E1814FC3461000E0707 /* PDPageDomain.m */,
+				F66E1E1914FC3461000E0707 /* PDPageTypes.h */,
+				F66E1E1A14FC3461000E0707 /* PDPageTypes.m */,
+				F66E1E1B14FC3461000E0707 /* PDProfilerDomain.h */,
+				F66E1E1C14FC3461000E0707 /* PDProfilerDomain.m */,
+				F66E1E1D14FC3461000E0707 /* PDRuntimeDomain.h */,
+				F66E1E1E14FC3461000E0707 /* PDRuntimeDomain.m */,
+				F66E1E1F14FC3461000E0707 /* PDRuntimeTypes.h */,
+				F66E1E2014FC3461000E0707 /* PDRuntimeTypes.m */,
+				F66E1E2114FC3461000E0707 /* PDTimelineDomain.h */,
+				F66E1E2214FC3461000E0707 /* PDTimelineDomain.m */,
+				F66E1E2314FC3461000E0707 /* PDTimelineTypes.h */,
+				F66E1E2414FC3461000E0707 /* PDTimelineTypes.m */,
+				F66E1E2514FC3461000E0707 /* PDWorkerDomain.h */,
+				F66E1E2614FC3461000E0707 /* PDWorkerDomain.m */,
+			);
+			path = DerivedSources;
+			sourceTree = "<group>";
+		};
+		F66E1E9814FC7B56000E0707 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F66E1E9E14FC7B56000E0707 /* libSocketRocket.a */,
+				F66E1EA014FC7B56000E0707 /* SRWebSocketTests.octest */,
+				F66E1EA214FC7B56000E0707 /* TestChat.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F66E1ED414FC7CF0000E0707 /* PDTwitterTest */ = {
+			isa = PBXGroup;
+			children = (
+				F66E1EF514FC7D9B000E0707 /* PDTwitterTest.xcdatamodeld */,
+				F66E1EDD14FC7CF0000E0707 /* PDAppDelegate.h */,
+				F66E1EDE14FC7CF0000E0707 /* PDAppDelegate.m */,
+				F66E1EE014FC7CF0000E0707 /* MainStoryboard.storyboard */,
+				F60EBE3814FC83360095B011 /* PDTweet.h */,
+				F60EBE3914FC83360095B011 /* PDTweet.m */,
+				F66E1EE314FC7CF0000E0707 /* PDViewController.h */,
+				F66E1EE414FC7CF0000E0707 /* PDViewController.m */,
+				F66E1ED514FC7CF0000E0707 /* Supporting Files */,
+			);
+			path = PDTwitterTest;
+			sourceTree = "<group>";
+		};
+		F66E1ED514FC7CF0000E0707 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F66E1ED614FC7CF0000E0707 /* PDTwitterTest-Info.plist */,
+				F66E1ED714FC7CF0000E0707 /* InfoPlist.strings */,
+				F66E1EDA14FC7CF0000E0707 /* main.m */,
+				F66E1EDC14FC7CF0000E0707 /* PDTwitterTest-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		F683ADA114FC1B4C008EBBA7 = {
 			isa = PBXGroup;
 			children = (
 				F683ADB114FC1B4D008EBBA7 /* PonyDebugger */,
+				F66E1ED414FC7CF0000E0707 /* PDTwitterTest */,
+				F60EBE8C14FC87340095B011 /* AFNetworkingForTestingOnly */,
 				F683ADAE14FC1B4D008EBBA7 /* Frameworks */,
 				F683ADAD14FC1B4C008EBBA7 /* Products */,
 			);
@@ -44,6 +495,8 @@
 			isa = PBXGroup;
 			children = (
 				F683ADAC14FC1B4C008EBBA7 /* libPonyDebugger.a */,
+				F66E1ECD14FC7CF0000E0707 /* PDTwitterTest.app */,
+				F60EBE8A14FC87340095B011 /* libAFNetworkingForTestingOnly.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -51,7 +504,14 @@
 		F683ADAE14FC1B4D008EBBA7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F60EBEAC14FC926E0095B011 /* Security.framework */,
+				F60EBEAA14FC92630095B011 /* libicucore.dylib */,
+				F60EBEA714FC92450095B011 /* CFNetwork.framework */,
+				F66E1E6714FC74E1000E0707 /* SocketRocket.xcodeproj */,
 				F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */,
+				F66E1ECF14FC7CF0000E0707 /* UIKit.framework */,
+				F66E1ED214FC7CF0000E0707 /* CoreGraphics.framework */,
+				F60EBEA114FC87EE0095B011 /* CoreData.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -59,8 +519,15 @@
 		F683ADB114FC1B4D008EBBA7 /* PonyDebugger */ = {
 			isa = PBXGroup;
 			children = (
+				F6E761E114FEBEF50043BEA6 /* Domain Controllers */,
+				F66E1D7F14FC26EE000E0707 /* PDDebugger.h */,
+				F66E1D8014FC26EE000E0707 /* PDDebugger.m */,
+				F66E1D8114FC26EE000E0707 /* PDDynamicDebuggerDomain.h */,
+				F66E1D8214FC26EE000E0707 /* PDDynamicDebuggerDomain.m */,
+				F66E1D7B14FC26B9000E0707 /* PDObject.h */,
+				F66E1D7C14FC26B9000E0707 /* PDObject.m */,
 				F683ADB414FC1B4D008EBBA7 /* PonyDebugger.h */,
-				F683ADB514FC1B4D008EBBA7 /* PonyDebugger.m */,
+				F66E1D3114FC255F000E0707 /* DerivedSources */,
 				F683ADB214FC1B4D008EBBA7 /* Supporting Files */,
 			);
 			path = PonyDebugger;
@@ -74,19 +541,118 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		F6E761E114FEBEF50043BEA6 /* Domain Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				F60EBEB014FC94C90095B011 /* PDNetworkDomainController.h */,
+				F60EBEB114FC94C90095B011 /* PDNetworkDomainController.m */,
+				F66E1E8D14FC7AB9000E0707 /* PDDomainController.h */,
+				F66E1E8E14FC7ABA000E0707 /* PDDomainController.m */,
+				F6E761E214FEC2C90043BEA6 /* PDIndexedDBDomainController.h */,
+				F6E761E314FEC2C90043BEA6 /* PDIndexedDBDomainController.m */,
+				F6E761F214FEDBFF0043BEA6 /* PDDatabaseDomainController.h */,
+				F6E761F314FEDBFF0043BEA6 /* PDDatabaseDomainController.m */,
+			);
+			name = "Domain Controllers";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		F683ADAA14FC1B4C008EBBA7 /* Headers */ = {
+		F60EBE8814FC87340095B011 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F683ADAA14FC1B4C008EBBA7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F66E1D7D14FC26B9000E0707 /* PDObject.h in Headers */,
+				F66E1D8314FC26EE000E0707 /* PDDebugger.h in Headers */,
+				F66E1D8514FC26EE000E0707 /* PDDynamicDebuggerDomain.h in Headers */,
+				F66E1E2714FC3461000E0707 /* PDApplicationCacheDomain.h in Headers */,
+				F66E1E2914FC3461000E0707 /* PDApplicationCacheTypes.h in Headers */,
+				F66E1E2B14FC3461000E0707 /* PDConsoleDomain.h in Headers */,
+				F66E1E2D14FC3461000E0707 /* PDConsoleTypes.h in Headers */,
+				F66E1E2F14FC3461000E0707 /* PDCSSDomain.h in Headers */,
+				F66E1E3114FC3461000E0707 /* PDCSSTypes.h in Headers */,
+				F66E1E3314FC3461000E0707 /* PDDatabaseDomain.h in Headers */,
+				F66E1E3514FC3461000E0707 /* PDDatabaseTypes.h in Headers */,
+				F66E1E3714FC3461000E0707 /* PDDebuggerDomain.h in Headers */,
+				F66E1E3914FC3461000E0707 /* PDDebuggerTypes.h in Headers */,
+				F66E1E3B14FC3461000E0707 /* PDDOMDebuggerDomain.h in Headers */,
+				F66E1E3D14FC3461000E0707 /* PDDOMDomain.h in Headers */,
+				F66E1E3F14FC3461000E0707 /* PDDOMStorageDomain.h in Headers */,
+				F66E1E4114FC3461000E0707 /* PDDOMStorageTypes.h in Headers */,
+				F66E1E4314FC3461000E0707 /* PDDOMTypes.h in Headers */,
+				F66E1E4514FC3461000E0707 /* PDFileSystemDomain.h in Headers */,
+				F66E1E4714FC3461000E0707 /* PDIndexedDBDomain.h in Headers */,
+				F66E1E4914FC3461000E0707 /* PDIndexedDBTypes.h in Headers */,
+				F66E1E4B14FC3461000E0707 /* PDInspectorDomain.h in Headers */,
+				F66E1E4D14FC3461000E0707 /* PDMemoryDomain.h in Headers */,
+				F66E1E4F14FC3461000E0707 /* PDMemoryTypes.h in Headers */,
+				F66E1E5114FC3461000E0707 /* PDNetworkDomain.h in Headers */,
+				F66E1E5314FC3461000E0707 /* PDNetworkTypes.h in Headers */,
+				F66E1E5514FC3461000E0707 /* PDPageDomain.h in Headers */,
+				F66E1E5714FC3461000E0707 /* PDPageTypes.h in Headers */,
+				F66E1E5914FC3461000E0707 /* PDProfilerDomain.h in Headers */,
+				F66E1E5B14FC3461000E0707 /* PDRuntimeDomain.h in Headers */,
+				F66E1E5D14FC3461000E0707 /* PDRuntimeTypes.h in Headers */,
+				F66E1E5F14FC3461000E0707 /* PDTimelineDomain.h in Headers */,
+				F66E1E6114FC3461000E0707 /* PDTimelineTypes.h in Headers */,
+				F66E1E6314FC3461000E0707 /* PDWorkerDomain.h in Headers */,
+				F66E1E8F14FC7ABC000E0707 /* PDDomainController.h in Headers */,
+				F6E1351414FDB5A7004F0927 /* PDNetworkDomainController.h in Headers */,
+				F6E761E414FEC2C90043BEA6 /* PDIndexedDBDomainController.h in Headers */,
+				F6E761F414FEDBFF0043BEA6 /* PDDatabaseDomainController.h in Headers */,
+				F6E761F614FEDCDF0043BEA6 /* PonyDebugger.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		F60EBE8914FC87340095B011 /* AFNetworkingForTestingOnly */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F60EBE9214FC87340095B011 /* Build configuration list for PBXNativeTarget "AFNetworkingForTestingOnly" */;
+			buildPhases = (
+				F60EBE8614FC87340095B011 /* Sources */,
+				F60EBE8714FC87340095B011 /* Frameworks */,
+				F60EBE8814FC87340095B011 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F60EBEAF14FC942B0095B011 /* PBXTargetDependency */,
+			);
+			name = AFNetworkingForTestingOnly;
+			productName = AFNetworkingForTestingOnly;
+			productReference = F60EBE8A14FC87340095B011 /* libAFNetworkingForTestingOnly.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		F66E1ECC14FC7CF0000E0707 /* PDTwitterTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F66E1EE614FC7CF0000E0707 /* Build configuration list for PBXNativeTarget "PDTwitterTest" */;
+			buildPhases = (
+				F66E1EC914FC7CF0000E0707 /* Sources */,
+				F66E1ECA14FC7CF0000E0707 /* Frameworks */,
+				F66E1ECB14FC7CF0000E0707 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F60EBEA514FC88100095B011 /* PBXTargetDependency */,
+				F66E1EEC14FC7D06000E0707 /* PBXTargetDependency */,
+				F66E1EEE14FC7D06000E0707 /* PBXTargetDependency */,
+			);
+			name = PDTwitterTest;
+			productName = PDTwitterTest;
+			productReference = F66E1ECD14FC7CF0000E0707 /* PDTwitterTest.app */;
+			productType = "com.apple.product-type.application";
+		};
 		F683ADAB14FC1B4C008EBBA7 /* PonyDebugger */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F683ADB914FC1B4D008EBBA7 /* Build configuration list for PBXNativeTarget "PonyDebugger" */;
@@ -98,6 +664,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				F66E1EA914FC7BB2000E0707 /* PBXTargetDependency */,
 			);
 			name = PonyDebugger;
 			productName = PonyDebugger;
@@ -122,25 +689,257 @@
 			mainGroup = F683ADA114FC1B4C008EBBA7;
 			productRefGroup = F683ADAD14FC1B4C008EBBA7 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = F66E1E9814FC7B56000E0707 /* Products */;
+					ProjectRef = F66E1E6714FC74E1000E0707 /* SocketRocket.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				F683ADAB14FC1B4C008EBBA7 /* PonyDebugger */,
+				F66E1ECC14FC7CF0000E0707 /* PDTwitterTest */,
+				F60EBE8914FC87340095B011 /* AFNetworkingForTestingOnly */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		F66E1E9E14FC7B56000E0707 /* libSocketRocket.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSocketRocket.a;
+			remoteRef = F66E1E9D14FC7B56000E0707 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F66E1EA014FC7B56000E0707 /* SRWebSocketTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SRWebSocketTests.octest;
+			remoteRef = F66E1E9F14FC7B56000E0707 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F66E1EA214FC7B56000E0707 /* TestChat.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TestChat.app;
+			remoteRef = F66E1EA114FC7B56000E0707 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F66E1ECB14FC7CF0000E0707 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F66E1ED914FC7CF0000E0707 /* InfoPlist.strings in Resources */,
+				F66E1EE214FC7CF0000E0707 /* MainStoryboard.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		F60EBE8614FC87340095B011 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F60EBE9514FC878B0095B011 /* AFHTTPClient.m in Sources */,
+				F60EBE9814FC87A70095B011 /* AFURLConnectionOperation.m in Sources */,
+				F60EBE9914FC87A70095B011 /* AFJSONUtilities.m in Sources */,
+				F60EBE9A14FC87A70095B011 /* AFHTTPRequestOperation.m in Sources */,
+				F60EBE9B14FC87A70095B011 /* AFXMLRequestOperation.m in Sources */,
+				F60EBE9C14FC87A70095B011 /* AFJSONRequestOperation.m in Sources */,
+				F60EBE9D14FC87A70095B011 /* UIImageView+AFNetworking.m in Sources */,
+				F60EBE9E14FC87A70095B011 /* AFImageRequestOperation.m in Sources */,
+				F60EBE9F14FC87A70095B011 /* AFNetworkActivityIndicatorManager.m in Sources */,
+				F60EBEA014FC87A70095B011 /* AFPropertyListRequestOperation.m in Sources */,
+				F60EBEB414FC99080095B011 /* PDNetworkDomainController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F66E1EC914FC7CF0000E0707 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F66E1EDB14FC7CF0000E0707 /* main.m in Sources */,
+				F66E1EDF14FC7CF0000E0707 /* PDAppDelegate.m in Sources */,
+				F66E1EE514FC7CF0000E0707 /* PDViewController.m in Sources */,
+				F66E1EFA14FC7D9B000E0707 /* PDTwitterTest.xcdatamodeld in Sources */,
+				F60EBE3A14FC83360095B011 /* PDTweet.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F683ADA814FC1B4C008EBBA7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F683ADB614FC1B4D008EBBA7 /* PonyDebugger.m in Sources */,
+				F66E1D7E14FC26B9000E0707 /* PDObject.m in Sources */,
+				F66E1D8614FC26EE000E0707 /* PDDynamicDebuggerDomain.m in Sources */,
+				F66E1E2814FC3461000E0707 /* PDApplicationCacheDomain.m in Sources */,
+				F66E1E2A14FC3461000E0707 /* PDApplicationCacheTypes.m in Sources */,
+				F66E1E2C14FC3461000E0707 /* PDConsoleDomain.m in Sources */,
+				F66E1E2E14FC3461000E0707 /* PDConsoleTypes.m in Sources */,
+				F66E1E3014FC3461000E0707 /* PDCSSDomain.m in Sources */,
+				F66E1E3214FC3461000E0707 /* PDCSSTypes.m in Sources */,
+				F66E1E3414FC3461000E0707 /* PDDatabaseDomain.m in Sources */,
+				F66E1E3614FC3461000E0707 /* PDDatabaseTypes.m in Sources */,
+				F66E1E3814FC3461000E0707 /* PDDebuggerDomain.m in Sources */,
+				F66E1E3A14FC3461000E0707 /* PDDebuggerTypes.m in Sources */,
+				F66E1E3C14FC3461000E0707 /* PDDOMDebuggerDomain.m in Sources */,
+				F66E1E3E14FC3461000E0707 /* PDDOMDomain.m in Sources */,
+				F66E1E4014FC3461000E0707 /* PDDOMStorageDomain.m in Sources */,
+				F66E1E4214FC3461000E0707 /* PDDOMStorageTypes.m in Sources */,
+				F66E1E4414FC3461000E0707 /* PDDOMTypes.m in Sources */,
+				F66E1E4614FC3461000E0707 /* PDFileSystemDomain.m in Sources */,
+				F66E1E4814FC3461000E0707 /* PDIndexedDBDomain.m in Sources */,
+				F66E1E4A14FC3461000E0707 /* PDIndexedDBTypes.m in Sources */,
+				F66E1E4C14FC3461000E0707 /* PDInspectorDomain.m in Sources */,
+				F66E1E4E14FC3461000E0707 /* PDMemoryDomain.m in Sources */,
+				F66E1E5014FC3461000E0707 /* PDMemoryTypes.m in Sources */,
+				F66E1E5214FC3461000E0707 /* PDNetworkDomain.m in Sources */,
+				F66E1E5414FC3461000E0707 /* PDNetworkTypes.m in Sources */,
+				F66E1E5614FC3461000E0707 /* PDPageDomain.m in Sources */,
+				F66E1E5814FC3461000E0707 /* PDPageTypes.m in Sources */,
+				F66E1E5A14FC3461000E0707 /* PDProfilerDomain.m in Sources */,
+				F66E1E5C14FC3461000E0707 /* PDRuntimeDomain.m in Sources */,
+				F66E1E5E14FC3461000E0707 /* PDRuntimeTypes.m in Sources */,
+				F66E1E6014FC3461000E0707 /* PDTimelineDomain.m in Sources */,
+				F66E1E6214FC3461000E0707 /* PDTimelineTypes.m in Sources */,
+				F66E1E6414FC3461000E0707 /* PDWorkerDomain.m in Sources */,
+				F66E1E6614FC6B67000E0707 /* PDDebugger.m in Sources */,
+				F66E1E9014FC7ABC000E0707 /* PDDomainController.m in Sources */,
+				F6E761E514FEC2C90043BEA6 /* PDIndexedDBDomainController.m in Sources */,
+				F6E761F514FEDBFF0043BEA6 /* PDDatabaseDomainController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		F60EBEA514FC88100095B011 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F60EBE8914FC87340095B011 /* AFNetworkingForTestingOnly */;
+			targetProxy = F60EBEA414FC88100095B011 /* PBXContainerItemProxy */;
+		};
+		F60EBEAF14FC942B0095B011 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F683ADAB14FC1B4C008EBBA7 /* PonyDebugger */;
+			targetProxy = F60EBEAE14FC942B0095B011 /* PBXContainerItemProxy */;
+		};
+		F66E1EA914FC7BB2000E0707 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SocketRocket;
+			targetProxy = F66E1EA814FC7BB2000E0707 /* PBXContainerItemProxy */;
+		};
+		F66E1EEC14FC7D06000E0707 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F683ADAB14FC1B4C008EBBA7 /* PonyDebugger */;
+			targetProxy = F66E1EEB14FC7D06000E0707 /* PBXContainerItemProxy */;
+		};
+		F66E1EEE14FC7D06000E0707 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SocketRocket;
+			targetProxy = F66E1EED14FC7D06000E0707 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F66E1ED714FC7CF0000E0707 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F66E1ED814FC7CF0000E0707 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		F66E1EE014FC7CF0000E0707 /* MainStoryboard.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F66E1EE114FC7CF0000E0707 /* en */,
+			);
+			name = MainStoryboard.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		F60EBE9314FC87340095B011 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				DSTROOT = /tmp/AFNetworkingForTestingOnly.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AFNetworkingForTestingOnly/AFNetworkingForTestingOnly-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"ENABLE_PONY_DEBUGGER=1",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F60EBE9414FC87340095B011 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				DSTROOT = /tmp/AFNetworkingForTestingOnly.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AFNetworkingForTestingOnly/AFNetworkingForTestingOnly-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"ENABLE_PONY_DEBUGGER=1",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		F66E1EE714FC7CF0000E0707 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PDTwitterTest/PDTwitterTest-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"ENABLE_PONY_DEBUGGER=1",
+				);
+				INFOPLIST_FILE = "PDTwitterTest/PDTwitterTest-Info.plist";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		F66E1EE814FC7CF0000E0707 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PDTwitterTest/PDTwitterTest-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"ENABLE_PONY_DEBUGGER=1",
+				);
+				INFOPLIST_FILE = "PDTwitterTest/PDTwitterTest-Info.plist";
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 		F683ADB714FC1B4D008EBBA7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -151,15 +950,15 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(CONFIGURATION_BUILD_DIR)/usr/local/include",
+					./SocketRocket,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 			};
@@ -173,10 +972,15 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(CONFIGURATION_BUILD_DIR)/usr/local/include",
+					./SocketRocket,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -191,7 +995,9 @@
 				GCC_PREFIX_HEADER = "PonyDebugger/PonyDebugger-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(inherited)/$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/SocketRocket/**";
 			};
 			name = Debug;
 		};
@@ -203,6 +1009,7 @@
 				GCC_PREFIX_HEADER = "PonyDebugger/PonyDebugger-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(inherited)/$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -210,6 +1017,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F60EBE9214FC87340095B011 /* Build configuration list for PBXNativeTarget "AFNetworkingForTestingOnly" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F60EBE9314FC87340095B011 /* Debug */,
+				F60EBE9414FC87340095B011 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F66E1EE614FC7CF0000E0707 /* Build configuration list for PBXNativeTarget "PDTwitterTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F66E1EE714FC7CF0000E0707 /* Debug */,
+				F66E1EE814FC7CF0000E0707 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F683ADA614FC1B4C008EBBA7 /* Build configuration list for PBXProject "PonyDebugger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -226,8 +1051,22 @@
 				F683ADBB14FC1B4D008EBBA7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		F66E1EF514FC7D9B000E0707 /* PDTwitterTest.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				F66E1EF614FC7D9B000E0707 /* PDTwitterTest.xcdatamodel */,
+			);
+			currentVersion = F66E1EF614FC7D9B000E0707 /* PDTwitterTest.xcdatamodel */;
+			path = PDTwitterTest.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = F683ADA314FC1B4C008EBBA7 /* Project object */;
 }

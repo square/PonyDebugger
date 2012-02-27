@@ -1,0 +1,6 @@
+[submodule "SocketRocket"]
+	path = SocketRocket
+	url = git@github.com:square/SocketRocket.git
+[submodule "AFNetworking"]
+	path = AFNetworking
+	url = https://github.com/AFNetworking/AFNetworking.git
