@@ -1,0 +1,68 @@
+
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#connection-status {
+  font-size: 14px;
+  font-weight: bold;
+  color: #666;
+  text-shadow: 0px 1px #fff;
+  text-align: center;
+}
+
+.device-details {
+}
+
+#device-list {
+  margin: 0;
+}
+
+#device-list li {
+  list-style-type: none;
+  margin: 0;
+  padding: 16px 0;
+  overflow: auto;
+}
+
+#device-list li .app-icon {
+  height: 57px;
+  width: 57px;
+  margin-right: 20px;
+  float: left;
+}
+
+.app-icon.ios {
+  border-radius: 10px;
+}
+
+#device-list li .title {
+  font-size: 22px;
+}
+
+#device-list li .title small {
+  font-size: 14px;
+}
+
+#device-list li:not(:last-child) {
+  border-bottom: 1px solid #ddd;
+}
+
+#device-list li:first-child {
+  padding-top: 0px;
+}
+
+#device-list li:last-child {
+  padding-bottom: 0px;
+}
+
+#no-devices {
+  text-align: center;
+}
+
+#no-devices h3 {
+  color: #aaa;
+  text-shadow: 0px 1px #fff;
+}
+

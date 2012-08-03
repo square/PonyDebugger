@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>PonyGateway</title>
+
+    <link href="css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="css/style.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body id="pony-gateway">
+    <div class="container">
+      <div class="page-header">
+        <h1>PonyGateway</h1>
+      </div>
+
+      <p>Connect a PonyDebugger client to <code id="connection-url"></code>.</p>
+
+      <div class="well">
+        <ul id="device-list" style="display:none;"></ul>
+        <div id="no-devices">
+          <h3>No Clients Connected</h3>
+        </div>
+      </div>
+
+      <div id="connection-status"></div>
+    </div>
+
+    <!-- Load scripts last -->
+    <script src="js/jquery-1.8.0.min.js"></script>
+    <script src="js/handlebars-1.0.0.beta.6.js"></script>
+    <script src="js/underscore-min.js"></script>
+    <script src="js/backbone.js"></script>
+    <script src="js/proxy.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+
+</html>
+
+<script type="text/template" id="device-template">
+  <li>
+    {{#if app_icon_base64}}
+      <img class="app-icon ios" src="data:image/png;base64,{{app_icon_base64}}" />
+    {{else}}
+      <div class="app-icon ios"></div>
+    {{/if}}
+
+    <h1 class="title">
+      <a href="{{debugger_url}}">{{app_name}} {{app_version}}</a>
+      <small>{{app_id}}</small>
+    </h1>
+
+    <span class="device-details">
+      <strong>Device</strong>: {{device_name}} ({{device_model}}, UUID: {{device_id}})<br />
+    </span>
+  </li>
+</script>
+
+<script type="text/template" id="status-template">
+  {{#if status}}
+    Status: {{status}}
+  {{/if}}
+</script>
+
