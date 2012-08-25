@@ -17,8 +17,10 @@ Quick Start
 - First, install PonyGateway. We distributed a PyPI package for your convenience.
 
 ```
-pip install ponygateway --user
+sudo pip install ponygateway
 ```
+
+  Alternatively, install in a virtualenv if you do not want to use sudo.
 
 - Download Chrome Developer Tools locally using the `ponydownloader` tool. This will download Chrome Dev Tools in `~/.devtools`. Run the gateway server with `ponygateway`.
 

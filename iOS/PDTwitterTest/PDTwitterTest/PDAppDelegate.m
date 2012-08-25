@@ -15,8 +15,8 @@
 #import "PDAppDelegate.h"
 #import "PDViewController.h"
 
-#if DEBUG
-    #import <PonyDebugger/PonyDebugger.h>
+#if ENABLE_PONYDEBUGGER
+#import <PonyDebugger/PonyDebugger.h>
 #endif
 
 
@@ -29,9 +29,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Don't use PonyDebugger unless testing in DEBUG mode. Release builds should not use PonyDebugger.
+    // Don't use PonyDebugger unless we have ENABLE_PONYDEBUGGER enabled.
+    // When ENABLE_PONYDEBUGGER is enabled -lSocketRocket -lPonyDebugger
+    // should be added to "Other linker flags" settings.
+    // Release builds should not use PonyDebugger
 
-#if DEBUG
+#if ENABLE_PONYDEBUGGER
 
     PDDebugger *debugger = [PDDebugger defaultInstance];
     

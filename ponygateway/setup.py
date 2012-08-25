@@ -18,7 +18,7 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         'Operating System :: MacOS',
-        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
     ],
     keywords='ponydebugger ponygateway remote debugger',
     author='Square, Inc.',

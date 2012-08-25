@@ -23,8 +23,6 @@
 		3D069C9815D58FDD0025D563 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D069C9715D58FDD0025D563 /* libicucore.dylib */; };
 		3D0AE5CC15D5909B00B349FE /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0AE5CB15D5909B00B349FE /* CoreFoundation.framework */; };
 		3D7507B315E466C600E4DDAC /* PDUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D7507B215E466C600E4DDAC /* PDUser.m */; };
-		3D7507B415E4682700E4DDAC /* libPonyDebugger.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0696CA15D58B840025D563 /* libPonyDebugger.a */; };
-		3D7507BA15E4692A00E4DDAC /* libSocketRocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D7507B915E4692A00E4DDAC /* libSocketRocket.a */; };
 		3DCEE23D15E6D55200294627 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DCEE23C15E6D55200294627 /* Icon.png */; };
 		3DCEE23F15E6D55900294627 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DCEE23E15E6D55900294627 /* Icon@2x.png */; };
 		3DE2296915D589C20035A508 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DE2296815D589C20035A508 /* UIKit.framework */; };
@@ -88,7 +86,6 @@
 		3D0AE5CB15D5909B00B349FE /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		3D7507B115E466C600E4DDAC /* PDUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDUser.h; sourceTree = "<group>"; };
 		3D7507B215E466C600E4DDAC /* PDUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDUser.m; sourceTree = "<group>"; };
-		3D7507B915E4692A00E4DDAC /* libSocketRocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSocketRocket.a; path = "../PonyDebugger/SocketRocket/build/Release-iphoneos/libSocketRocket.a"; sourceTree = "<group>"; };
 		3DCEE23C15E6D55200294627 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
 		3DCEE23E15E6D55900294627 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
 		3DE2296415D589C20035A508 /* PDTwitterTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDTwitterTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,8 +113,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D7507BA15E4692A00E4DDAC /* libSocketRocket.a in Frameworks */,
-				3D7507B415E4682700E4DDAC /* libPonyDebugger.a in Frameworks */,
 				3D0AE5CC15D5909B00B349FE /* CoreFoundation.framework in Frameworks */,
 				3D069C9815D58FDD0025D563 /* libicucore.dylib in Frameworks */,
 				3D069C9615D58FA70025D563 /* Security.framework in Frameworks */,
@@ -172,8 +167,6 @@
 		3DE2295915D589C20035A508 = {
 			isa = PBXGroup;
 			children = (
-				3D0696D615D58D800025D563 /* AFNetworking */,
-				3DE229C015D58ADC0035A508 /* PonyDebugger */,
 				3DE229A515D58A950035A508 /* PDTwitterTest */,
 				3DE229AE15D58A950035A508 /* Resources */,
 				3DE2296715D589C20035A508 /* Frameworks */,
@@ -192,7 +185,8 @@
 		3DE2296715D589C20035A508 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3D7507B915E4692A00E4DDAC /* libSocketRocket.a */,
+				3D0696D615D58D800025D563 /* AFNetworking */,
+				3D0696BD15D58B840025D563 /* PonyDebugger.xcodeproj */,
 				3D069C9715D58FDD0025D563 /* libicucore.dylib */,
 				3D0AE5CB15D5909B00B349FE /* CoreFoundation.framework */,
 				3D069C9515D58FA70025D563 /* Security.framework */,
@@ -209,14 +203,14 @@
 		3DE229A515D58A950035A508 /* PDTwitterTest */ = {
 			isa = PBXGroup;
 			children = (
+				3DE229A715D58A950035A508 /* PDAppDelegate.h */,
+				3DE229A815D58A950035A508 /* PDAppDelegate.m */,
 				3DE229A915D58A950035A508 /* PDTweet.h */,
 				3DE229AA15D58A950035A508 /* PDTweet.m */,
 				3D7507B115E466C600E4DDAC /* PDUser.h */,
 				3D7507B215E466C600E4DDAC /* PDUser.m */,
 				3DE229AC15D58A950035A508 /* PDViewController.h */,
 				3DE229AD15D58A950035A508 /* PDViewController.m */,
-				3DE229A715D58A950035A508 /* PDAppDelegate.h */,
-				3DE229A815D58A950035A508 /* PDAppDelegate.m */,
 			);
 			path = PDTwitterTest;
 			sourceTree = "<group>";
@@ -235,14 +229,6 @@
 				3DE229B515D58A950035A508 /* twitter_egg@2x.png */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		3DE229C015D58ADC0035A508 /* PonyDebugger */ = {
-			isa = PBXGroup;
-			children = (
-				3D0696BD15D58B840025D563 /* PonyDebugger.xcodeproj */,
-			);
-			name = PonyDebugger;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -418,9 +404,20 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PDTwitterTest/PDTwitterTest-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"ENABLE_PONYDEBUGGER=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/PDTwitterTest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lPonyDebugger",
+					"-lSocketRocket",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
@@ -434,6 +431,7 @@
 				GCC_PREFIX_HEADER = "PDTwitterTest/PDTwitterTest-Prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/PDTwitterTest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;

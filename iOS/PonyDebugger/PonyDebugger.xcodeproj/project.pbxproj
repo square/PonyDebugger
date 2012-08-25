@@ -115,6 +115,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		2720E60915E9701F00F7A31F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3DE2294915D5885C0035A508 /* SocketRocket.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F6B2082C1450F597009315AF;
+			remoteInfo = SocketRocket;
+		};
 		3D0696B315D58B3B0025D563 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3DE2294915D5885C0035A508 /* SocketRocket.xcodeproj */;
@@ -537,6 +544,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				2720E60A15E9701F00F7A31F /* PBXTargetDependency */,
 			);
 			name = PonyDebugger;
 			productName = PonyDebugger;
@@ -665,6 +673,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2720E60A15E9701F00F7A31F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SocketRocket;
+			targetProxy = 2720E60915E9701F00F7A31F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F683ADB714FC1B4D008EBBA7 /* Debug */ = {

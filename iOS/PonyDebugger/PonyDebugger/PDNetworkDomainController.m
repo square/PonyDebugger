@@ -14,6 +14,7 @@
 #import <SocketRocket/NSData+SRB64Additions.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
+#import <dispatch/queue.h>
 
 
 @interface _PDRequestState : NSObject
@@ -29,6 +30,7 @@
 @interface PDNetworkDomainController ()
 
 - (void)setResponse:(NSData *)response forRequestID:(NSString *)requestID isBinary:(BOOL)isBinary;
+- (void)performBlock:(dispatch_block_t)block;
 
 @end
 
@@ -36,6 +38,7 @@
 @implementation PDNetworkDomainController {
     NSCache *_responseCache;
     NSMutableDictionary *_connectionStates;
+    dispatch_queue_t _queue;
 }
 
 @dynamic domain;
@@ -341,8 +344,16 @@
 
     _connectionStates = [[NSMutableDictionary alloc] init];
     _responseCache = [[NSCache alloc] init];
+    _queue = dispatch_queue_create("com.squareup.ponydebugger.PDNetworkDomainController", DISPATCH_QUEUE_SERIAL);
     
     return self;
+}
+
+- (void)dealloc
+{
+    if (_queue) {
+        dispatch_release(_queue);
+    }
 }
 
 #pragma mark - PDNetworkCommandDelegate
@@ -450,6 +461,11 @@
     [_connectionStates removeObjectForKey:connection];
 }
 
+- (void)performBlock:(dispatch_block_t)block;
+{
+    dispatch_async(_queue, block);
+}
+
 @end
 
 
@@ -457,82 +473,98 @@
 
 - (void)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response;
 {
-    [self setRequest:request forConnection:connection];
-    PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
-    PDNetworkResponse *networkRedirectResponse = response ? [[PDNetworkResponse alloc] initWithURLResponse:response request:request] : nil;
-    
-    [self.domain requestWillBeSentWithRequestId:[self requestIDForConnection:connection]
-                                        frameId:@""
-                                       loaderId:@""
-                                    documentURL:[request.URL absoluteString]
-                                        request:networkRequest
-                                      timestamp:[NSDate PD_timestamp]
-                                      initiator:nil
-                               redirectResponse:networkRedirectResponse];
+    [self performBlock:^{
+        [self setRequest:request forConnection:connection];
+        PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
+        PDNetworkResponse *networkRedirectResponse = response ? [[PDNetworkResponse alloc] initWithURLResponse:response request:request] : nil;
+        
+        [self.domain requestWillBeSentWithRequestId:[self requestIDForConnection:connection]
+                                            frameId:@""
+                                           loaderId:@""
+                                        documentURL:[request.URL absoluteString]
+                                            request:networkRequest
+                                          timestamp:[NSDate PD_timestamp]
+                                          initiator:nil
+                                   redirectResponse:networkRedirectResponse];
+    }];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
 {
-    [self setResponse:response forConnection:connection];
     
-    NSMutableData *dataAccumulator = nil;
-    if (response.expectedContentLength < 0) {
-        dataAccumulator = [[NSMutableData alloc] init];
-    } else {
-        dataAccumulator = [[NSMutableData alloc] initWithCapacity:response.expectedContentLength];
-    }
-    
-    [self setAccumulatedData:dataAccumulator forConnection:connection];
-    
-    NSString *requestID = [self requestIDForConnection:connection];
-    PDNetworkResponse *networkResponse = [PDNetworkResponse networkResponseWithURLResponse:response request:[self requestForConnection:connection]];
-    
-    [self.domain responseReceivedWithRequestId:requestID
-                                       frameId:@""
-                                      loaderId:@"" 
-                                     timestamp:[NSDate PD_timestamp] 
-                                          type:response.PD_responseType
-                                      response:networkResponse];
+    [self performBlock:^{
+        [self setResponse:response forConnection:connection];
+        
+        NSMutableData *dataAccumulator = nil;
+        if (response.expectedContentLength < 0) {
+            dataAccumulator = [[NSMutableData alloc] init];
+        } else {
+            dataAccumulator = [[NSMutableData alloc] initWithCapacity:response.expectedContentLength];
+        }
+        
+        [self setAccumulatedData:dataAccumulator forConnection:connection];
+        
+        NSString *requestID = [self requestIDForConnection:connection];
+        PDNetworkResponse *networkResponse = [PDNetworkResponse networkResponseWithURLResponse:response request:[self requestForConnection:connection]];
+        
+        [self.domain responseReceivedWithRequestId:requestID
+                                           frameId:@""
+                                          loaderId:@""
+                                         timestamp:[NSDate PD_timestamp]
+                                              type:response.PD_responseType
+                                          response:networkResponse];
+    }];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data;
 {
-    [self addAccumulatedData:data forConnection:connection];
-
-    NSNumber *length = [NSNumber numberWithInteger:data.length];
-    NSString *requestID = [self requestIDForConnection:connection];
-    
-    [self.domain dataReceivedWithRequestId:requestID
-                                 timestamp:[NSDate PD_timestamp] 
-                                dataLength:length 
-                         encodedDataLength:length];
+    // Just to be safe since we're doing this async
+    data = [data copy];
+    [self performBlock:^{
+        [self addAccumulatedData:data forConnection:connection];
+        
+        NSNumber *length = [NSNumber numberWithInteger:data.length];
+        NSString *requestID = [self requestIDForConnection:connection];
+        
+        [self.domain dataReceivedWithRequestId:requestID
+                                     timestamp:[NSDate PD_timestamp]
+                                    dataLength:length
+                             encodedDataLength:length];
+    }];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection;
 {
-    NSURLResponse *response = [self responseForConnection:connection];
-    NSString *requestID = [self requestIDForConnection:connection];
-
-    BOOL isBinary = ([response.MIMEType rangeOfString:@"json"].location == NSNotFound) && ([response.MIMEType rangeOfString:@"text"].location == NSNotFound);
-    
-    [self setResponse:[self accumulatedDataForConnection:connection]
-         forRequestID:requestID
-             isBinary:isBinary];
-    
-    [self.domain loadingFinishedWithRequestId:requestID
-                                    timestamp:[NSDate PD_timestamp]];
-
-    [self connectionFinished:connection];
+    [self performBlock:^{
+        NSURLResponse *response = [self responseForConnection:connection];
+        NSString *requestID = [self requestIDForConnection:connection];
+        
+        BOOL isBinary = ([response.MIMEType rangeOfString:@"json"].location == NSNotFound) && ([response.MIMEType rangeOfString:@"text"].location == NSNotFound);
+        
+        NSData *accumulatedData = [self accumulatedDataForConnection:connection];
+        
+        [self setResponse:accumulatedData
+             forRequestID:requestID
+                 isBinary:isBinary];
+        
+        [self.domain loadingFinishedWithRequestId:requestID
+                                        timestamp:[NSDate PD_timestamp]];
+        
+        [self connectionFinished:connection];
+    }];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
 {
-    [self.domain loadingFailedWithRequestId:[self requestIDForConnection:connection]
-                                  timestamp:[NSDate PD_timestamp] 
-                                  errorText:[error localizedDescription]
-                                   canceled:[NSNumber numberWithBool:NO]];
+    [self performBlock:^{
+        [self.domain loadingFailedWithRequestId:[self requestIDForConnection:connection]
+                                      timestamp:[NSDate PD_timestamp]
+                                      errorText:[error localizedDescription]
+                                       canceled:[NSNumber numberWithBool:NO]];
+        
+        [self connectionFinished:connection];
+    }];
 
-    [self connectionFinished:connection];
 }
 
 @end
@@ -551,8 +583,22 @@
     self.method = request.HTTPMethod;
     self.headers = request.allHTTPHeaderFields;
     
+    
+    NSData *body = request.HTTPBody;
+    
+    NSString *contentType = [request valueForHTTPHeaderField:@"Content-Type"];
+    // Do some trivial redacting here.  In particular, redact password 
+    if (contentType && [contentType rangeOfString:@"json"].location != NSNotFound) {
+        NSMutableDictionary *obj = [NSJSONSerialization JSONObjectWithData:body options:0 error:NULL];
+        if ([obj isKindOfClass:[NSDictionary class]] && [obj objectForKey:@"password"]) {
+            obj = [obj mutableCopy];
+            [obj setObject:@"[REDACTED]" forKey:@"password"];
+            body = [NSJSONSerialization dataWithJSONObject:obj options:0 error:NULL];
+        }
+    }
+     
     // If the data isn't UTF-8 it will just be nil;
-    self.postData = [[NSString alloc] initWithData:request.HTTPBody encoding:NSUTF8StringEncoding];
+    self.postData = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
     
     return self;
 }

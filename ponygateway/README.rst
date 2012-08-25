@@ -11,11 +11,11 @@ Installing
 
 - To install the latest stable version:
 
-  ``pip install ponygateway --user``
+  ``sudo pip install ponygateway``
 
-  You may require sudo permissions to install. PonyGateway requires the Tornado package.
+  Or omit sudo if installing in a virtual environment.
 
-  **Note**: If you want to download the latest version, you will have to clone the repository and run ``python setup.py install --user`` in the ``ponygateway`` directory.
+  **Note**: If you want to download the latest version, you will have to clone the repository and run ``sudo python setup.py install`` in the ``ponygateway`` directory.
 
 - Install a supported version of Chrome Developer Tools with ``ponydownloader``.
 
