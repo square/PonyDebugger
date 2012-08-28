@@ -699,7 +699,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(CONFIGURATION_BUILD_DIR)/usr/local/include",
+					"\"$(CONFIGURATION_BUILD_DIR)/usr/local/include\"",
 					./SocketRocket,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -721,7 +721,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(CONFIGURATION_BUILD_DIR)/usr/local/include",
+					"\"$(CONFIGURATION_BUILD_DIR)/usr/local/include\"",
 					./SocketRocket,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -736,11 +736,9 @@
 				DSTROOT = /tmp/PonyDebugger.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PonyDebugger/PonyDebugger-Prefix.pch";
-				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "$(inherited)/$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/SocketRocket/**";
 			};
 			name = Debug;
 		};
@@ -750,7 +748,6 @@
 				DSTROOT = /tmp/PonyDebugger.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PonyDebugger/PonyDebugger-Prefix.pch";
-				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "$(inherited)/$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

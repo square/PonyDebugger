@@ -9,12 +9,11 @@
 //  which Square, Inc. licenses this file to you.
 //
 
-
+#import <SocketRocket/NSData+SRB64Additions.h>
 #import <SocketRocket/SRWebSocket.h>
 #import <UIKit/UIKit.h>
 
 #import "PDDebugger.h"
-#import "NSData+SRB64Additions.h"
 #import "PDDynamicDebuggerDomain.h"
 #import "PDNetworkDomain.h"
 #import "PDDomainController.h"
