@@ -14,9 +14,9 @@ def after_install(options, home_dir):
     if options.ponyd_symlink:
         try:
             print "Symlinking %s to %s" % (ponyd_path, options.ponyd_symlink)
-            os.symlink(, options.ponyd_symlink)
+            os.symlink(ponyd_path, options.ponyd_symlink)
         except:
             print >>sys.stderr, "Error creating symlink" 
 
 
-    subprocess.check_call(ponyd_path, 'update-devtools')
+    subprocess.check_call([ponyd_path, 'update-devtools'])
