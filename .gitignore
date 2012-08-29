@@ -32,4 +32,7 @@ nosetests.xml
 .project
 .pydevproject
 
+.DS_Store
+xcuserdata/
+
 *.sw?
