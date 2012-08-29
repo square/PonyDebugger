@@ -18,5 +18,6 @@ def after_install(options, home_dir):
         except:
             print >>sys.stderr, "Error creating symlink" 
 
-
     subprocess.check_call([ponyd_path, 'update-devtools'])
+
+    print "Congratulations! ponyd has been installed to %s" % ponyd_path
