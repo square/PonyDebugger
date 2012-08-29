@@ -25,7 +25,7 @@ setup(
     url='https://github.com/square/PonyDebugger',
     license='Apache Licence 2.0',
     install_requires=['tornado'],
-    packages=find_packages('ponyd', exclude=['ez_setup', 'tests', 'tests.*']),
+    packages=['ponyd'],
     include_package_data=True,
     zip_safe=False,
     entry_points = {
