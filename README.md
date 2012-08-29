@@ -36,7 +36,7 @@ For more detailed instructions, check out the gateway server [README](https://gi
 iOS Client Library
 ------------------
 
-Right now, integrating the iOS client requires a few steps, so you should check out the iOS Client PonyDebugger [README](https://github.com/square/PonyDebugger/blob/master/README_iOS#installing).
+Right now, integrating the iOS client requires a few steps, so you should check out the iOS Client PonyDebugger [README](https://github.com/square/PonyDebugger/blob/master/README_iOS.md#installing).
 
 Contributing
 ------------
