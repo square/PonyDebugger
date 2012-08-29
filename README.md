@@ -6,8 +6,8 @@ PonyDebugger is a remote debugging toolset.  It is a client library and gateway 
 
 To use PonyDebugger, you must implement the client in your application and connect it to the gateway server. There is currently an iOS client and the gateway server.
 
- * [PonyDebugger iOS Client](https://github.com/square/PonyDebugger/tree/master/iOS)
- * [PonyDebugger Gateway Server](https://github.com/square/PonyDebugger/tree/master/ponygateway)
+ * [PonyDebugger iOS Client](https://github.com/square/PonyDebugger/tree/master/PonyDebugger)
+ * [PonyDebugger Gateway Server](https://github.com/square/PonyDebugger/tree/master/ponyd)
 
 PonyDebugger is licensed under the Apache Licence, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html).
 
@@ -31,12 +31,12 @@ ponygateway
 
 - In your browser, navigate to `http://localhost:9000`. You should see the PonyGateway lobby. Now you need to integrate the client to your application.
 
-For more detailed instructions, check out the gateway server [README](https://github.com/square/PonyDebugger/tree/master/ponygateway).
+For more detailed instructions, check out the gateway server [README](https://github.com/square/PonyDebugger/blob/master/README_ponyd.rst).
 
 iOS Client Library
 ------------------
 
-Right now, integrating the iOS client requires a few steps, so you should check out the iOS Client PonyDebugger [README](https://github.com/square/PonyDebugger/tree/master/iOS#installing).
+Right now, integrating the iOS client requires a few steps, so you should check out the iOS Client PonyDebugger [README](https://github.com/square/PonyDebugger/blob/master/README_iOS#installing).
 
 Contributing
 ------------

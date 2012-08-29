@@ -10,7 +10,7 @@ The PonyDebugger iOS client lets you to debug your application's network request
 - Uses ARC (Automatic Reference Counting).
 - Uses SocketRocket as a WebSocket client.
 
-<img src="https://github.com/square/PonyDebugger/raw/master/iOS/Documentation/Images/Logo.png" width="120" />
+<img src="https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Logo.png" width="120" />
 
 Features
 --------
@@ -19,7 +19,7 @@ Features
 
 PonyDebugger sends your application's network traffic through a [PonyGateway](https://github.com/square/PonyDebugger/tree/master/ponygateway) proxy server.  You use Inspector's Network tools to debug network traffic like how you would debug network traffic on a website in Google Chrome.
 
-![PonyDebugger Network Debugging Screenshot](https://github.com/square/PonyDebugger/raw/master/iOS/Documentation/Images/NetworkDebugging.png)
+![PonyDebugger Network Debugging Screenshot](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/NetworkDebugging.png)
 
 PonyDebugger forwards network traffic, and does not sniff network traffic.  This means that traffic sent over a secure protocol (https) is debuggable.
 
@@ -29,7 +29,7 @@ Currently, the iOS client automatically proxies data that is sent via `NSURLConn
 
 The Core Data browsing feature allows you to register your applcation's `NSManagedObjectContext`s and browse all of its entities and managed objects.  You browse data from the IndexedDB section in the Resource tab in Chrome Developer Tools.
 
-![PonyDebugger Core Data Browser Screenshot](https://github.com/square/PonyDebugger/raw/master/iOS/Documentation/Images/CoreDataBrowser.png)
+![PonyDebugger Core Data Browser Screenshot](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/CoreDataBrowser.png)
 
 These are read-only stores at the moment.  There are plans to implement data mutation in a future release.
 
@@ -47,25 +47,25 @@ git submodule add git://github.com/square/PonyDebugger.git Frameworks/PonyDebugg
 git submodule update --init --recursive
 ```
 
-- Add `iOS/PonyDebugger/PonyDebugger.xcodeproj` as a subproject.
+- Add `PonyDebugger/PonyDebugger.xcodeproj` as a subproject.
 
-![PonyDebugger Installing Subproject](https://github.com/square/PonyDebugger/raw/master/iOS/Documentation/Images/Installing_Subproject.png)
+![PonyDebugger Installing Subproject](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_Subproject.png)
 
 - In your Project Settings, add the PonyDebugger target as a Target Dependency in the Build Phases tab.
 
-![PonyDebugger Installing Target Dependencies](https://github.com/square/PonyDebugger/raw/master/iOS/Documentation/Images/Installing_TargetDependencies.png)
+![PonyDebugger Installing Target Dependencies](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_TargetDependencies.png)
 
 - Link `libPonyDebugger.a`, `libSocketRocket.a`, and the Framework dependencies to your project.
 
-![PonyDebugger Installing Link Libraries and Frameworks](https://github.com/square/PonyDebugger/raw/master/iOS/Documentation/Images/Installing_LinkLibraries.png)
+![PonyDebugger Installing Link Libraries and Frameworks](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_LinkLibraries.png)
 
 - In your project's Build Settings, add `$(CONFIGURATION_BUILD_DIR)/usr/local/include` as a non-recursive Header Search Path.
 
-![PonyDebugger Installing Header Search Path](https://github.com/square/PonyDebugger/raw/master/iOS/Documentation/Images/Installing_HeaderSearchPath.png)
+![PonyDebugger Installing Header Search Path](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_HeaderSearchPath.png)
 
 - PonyDebugger and SocketRocket take advantage of Objective C's ability to add categories on an object, but this isn't enabled for static libraries by default. To enable this, add the `-ObjC` flag to the "Other Linker Flags" build setting.
 
-![PonyDebugger Installing Other Linker Flags](https://github.com/square/PonyDebugger/raw/master/iOS/Documentation/Images/Installing_OtherLinkerFlags.png)
+![PonyDebugger Installing Other Linker Flags](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_OtherLinkerFlags.png)
 
 #### Framework Dependencies
 

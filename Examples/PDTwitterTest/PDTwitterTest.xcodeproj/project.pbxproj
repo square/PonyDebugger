@@ -40,14 +40,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3D0696C915D58B840025D563 /* PBXContainerItemProxy */ = {
+		27562AA015EDFE4600C216A3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3D0696BD15D58B840025D563 /* PonyDebugger.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = F683ADAC14FC1B4C008EBBA7;
 			remoteInfo = PonyDebugger;
 		};
-		3D0696D015D58B8D0025D563 /* PBXContainerItemProxy */ = {
+		27562AA215EDFE8D00C216A3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3D0696BD15D58B840025D563 /* PonyDebugger.xcodeproj */;
 			proxyType = 1;
@@ -57,7 +57,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3D0696BD15D58B840025D563 /* PonyDebugger.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PonyDebugger.xcodeproj; path = ../PonyDebugger/PonyDebugger.xcodeproj; sourceTree = "<group>"; };
+		3D0696BD15D58B840025D563 /* PonyDebugger.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PonyDebugger.xcodeproj; path = ../../PonyDebugger/PonyDebugger.xcodeproj; sourceTree = "<group>"; };
 		3D0696D715D58D800025D563 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		3D0696D815D58D800025D563 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		3D0696D915D58D800025D563 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -127,10 +127,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3D0696BE15D58B840025D563 /* Products */ = {
+		27562A9D15EDFE4600C216A3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3D0696CA15D58B840025D563 /* libPonyDebugger.a */,
+				27562AA115EDFE4600C216A3 /* libPonyDebugger.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -245,7 +245,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				3D0696D115D58B8D0025D563 /* PBXTargetDependency */,
+				27562AA315EDFE8D00C216A3 /* PBXTargetDependency */,
 			);
 			name = PDTwitterTest;
 			productName = PDTwitterTest;
@@ -274,7 +274,7 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 3D0696BE15D58B840025D563 /* Products */;
+					ProductGroup = 27562A9D15EDFE4600C216A3 /* Products */;
 					ProjectRef = 3D0696BD15D58B840025D563 /* PonyDebugger.xcodeproj */;
 				},
 			);
@@ -286,11 +286,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		3D0696CA15D58B840025D563 /* libPonyDebugger.a */ = {
+		27562AA115EDFE4600C216A3 /* libPonyDebugger.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libPonyDebugger.a;
-			remoteRef = 3D0696C915D58B840025D563 /* PBXContainerItemProxy */;
+			remoteRef = 27562AA015EDFE4600C216A3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -338,10 +338,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3D0696D115D58B8D0025D563 /* PBXTargetDependency */ = {
+		27562AA315EDFE8D00C216A3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = PonyDebugger;
-			targetProxy = 3D0696D015D58B8D0025D563 /* PBXContainerItemProxy */;
+			targetProxy = 27562AA215EDFE8D00C216A3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
