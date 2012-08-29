@@ -4,6 +4,9 @@ import tornado.web
 import tornado.websocket
 import tornado.options
 
+from ponygateway.command import PonydCommand
+from ponygateway.argbase import Arg
+
 import os
 
 import json
@@ -19,23 +22,6 @@ logger = logging.getLogger('gateway')
 
 args = None
 
-def parse_args():
-    global args
-
-    static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'web'))
-
-    parser = argparse.ArgumentParser(description='Gateway server')
-
-    parser.add_argument('-v', '--verbose', help='verbose logging', action='store_true')
-
-    parser.add_argument('-s', '--static-path', help='path for static files [default: %(default)s]', default=static_path)
-    parser.add_argument('-d', '--devtools-path', help='path for dev tools/inspector [default: %(default)s]', default=DEFAULT_DEVTOOLS_PATH)
-
-    parser.add_argument('-p', '--listen-port', help='port to listen on [default: %(default)s]', default=9000, type=int, metavar='PORT')
-    parser.add_argument('-i', '--listen-interface', help='interface to listen on. [default: %(default)s]', default='0.0.0.0', metavar='IFACE')
-
-    args = parser.parse_args()
-    
 
 class AppState(object):
     def __init__(self):
@@ -195,31 +181,55 @@ class LobbyHandler(tornado.websocket.WebSocketHandler):
 
         logger.info('Sending Method: %s', method)
 
+class Gateway(PonydCommand):
+    """Runs PonyDebugger's gateway"""
+    __subcommand__  = 'serve'
 
-def main():
-    global logger
-    
-    parse_args()
+    static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'web'))
 
-    if not os.path.exists(args.devtools_path):
-        print "Error: devtools directory %s does not exist. Use ponydownloader to download a compatible version of Chrome Developer Tools." % args.devtools_path
-        return
+    verbose = Arg('-v', '--verbose',
+                  help='verbose logging',
+                  action='store_true')
 
-    if args.verbose:
-        tornado.options.enable_pretty_logging()
-        logger = logging.getLogger()
-        logger.setLevel(logging.INFO)
+    satic_path = Arg('-s', '--static-path',
+                     help='path for static files [default: %(default)s]',
+                     default=static_path)
 
-    application = tornado.web.Application([
-        (r"/devtools/page/([0-9]*)/?", DevToolsHandler),
-        (r"/lobby", LobbyHandler),
-        (r"/device", DeviceHandler),
-        (r"/devtools/(.*)", tornado.web.StaticFileHandler, {"path": args.devtools_path}),
-        (r"/(.*)", tornado.web.StaticFileHandler, {"path": args.static_path, "default_filename": 'index.html'}),
-    ])
+    devtools_path = Arg('-d', '--devtools-path',
+                        help='path for dev tools/inspector [default: %(default)s]',
+                        default=DEFAULT_DEVTOOLS_PATH)
 
-    print "PonyGateway starting. Listening on %s:%s" % (args.listen_interface, args.listen_port)
+    listen_port = Arg('-p', '--listen-port',
+                      help='port to listen on [default: %(default)s]', 
+                      default=9000, 
+                      type=int,
+                      metavar='PORT')
 
-    application.listen(args.listen_port, args.listen_interface)
-    tornado.ioloop.IOLoop.instance().start()
+    listen_interface = Arg('-i', '--listen-interface',
+                           help='interface to listen on. [default: %(default)s]',
+                           default='0.0.0.0',
+                           metavar='IFACE')
+
+    def __call__(self):
+        if not os.path.exists(self.devtools_path):
+            print "Error: devtools directory %s does not exist. Use ponydownloader to download a compatible version of Chrome Developer Tools." % self.devtools_path
+            return
+
+        if self.verbose:
+            tornado.options.enable_pretty_logging()
+            logger = logging.getLogger()
+            logger.setLevel(logging.INFO)
+
+        application = tornado.web.Application([
+            (r"/devtools/page/([0-9]*)/?", DevToolsHandler),
+            (r"/lobby", LobbyHandler),
+            (r"/device", DeviceHandler),
+            (r"/devtools/(.*)", tornado.web.StaticFileHandler, {"path": self.devtools_path}),
+            (r"/(.*)", tornado.web.StaticFileHandler, {"path": self.static_path, "default_filename": 'index.html'}),
+        ])
+
+        print "PonyGateway starting. Listening on %s:%s" % (self.listen_interface, self.listen_port)
+
+        application.listen(self.listen_port, self.listen_interface)
+        tornado.ioloop.IOLoop.instance().start()
 

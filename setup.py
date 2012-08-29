@@ -1,3 +1,7 @@
+"""
+Note: main working directory for this installer is ponygateway.  It is moved
+here to be able to pip install directly from git
+"""
 
 from setuptools import setup, find_packages
 import sys, os
@@ -11,7 +15,7 @@ setup(
     name='ponygateway',
     version=version,
     description="A remote debugging tool for native applications.",
-    long_description=read('README.rst'),
+    long_description=read('ponygateway/README.rst'),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -26,13 +30,13 @@ setup(
     url='https://github.com/square/PonyDebugger',
     license='Apache Licence 2.0',
     install_requires=['tornado'],
+    package_dir={'ponygateway':'ponygateway/lib'},
     packages=find_packages(exclude=['ez_setup', 'tests', 'tests.*']),
     include_package_data=True,
     zip_safe=False,
     entry_points = {
         'console_scripts': [
-            'ponygateway = ponygateway.gateway:main',
-            'ponydownloader = ponygateway.downloader:main'
+            'ponyd = ponygateway.command:PonydCommand.main',
         ]
     }
 )
