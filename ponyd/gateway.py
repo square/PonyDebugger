@@ -4,8 +4,8 @@ import tornado.web
 import tornado.websocket
 import tornado.options
 
-from ponygateway.command import PonydCommand
-from ponygateway.argbase import Arg
+from ponyd.command import PonydCommand
+from ponyd.argbase import Arg
 
 import os
 
@@ -16,7 +16,7 @@ import argparse
 
 import logging
 
-from ponygateway.constants import DEFAULT_DEVTOOLS_PATH
+from ponyd.constants import DEFAULT_DEVTOOLS_PATH
 
 logger = logging.getLogger('gateway')
 

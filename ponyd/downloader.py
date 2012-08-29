@@ -7,9 +7,9 @@ import zipfile
 
 from cStringIO import StringIO
 
-from ponygateway.constants import DEFAULT_DEVTOOLS_PATH
-from ponygateway.command import PonydCommand
-from ponygateway.argbase import Arg
+from ponyd.constants import DEFAULT_DEVTOOLS_PATH
+from ponyd.command import PonydCommand
+from ponyd.argbase import Arg
 
 LATEST_URL =  "http://storage.googleapis.com/chromium-browser-continuous/Mac/LAST_CHANGE"
 TOOLS_URL_TEMPLATE = "http://storage.googleapis.com/chromium-browser-continuous/Mac/%s/devtools_frontend.zip"
