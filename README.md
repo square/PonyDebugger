@@ -10,8 +10,8 @@ To use PonyDebugger, you must implement the client in your application and
 connect it to the gateway server. There is currently an iOS client and the
 gateway server.
 
- * [PonyDebugger iOS Client](https://github.com/square/PonyDebugger/tree/master/ObjC)
- * [PonyDebugger Gateway Server](https://github.com/square/PonyDebugger/tree/master/ponyd)
+ * [PonyDebugger iOS Client README](https://github.com/square/PonyDebugger/tree/master/README_iOS.md)
+ * [PonyDebugger Gateway Server README](https://github.com/square/PonyDebugger/tree/master/README_ponyd.rst)
 
 PonyDebugger is licensed under the Apache Licence, Version 2.0
 (http://www.apache.org/licenses/LICENSE-2.0.html).
