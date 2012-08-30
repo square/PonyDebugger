@@ -110,13 +110,13 @@ class DeviceHandler(tornado.websocket.WebSocketHandler):
         self.app_state.unregisterDevice(self)
 
     def _registerDevice(self, params):
-        self.deviceID = params['device_id']
-        self.device_model = params['device_model']
-        self.device_name = params['device_name']
-        self.app_id = params['app_id']
-        self.app_name = params['app_name']
-        self.app_version = params['app_version']
-        self.app_build = params['app_build']
+        self.deviceID = params.get('device_id')
+        self.device_model = params.get('device_model')
+        self.device_name = params.get('device_name')
+        self.app_id = params.get('app_id')
+        self.app_name = params.get('app_name')
+        self.app_version = params.get('app_version')
+        self.app_build = params.get('app_build')
 
         # Optional.
         self.app_icon_base64 = params.get('app_icon_base64', None);
