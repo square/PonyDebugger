@@ -63,7 +63,8 @@ class AppState(object):
             if device.page == devTools.page:
                 devTools.waiting = False
 
-                logger.info("Dev tools connecting to device %s", device.deviceID)
+                logger.info("Dev tools connecting to device %s",
+                            device.deviceID)
                 devTools.device = device
                 device.devTools = devTools
                 break
@@ -123,7 +124,9 @@ class DeviceHandler(tornado.websocket.WebSocketHandler):
         self.app_state.registerDevice(self)
 
         # Announce existence.
-        logger.info("Device %s Registered (%s, %s)" % (self.deviceID, self.device_model, self.device_name))
+        logger.info("Device %s Registered (%s, %s)" % (self.deviceID,
+                                                       self.device_model,
+                                                       self.device_name))
 
     @property
     def deviceInfo(self):
@@ -207,7 +210,7 @@ class Gateway(PonydCommand):
 
     listen_interface = Arg('-i', '--listen-interface',
                            help='interface to listen on. [default: %(default)s]',
-                           default='0.0.0.0',
+                           default='127.0.0.1',
                            metavar='IFACE')
 
     def __call__(self):
