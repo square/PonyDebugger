@@ -1,4 +1,4 @@
-<img src="https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Logo.png" />
+![PonyDebugger Logo](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Logo.png)
 
 PonyDebugger
 ============
