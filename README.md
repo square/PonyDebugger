@@ -1,3 +1,4 @@
+<img src="https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Logo.png" />
 
 PonyDebugger
 ============
@@ -10,7 +11,6 @@ To use PonyDebugger, you must implement the client in your application and
 connect it to the gateway server. There is currently an iOS client and the
 gateway server.
 
-<img src="https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Logo.png" width="120" />
 
 PonyDebugger is licensed under the Apache Licence, Version 2.0
 (http://www.apache.org/licenses/LICENSE-2.0.html).
@@ -20,7 +20,7 @@ Features
 
 ### Network Traffic Debugging
 
-PonyDebugger sends your application's network traffic through a [PonyGateway](https://github.com/square/PonyDebugger/tree/master/ponygateway) proxy server.  You use Inspector's Network tools to debug network traffic like how you would debug network traffic on a website in Google Chrome.
+PonyDebugger sends your application's network traffic through [ponyd](https://github.com/square/PonyDebugger/tree/master/ponyd), PonyDebugger's proxy server.  You use Inspector's Network tools to debug network traffic like how you would debug network traffic on a website in Google Chrome.
 
 ![PonyDebugger Network Debugging Screenshot](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/NetworkDebugging.png)
 
