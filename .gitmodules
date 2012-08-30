@@ -1,6 +1,6 @@
 [submodule "Examples/PDTwitterTest/AFNetworking"]
 	path = Examples/PDTwitterTest/AFNetworking
 	url = git://github.com/AFNetworking/AFNetworking.git
-[submodule "PonyDebugger/SocketRocket"]
-	path = PonyDebugger/SocketRocket
+[submodule "ObjC/SocketRocket"]
+	path = ObjC/SocketRocket
 	url = git://github.com/square/SocketRocket.git
