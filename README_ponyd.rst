@@ -91,6 +91,8 @@ The listen and other ports can be customized as well.  Run ``ponyd serve
 Known Issues / Improvements
 ---------------------------
 
+- Dev Tools not appear to always load properly on Chrome Stable. First, try doing a hard 
+  refresh. If you are still having issues, try Chrome Canary or Safari.
 - Relaunching the client application requires you to navigate back to the main
   page.
 - Chrome Developer Tools shows some unnecessary tabs (such as Elements).
