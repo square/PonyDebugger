@@ -39,6 +39,7 @@ These are read-only stores at the moment.  There are plans to implement data mut
 
 Quick Start
 -----------
+Prerequisite: Xcode's Command Line Tools must be installed from the "Downloads" preference pane.
 
 ```sh
 
