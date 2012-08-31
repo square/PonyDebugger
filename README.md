@@ -100,7 +100,7 @@ git submodule update --init --recursive
 
 ![PonyDebugger Installing Link Libraries and Frameworks](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_LinkLibraries.png)
 
-- In your project's Build Settings, add `$(CONFIGURATION_BUILD_DIR)/usr/local/include` as a non-recursive Header Search Path.
+- In your project's Build Settings, add `"$(CONFIGURATION_BUILD_DIR)/usr/local/include"`(with quotes) as a non-recursive Header Search Path.
 
 ![PonyDebugger Installing Header Search Path](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_HeaderSearchPath.png)
 
