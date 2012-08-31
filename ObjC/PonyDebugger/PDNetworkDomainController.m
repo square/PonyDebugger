@@ -669,5 +669,6 @@
 @synthesize request = _request;
 @synthesize response = _response;
 @synthesize requestID = _requestID;
+@synthesize dataAccumulator = _dataAccumulator;
 
 @end
