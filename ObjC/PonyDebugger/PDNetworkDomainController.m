@@ -491,8 +491,27 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
 {
-    
     [self performBlock:^{
+
+        // If the request wasn't generated yet, then willSendRequest was not called. Send it under the
+        // assumption that there was no response redirection.
+
+        NSURLRequest *request = [self requestForConnection:connection];
+        if (!request) {
+            request = connection.currentRequest;
+            [self setRequest:request forConnection:connection];
+
+            PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
+            [self.domain requestWillBeSentWithRequestId:[self requestIDForConnection:connection]
+                                                frameId:@""
+                                               loaderId:@""
+                                            documentURL:[request.URL absoluteString]
+                                                request:networkRequest
+                                              timestamp:[NSDate PD_timestamp]
+                                              initiator:nil
+                                       redirectResponse:nil];
+        }
+
         [self setResponse:response forConnection:connection];
         
         NSMutableData *dataAccumulator = nil;
