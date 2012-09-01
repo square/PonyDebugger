@@ -181,6 +181,14 @@ The repository contains a test application to demonstrate PonyDebugger's capabil
 ### Known Issues / Improvements
 
  * `CoreData.framework` must be linked, even if you do not use the Core Data browsing functionality.
+ * iOS 5.1 and below: In certain cases, -[NSURLConnectionDataDelegate connection:willSendRequest:redirectResponse:] will never get 
+   called. PonyDebugger requires this call to know when the request was sent, and will warn you with a workaround 
+   that the timestamp is inaccurate.
+
+   To fix the timestamp, make sure that `Accept-Encoding` HTTP header in your `NSURLRequest` is not set (by default, iOS will set it to 
+   `gzip, deflate`, which is usually adequate.
+
+   AFNetworking users: if you subclass `AFHTTPClient`, call `[self setDefaultHeader:@"Accept-Encoding" value:nil];`.
 
 Contributing
 ------------
