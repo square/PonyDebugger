@@ -493,11 +493,13 @@
 {
     [self performBlock:^{
 
-        // If the request wasn't generated yet, then willSendRequest was not called. Send it under the
-        // assumption that there was no response redirection.
-
+        // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
+        // and behavior.
         NSURLRequest *request = [self requestForConnection:connection];
         if (!request) {
+        
+            NSLog(@"PonyDebugger Warning: -[PDNetworkDomainController connection:willSendRequest:redirectResponse:] not called, request timestamp may be inaccurate. See Known Issues in the README for more information.");
+
             request = connection.currentRequest;
             [self setRequest:request forConnection:connection];
 
