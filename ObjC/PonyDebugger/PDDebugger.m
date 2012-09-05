@@ -218,8 +218,6 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
     [_socket close];
     _socket.delegate = nil;
     _socket = nil;
-
-    _domains = nil;
 }
 
 #pragma mark - Public Interface
