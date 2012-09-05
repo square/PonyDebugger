@@ -676,7 +676,7 @@
     if ([contentType rangeOfString:@"image"].length != 0) {
         type = @"Image";
     } else if ([contentType rangeOfString:@"json"].length != 0) {
-        type = @"Script";
+        type = @"XHR";
     }
 
     return type;
