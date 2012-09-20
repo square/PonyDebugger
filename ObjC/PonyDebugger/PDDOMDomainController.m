@@ -237,6 +237,11 @@ static const int kPDDOMNodeTypeDocument = 9;
 {
     [self.nodeIdsForObjects setObject:nodeId forKey:[NSValue valueWithNonretainedObject:view]];
     [self.objectsForNodeIds setObject:view forKey:nodeId];
+    
+    // Use KVO to keep the displayed properties fresh
+    for (NSString *keyPath in self.visibleAttributeKeyPaths) {
+        [view addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
+    }
 }
 
 - (void)stopTrackingView:(UIView *)view;
@@ -262,6 +267,31 @@ static const int kPDDOMNodeTypeDocument = 9;
     
     [self.nodeIdsForObjects removeObjectForKey:viewKey];
     [self.objectsForNodeIds removeObjectForKey:nodeId];
+    
+    // Unregister from KVO
+    for (NSString *keyPath in self.visibleAttributeKeyPaths) {
+        [view removeObserver:self forKeyPath:keyPath];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    // Make sure this is a node we know about and a key path we're observing
+    NSNumber *nodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:object]];
+    
+    if ([self.objectsForNodeIds objectForKey:nodeId] && [self.visibleAttributeKeyPaths containsObject:keyPath]) {
+        // Update the the attributes on the DOM node
+        NSString *newValue = [self stringValueForObject:[change objectForKey:NSKeyValueChangeNewKey]];
+        [self.domain attributeModifiedWithNodeId:nodeId name:keyPath value:newValue];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+    
+    // If this is the view we're highlighting, update appropriately
+    if (object == self.viewToHighlight && [keyPath isEqualToString:@"frame"]) {
+        CGRect updatedFrame = [[change objectForKey:NSKeyValueChangeNewKey] CGRectValue];
+        self.highlightOverlay.frame = [self.viewToHighlight.superview convertRect:updatedFrame toView:nil];
+    }
 }
 
 - (BOOL)shouldIgnoreView:(UIView *)view;
