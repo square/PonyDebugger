@@ -20,10 +20,21 @@ static const int kPDDOMNodeTypeDocument = 9;
 @property (nonatomic, strong) NSMutableDictionary * objectsForNodeIds;
 @property (nonatomic, strong) NSMutableDictionary * nodeIdsForObjects;
 @property (nonatomic, assign) NSUInteger nodeIdCounter;
+@property (nonatomic, strong) NSArray *visibleAttributeKeyPaths;
 
 @end
 
 @implementation PDDOMDomainController
+
+#pragma mark - NSObject
+
+- (id)init
+{
+    if (self = [super init]) {
+        self.visibleAttributeKeyPaths = @[@"frame", @"opaque", @"clipsToBounds", @"alpha"];
+    }
+    return self;
+}
 
 #pragma mark - Class Methods
 
@@ -216,6 +227,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     elementNode.children = children;
     elementNode.childNodeCount = @([elementNode.children count]);
     elementNode.nodeId = [self getAndIncrementNodeIdCount];
+    elementNode.attributes = [self attributesArrayForObject:object];
     
     return elementNode;
 }
@@ -228,6 +240,52 @@ static const int kPDDOMNodeTypeDocument = 9;
     textNode.nodeValue = string;
     
     return textNode;
+}
+
+#pragma mark - Attribute Generation
+
+- (NSArray *)attributesArrayForObject:(id)object
+{
+    // No attributes for a nil object
+    if (!object) {
+        return nil;
+    }
+    
+    NSMutableArray *attributes = [NSMutableArray arrayWithArray:@[ @"class", [[object class] description] ]];
+    
+    if ([object isKindOfClass:[UIView class]]) {
+        // Get strings for all the key paths in visibileAttributeKeyPaths
+        for (NSString *keyPath in self.visibleAttributeKeyPaths) {
+            
+            id value = [object valueForKeyPath:keyPath];
+            NSString *stringValue = [self stringValueForObject:value];
+            if (stringValue) {
+                [attributes addObjectsFromArray:@[ keyPath, stringValue ]];
+            }
+        }
+    }
+    
+    return attributes;
+}
+
+- (NSString *)stringValueForObject:(id)object
+{
+    NSString *stringValue = nil;
+    if ([object isKindOfClass:[NSNumber class]]) {
+        stringValue = [object stringValue];
+    } else if ([object isKindOfClass:[NSValue class]]) {
+        NSValue *value = object;
+        const char *type = [value objCType];
+        
+        if (!strcmp(type, @encode(CGRect))) {
+            stringValue = NSStringFromCGRect([value CGRectValue]);
+        } else if (!strcmp(type, @encode(CGPoint))) {
+            stringValue = NSStringFromCGPoint([value CGPointValue]);
+        } else if (!strcmp(type, @encode(CGSize))) {
+            stringValue = NSStringFromCGSize([value CGSizeValue]);
+        }
+    }
+    return stringValue;
 }
 
 @end
