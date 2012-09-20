@@ -9,6 +9,12 @@
 #import "PDDOMDomainController.h"
 #import <objc/runtime.h>
 
+static const int kPDDOMNodeTypeElement = 1;
+static const int kPDDOMNodeTypeAttribute = 2;
+static const int kPDDOMNodeTypeText = 3;
+static const int kPDDOMNodeTypeComment = 8;
+static const int kPDDOMNodeTypeDocument = 9;
+
 @interface PDDOMDomainController ()
 
 @property (nonatomic, strong) NSMutableDictionary * objectsForNodeIds;
@@ -18,6 +24,8 @@
 @end
 
 @implementation PDDOMDomainController
+
+#pragma mark - Class Methods
 
 + (PDDOMDomainController *)defaultInstance;
 {
@@ -78,6 +86,16 @@
     return [PDDOMDomain class];
 }
 
+#pragma mark - PDDOMCommandDelegate
+
+- (void)domain:(PDDOMDomain *)domain getDocumentWithCallback:(void (^)(PDDOMNode *root, id error))callback;
+{
+    self.objectsForNodeIds = [[NSMutableDictionary alloc] init];
+    self.nodeIdsForObjects = [[NSMutableDictionary alloc] init];
+    self.nodeIdCounter = 0;
+    callback([self rootNode], nil);
+}
+
 #pragma mark - View Hierarchy Changes
 
 - (void)removeView:(UIView *)view;
@@ -123,6 +141,30 @@
 - (NSNumber *)getAndIncrementNodeIdCount;
 {
     return @(self.nodeIdCounter++);
+}
+
+#pragma mark - Node Generation
+
+- (PDDOMNode *)rootNode;
+{
+    PDDOMNode *rootNode = [[PDDOMNode alloc] init];
+    rootNode.nodeId = [self getAndIncrementNodeIdCount];
+    rootNode.nodeType = @(kPDDOMNodeTypeDocument);
+    rootNode.nodeName = @"#document";
+    rootNode.children = @[ [self rootElement] ];
+    
+    return rootNode;
+}
+
+- (PDDOMNode *)rootElement;
+{
+    PDDOMNode *rootElement = [[PDDOMNode alloc] init];
+    rootElement.nodeId = [self getAndIncrementNodeIdCount];
+    rootElement.nodeType = @(kPDDOMNodeTypeElement);
+    rootElement.nodeName = @"view_hierarchy";
+    rootElement.children = nil;
+    
+    return rootElement;
 }
 
 @end
