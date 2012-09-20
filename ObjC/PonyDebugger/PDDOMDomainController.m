@@ -165,6 +165,14 @@ static const int kPDDOMNodeTypeDocument = 9;
     callback(nil);
 }
 
+- (void)domain:(PDDOMDomain *)domain hideHighlightWithCallback:(void (^)(id))callback
+{
+    self.highlightOverlay = nil;
+    self.viewToHighlight = nil;
+    
+    callback(nil);
+}
+
 #pragma mark - View Hierarchy Changes
 
 - (void)removeView:(UIView *)view;
