@@ -25,6 +25,7 @@
 - (void)sendEventWithName:(NSString *)string parameters:(id)params;
 
 // Connect/Disconnect
+- (void)autoConnect;
 - (void)connectToURL:(NSURL *)url;
 - (BOOL)isConnected;
 - (void)disconnect;

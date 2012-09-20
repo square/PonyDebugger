@@ -25,9 +25,9 @@
 
 
 static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
+static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
-
-@interface PDDebugger () <SRWebSocketDelegate>
+@interface PDDebugger () <SRWebSocketDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
 - (void)_addController:(PDDomainController *)controller;
 - (NSString *)_domainNameForController:(PDDomainController *)controller;
@@ -37,6 +37,9 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 
 
 @implementation PDDebugger {
+    NSNetServiceBrowser *_bonjourBrowser;
+    NSMutableArray *_bonjourServices;
+    NSNetService *_currentService;
     NSMutableDictionary *_domains;
     NSMutableDictionary *_controllers;
     __strong SRWebSocket *_socket;
@@ -177,6 +180,49 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
     _socket = nil;
 }
 
+#pragma mark - NSNetServiceBrowserDelegate
+
+- (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didFindService:(NSNetService*)service moreComing:(BOOL)moreComing
+{
+    NSLog(@"Found ponyd bonjour service: %@", service);
+	[_bonjourServices addObject:service];
+    
+    if (!_currentService) {
+        _currentService = service;
+        _currentService.delegate = self;
+        [_currentService resolveWithTimeout:10.f];
+    }
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didRemoveService:(NSNetService*)service moreComing:(BOOL)moreComing
+{
+    if (service == _currentService) {
+        [_currentService stop];
+        _currentService = nil;
+    }
+	[_bonjourServices removeObject:service];
+    NSLog(@"Removed ponyd bonjour service: %@", service);
+    
+    // TODO: try next one
+}
+
+#pragma mark - NSNetServiceDelegate
+
+- (void)netService:(NSNetService *)service didNotResolve:(NSDictionary *)errorDict
+{
+    NSAssert(service == _currentService, @"Did not resolved incorrect service!");
+    
+	// TODO: try next one
+}
+
+
+- (void)netServiceDidResolveAddress:(NSNetService *)service
+{
+	NSAssert(service == _currentService, @"Resolved incorrect service!");
+	
+	[self connectToURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://%@:%d/device", [service hostName], [service port]]]];
+}
+
 #pragma mark - Public Methods
 
 - (id)domainForName:(NSString *)name;
@@ -197,6 +243,20 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 }
 
 #pragma mark Connect / Disconnect
+
+- (void)autoConnect
+{
+    if (_bonjourBrowser) {
+        return;
+    }
+    
+    _bonjourServices = [NSMutableArray array];
+    _bonjourBrowser = [[NSNetServiceBrowser alloc] init];
+    [_bonjourBrowser setDelegate:self];
+    
+    NSLog(@"Waiting for ponyd bonjour service...");
+    [_bonjourBrowser searchForServicesOfType:PDBonjourServiceType inDomain:@""];
+}
 
 - (void)connectToURL:(NSURL *)url;
 {

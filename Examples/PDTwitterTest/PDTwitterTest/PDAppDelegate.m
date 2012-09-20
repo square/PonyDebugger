@@ -46,8 +46,10 @@
     [debugger enableCoreDataDebugging];
     [debugger addManagedObjectContext:self.managedObjectContext withName:@"Twitter Test MOC"];
     
-    // Connect on launch.
-    [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
+    // Auto connect via bonjour discovery
+    [debugger autoConnect];
+    // Or connect on launch.
+    //[debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
     
 #endif
     
