@@ -174,7 +174,15 @@ static const int kPDDOMNodeTypeDocument = 9;
         return;
     }
     
-    // Remove view from the hierarchy tree in the elements pannel and stop tracking changes to it
+    NSNumber *nodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:view]];
+
+    // Only proceed if this is a node we know about
+    if ([self.objectsForNodeIds objectForKey:nodeId]) {
+        
+        NSNumber *parentNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:view.superview]];
+        [self stopTrackingView:view];
+        [self.domain childNodeRemovedWithParentNodeId:parentNodeId nodeId:nodeId];
+    }
 }
 
 - (void)addView:(UIView *)view;
@@ -183,8 +191,24 @@ static const int kPDDOMNodeTypeDocument = 9;
     if ([self shouldIgnoreView:view]) {
         return;
     }
-    
-    // Add view to the hierarcy tree in the elements pannel and start tracking changes to it
+
+    // Only proceed if we know about this view's superview (corresponding to the parent node)
+    NSNumber *parentNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:view.superview]];
+    if ([self.objectsForNodeIds objectForKey:parentNodeId]) {
+        
+        PDDOMNode *node = [self nodeForView:view];
+
+        // Find the preceeding sibling view to insert in the right place
+        NSNumber *previousNodeId = nil;
+        NSUInteger indexOfView = [view.superview.subviews indexOfObject:view];
+        
+        if (indexOfView > 0) {
+            UIView *previousSibling = [view.superview.subviews objectAtIndex:indexOfView - 1];
+            previousNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:previousSibling]];
+        }
+        
+        [self.domain childNodeInsertedWithParentNodeId:parentNodeId previousNodeId:previousNodeId node:node];
+    }
 }
 
 - (void)startTrackingView:(UIView *)view withNodeId:(NSNumber *)nodeId;
