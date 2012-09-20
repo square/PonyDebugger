@@ -244,7 +244,7 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 - (BOOL)shouldIgnoreView:(UIView *)view;
 {
-    return view == nil;
+    return view == nil || view == self.highlightOverlay;
 }
 
 - (NSNumber *)getAndIncrementNodeIdCount;
