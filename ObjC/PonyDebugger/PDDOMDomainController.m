@@ -129,9 +129,8 @@ static const int kPDDOMNodeTypeDocument = 9;
     // Add view to the hierarcy tree in the elements pannel and start tracking changes to it
 }
 
-- (void)startTrackingView:(UIView *)view;
+- (void)startTrackingView:(UIView *)view withNodeId:(NSNumber *)nodeId;
 {
-    NSNumber *nodeId = [self getAndIncrementNodeIdCount];
     [self.nodeIdsForObjects setObject:nodeId forKey:[NSValue valueWithNonretainedObject:view]];
     [self.objectsForNodeIds setObject:view forKey:nodeId];
 }
@@ -199,7 +198,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     }
     
     PDDOMNode *viewNode = [self elementNodeForObject:view withChildNodes:childNodes];
-    [self startTrackingView:view];
+    [self startTrackingView:view withNodeId:viewNode.nodeId];
     
     return viewNode;
 }
