@@ -162,9 +162,72 @@ static const int kPDDOMNodeTypeDocument = 9;
     rootElement.nodeId = [self getAndIncrementNodeIdCount];
     rootElement.nodeType = @(kPDDOMNodeTypeElement);
     rootElement.nodeName = @"view_hierarchy";
-    rootElement.children = nil;
+    rootElement.children = [self windowNodes];
     
     return rootElement;
+}
+
+- (NSArray *)windowNodes
+{
+    NSArray *windows = [[UIApplication sharedApplication] windows];
+    NSMutableArray *windowNodes = [NSMutableArray arrayWithCapacity:[windows count]];
+    
+    for (id window in windows) {
+        [windowNodes addObject:[self nodeForView:window]];
+    }
+    
+    return windowNodes;
+}
+
+- (PDDOMNode *)nodeForView:(UIView *)view;
+{
+    // Build the child nodes by recursing on this view's subviews
+    NSMutableArray *childNodes = [[NSMutableArray alloc] initWithCapacity:[view.subviews count]];
+    for (UIView *subview in view.subviews) {
+        [childNodes addObject:[self nodeForView:subview]];
+    }
+    
+    PDDOMNode *viewNode = [self elementNodeForObject:view withChildNodes:childNodes];
+    [self startTrackingView:view];
+    
+    return viewNode;
+}
+
+- (PDDOMNode *)elementNodeForObject:(id)object withChildNodes:(NSArray *)children;
+{
+    PDDOMNode *elementNode = [[PDDOMNode alloc] init];
+    elementNode.nodeType = @(kPDDOMNodeTypeElement);
+    
+    if ([object isKindOfClass:[UIWindow class]]) {
+        elementNode.nodeName = @"window";
+    } else if ([object isKindOfClass:[UIView class]]) {
+        elementNode.nodeName = @"view";
+    } else {
+        elementNode.nodeName = @"object";
+    }
+    
+    if ([object respondsToSelector:@selector(text)]) {
+        NSString *text = [object text];
+        if ([text length] > 0) {
+            children = [children arrayByAddingObject:[self textNodeForString:[object text]]];
+        }
+    }
+    
+    elementNode.children = children;
+    elementNode.childNodeCount = @([elementNode.children count]);
+    elementNode.nodeId = [self getAndIncrementNodeIdCount];
+    
+    return elementNode;
+}
+
+- (PDDOMNode *)textNodeForString:(NSString *)string;
+{
+    PDDOMNode *textNode = [[PDDOMNode alloc] init];
+    textNode.nodeId = [self getAndIncrementNodeIdCount];
+    textNode.nodeType = @(kPDDOMNodeTypeText);
+    textNode.nodeValue = string;
+    
+    return textNode;
 }
 
 @end
