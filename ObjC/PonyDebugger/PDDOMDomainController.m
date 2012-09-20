@@ -221,6 +221,23 @@ static const int kPDDOMNodeTypeDocument = 9;
 {
     NSValue *viewKey = [NSValue valueWithNonretainedObject:view];
     NSNumber *nodeId = [self.nodeIdsForObjects objectForKey:viewKey];
+    
+    // Bail early if we weren't tracking this view
+    if (!nodeId) {
+        return;
+    }
+    
+    // Recurse to get any nested views
+    for (UIView *subview in view.subviews) {
+        [self stopTrackingView:subview];
+    }
+    
+    // Remove the highlight if necessary
+    if (view == self.viewToHighlight) {
+        self.highlightOverlay = nil;
+        self.viewToHighlight = nil;
+    }
+    
     [self.nodeIdsForObjects removeObjectForKey:viewKey];
     [self.objectsForNodeIds removeObjectForKey:nodeId];
 }
