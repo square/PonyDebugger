@@ -181,6 +181,13 @@ static const int kPDDOMNodeTypeDocument = 9;
     callback(nil);
 }
 
+- (void)domain:(PDDOMDomain *)domain removeNodeWithNodeId:(NSNumber *)nodeId callback:(void (^)(id))callback
+{
+    UIView *view = [self.objectsForNodeIds objectForKey:nodeId];
+    [view removeFromSuperview];
+    
+    callback(nil);
+}
 #pragma mark - View Hierarchy Changes
 
 - (void)windowsChanged
