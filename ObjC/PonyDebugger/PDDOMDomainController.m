@@ -37,8 +37,16 @@ static const int kPDDOMNodeTypeDocument = 9;
 {
     if (self = [super init]) {
         self.visibleAttributeKeyPaths = @[@"frame", @"opaque", @"clipsToBounds", @"alpha"];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowsChanged) name:UIWindowDidBecomeHiddenNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowsChanged) name:UIWindowDidBecomeVisibleNotification object:nil];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Class Methods
@@ -174,6 +182,12 @@ static const int kPDDOMNodeTypeDocument = 9;
 }
 
 #pragma mark - View Hierarchy Changes
+
+- (void)windowsChanged
+{
+    // TODO: don't drop this bomb here, can do better
+    [self.domain documentUpdated];
+}
 
 - (void)removeView:(UIView *)view;
 {
