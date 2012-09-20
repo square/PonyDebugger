@@ -8,6 +8,7 @@
 
 #import "PDDOMDomainController.h"
 #import <objc/runtime.h>
+#import <QuartzCore/QuartzCore.h>
 
 static const int kPDDOMNodeTypeElement = 1;
 static const int kPDDOMNodeTypeAttribute = 2;
@@ -20,7 +21,11 @@ static const int kPDDOMNodeTypeDocument = 9;
 @property (nonatomic, strong) NSMutableDictionary * objectsForNodeIds;
 @property (nonatomic, strong) NSMutableDictionary * nodeIdsForObjects;
 @property (nonatomic, assign) NSUInteger nodeIdCounter;
+
 @property (nonatomic, strong) NSArray *visibleAttributeKeyPaths;
+
+@property (nonatomic, strong) UIView *viewToHighlight;
+@property (nonatomic, strong) UIView *highlightOverlay;
 
 @end
 
@@ -97,6 +102,14 @@ static const int kPDDOMNodeTypeDocument = 9;
     return [PDDOMDomain class];
 }
 
+#pragma mark - Setter Overrides
+
+- (void)setHighlightOverlay:(UIView *)highlightOverlay
+{
+    [_highlightOverlay removeFromSuperview];
+    _highlightOverlay = highlightOverlay;
+}
+
 #pragma mark - PDDOMCommandDelegate
 
 - (void)domain:(PDDOMDomain *)domain getDocumentWithCallback:(void (^)(PDDOMNode *root, id error))callback;
@@ -105,6 +118,51 @@ static const int kPDDOMNodeTypeDocument = 9;
     self.nodeIdsForObjects = [[NSMutableDictionary alloc] init];
     self.nodeIdCounter = 0;
     callback([self rootNode], nil);
+}
+
+- (void)domain:(PDDOMDomain *)domain highlightNodeWithNodeId:(NSNumber *)nodeId highlightConfig:(PDDOMHighlightConfig *)highlightConfig callback:(void (^)(id))callback
+{
+    id objectForNodeId = [self.objectsForNodeIds objectForKey:nodeId];
+    if ([objectForNodeId isKindOfClass:[UIView class]]) {
+        // Add a highlight overlay directly to the window if this is a window, otherwise to the view's window
+        self.viewToHighlight = (id)objectForNodeId;
+        
+        UIWindow *window = self.viewToHighlight.window;
+        CGRect highlightFrame = CGRectZero;
+        
+        if (!window && [self.viewToHighlight isKindOfClass:[UIWindow class]]) {
+            window = (UIWindow *)self.viewToHighlight;
+            highlightFrame = window.bounds;
+        } else {
+            highlightFrame = [window convertRect:self.viewToHighlight.frame fromView:self.viewToHighlight.superview];
+        }
+        
+        self.highlightOverlay = [[UIView alloc] initWithFrame:highlightFrame];
+        
+        // TODO: fix PDDOMRGBA & PDDOMHighlightConfig
+        
+        PDDOMRGBA *contentColor = [highlightConfig valueForKey:@"contentColor"];
+        NSNumber *r = [contentColor valueForKey:@"r"];
+        NSNumber *g = [contentColor valueForKey:@"g"];
+        NSNumber *b = [contentColor valueForKey:@"b"];
+        NSNumber *a = [contentColor valueForKey:@"a"];
+        
+        self.highlightOverlay.backgroundColor = [UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]];
+        
+        PDDOMRGBA *borderColor = [highlightConfig valueForKey:@"borderColor"];
+        r = [borderColor valueForKey:@"r"];
+        g = [borderColor valueForKey:@"g"];
+        b = [borderColor valueForKey:@"b"];
+        a = [borderColor valueForKey:@"a"];
+        
+        self.highlightOverlay.layer.borderColor = [[UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]] CGColor];
+        
+        self.highlightOverlay.layer.borderWidth = 1.0;
+        
+        [window addSubview:self.highlightOverlay];
+    }
+    
+    callback(nil);
 }
 
 #pragma mark - View Hierarchy Changes
