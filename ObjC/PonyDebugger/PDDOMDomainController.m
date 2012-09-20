@@ -11,6 +11,10 @@
 
 @interface PDDOMDomainController ()
 
+@property (nonatomic, strong) NSMutableDictionary * objectsForNodeIds;
+@property (nonatomic, strong) NSMutableDictionary * nodeIdsForObjects;
+@property (nonatomic, assign) NSUInteger nodeIdCounter;
+
 @end
 
 @implementation PDDOMDomainController
@@ -78,12 +82,47 @@
 
 - (void)removeView:(UIView *)view;
 {
+    // Bail early if we're ignoring this view
+    if ([self shouldIgnoreView:view]) {
+        return;
+    }
+    
     // Remove view from the hierarchy tree in the elements pannel and stop tracking changes to it
 }
 
 - (void)addView:(UIView *)view;
 {
-    // Add view to the hierarcy tree in the elements pannel and start tracking changes to it 
+    // Bail early if we're ignoring this view
+    if ([self shouldIgnoreView:view]) {
+        return;
+    }
+    
+    // Add view to the hierarcy tree in the elements pannel and start tracking changes to it
+}
+
+- (void)startTrackingView:(UIView *)view;
+{
+    NSNumber *nodeId = [self getAndIncrementNodeIdCount];
+    [self.nodeIdsForObjects setObject:nodeId forKey:[NSValue valueWithNonretainedObject:view]];
+    [self.objectsForNodeIds setObject:view forKey:nodeId];
+}
+
+- (void)stopTrackingView:(UIView *)view;
+{
+    NSValue *viewKey = [NSValue valueWithNonretainedObject:view];
+    NSNumber *nodeId = [self.nodeIdsForObjects objectForKey:viewKey];
+    [self.nodeIdsForObjects removeObjectForKey:viewKey];
+    [self.objectsForNodeIds removeObjectForKey:nodeId];
+}
+
+- (BOOL)shouldIgnoreView:(UIView *)view;
+{
+    return view != nil;
+}
+
+- (NSNumber *)getAndIncrementNodeIdCount;
+{
+    return @(self.nodeIdCounter++);
 }
 
 @end
