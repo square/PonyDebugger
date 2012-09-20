@@ -22,6 +22,7 @@
 #import "PDRuntimeDomainController.h"
 #import "PDPageDomainController.h"
 #import "PDIndexedDBDomainController.h"
+#import "PDDOMDomainController.h"
 
 
 static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
@@ -261,6 +262,14 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 - (void)removeManagedObjectContext:(NSManagedObjectContext *)context;
 {
     [[PDIndexedDBDomainController defaultInstance] removeManagedObjectContext:context];
+}
+
+#pragma mark View Hierarchy Debugging
+
+- (void)enableViewHierarchyDebugging;
+{
+    [self _addController:[PDDOMDomainController defaultInstance]];
+    [PDDOMDomainController startMonitoringUIViewChanges];
 }
 
 #pragma mark - Private Methods
