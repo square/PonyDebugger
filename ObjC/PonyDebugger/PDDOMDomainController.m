@@ -27,6 +27,12 @@ static const int kPDDOMNodeTypeDocument = 9;
 @property (nonatomic, strong) UIView *viewToHighlight;
 @property (nonatomic, strong) UIView *highlightOverlay;
 
+@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
+@property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
+@property (nonatomic, assign) CGPoint lastPanPoint;
+@property (nonatomic, assign) CGRect originalPinchFrame;
+@property (nonatomic, assign) CGPoint originalPinchLocation;
+
 @end
 
 @implementation PDDOMDomainController
@@ -40,6 +46,9 @@ static const int kPDDOMNodeTypeDocument = 9;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowsChanged) name:UIWindowDidBecomeHiddenNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowsChanged) name:UIWindowDidBecomeVisibleNotification object:nil];
+        
+        self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesure:)];
+        self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
     }
     return self;
 }
@@ -167,6 +176,9 @@ static const int kPDDOMNodeTypeDocument = 9;
         
         self.highlightOverlay.layer.borderWidth = 1.0;
         
+        [self.highlightOverlay addGestureRecognizer:self.panGestureRecognizer];
+        [self.highlightOverlay addGestureRecognizer:self.pinchGestureRecognizer];
+        
         [window addSubview:self.highlightOverlay];
     }
     
@@ -221,6 +233,57 @@ static const int kPDDOMNodeTypeDocument = 9;
     }
     
     callback(nil);
+}
+
+#pragma mark - Gesture Moving and Resizing
+
+- (void)handlePanGesure:(UIPanGestureRecognizer *)panGR
+{
+    if (panGR.state == UIGestureRecognizerStateBegan) {
+        self.lastPanPoint = [panGR locationInView:nil];
+    } else {
+        // Convert to window coordinates for a consistent basis
+        CGPoint newPanPoint = [panGR locationInView:nil];
+        CGFloat deltaX = newPanPoint.x - self.lastPanPoint.x;
+        CGFloat deltaY = newPanPoint.y - self.lastPanPoint.y;
+        
+        CGRect frame = self.viewToHighlight.frame;
+        frame.origin.x += deltaX;
+        frame.origin.y += deltaY;
+        self.viewToHighlight.frame = frame;
+        
+        self.lastPanPoint = newPanPoint;
+    }
+}
+
+- (void)handlePinchGesture:(UIPinchGestureRecognizer *)pinchGR
+{
+    if (pinchGR.state == UIGestureRecognizerStateBegan) {
+        self.originalPinchFrame = self.viewToHighlight.frame;
+        self.originalPinchLocation = [pinchGR locationInView:nil];
+    } else if (pinchGR.state == UIGestureRecognizerStateChanged) {
+        // Scale the frame by the pinch amount
+        CGFloat scale = [pinchGR scale];
+        CGRect newFrame = self.originalPinchFrame;
+        CGFloat scaleByFactor = (scale - 1.0) / 1.0;
+        scaleByFactor /= 3.0;
+        
+        newFrame.size.width *= 1.0 + scaleByFactor;
+        newFrame.size.height *= 1.0 + scaleByFactor;
+        
+        // Translate the center by the difference between the current centroid and the original centroid
+        CGPoint location = [pinchGR locationInView:nil];
+        CGPoint center = CGPointMake(floor(CGRectGetMidX(self.originalPinchFrame)), floor(CGRectGetMidY(self.originalPinchFrame)));
+        center.x += location.x - self.originalPinchLocation.x;
+        center.y += location.y - self.originalPinchLocation.y;
+        
+        newFrame.origin.x = center.x - newFrame.size.width / 2.0;
+        newFrame.origin.y = center.y - newFrame.size.height / 2.0;
+        self.viewToHighlight.frame = newFrame;
+        
+    } else if (pinchGR.state == UIGestureRecognizerStateEnded || pinchGR.state == UIGestureRecognizerStateCancelled) {
+        self.viewToHighlight.frame = CGRectIntegral(self.viewToHighlight.frame);
+    }
 }
 
 - (NSString *)typeEncodingForKeyPath:(NSString *)keyPath onObject:(id)object
