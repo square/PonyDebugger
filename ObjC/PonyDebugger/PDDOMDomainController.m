@@ -366,7 +366,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     
     if ([self.objectsForNodeIds objectForKey:nodeId] && [self.visibleAttributeKeyPaths containsObject:keyPath]) {
         // Update the the attributes on the DOM node
-        NSString *newValue = [self stringValueForObject:[change objectForKey:NSKeyValueChangeNewKey]];
+        NSString *newValue = [self stringForValue:[change objectForKey:NSKeyValueChangeNewKey] atKeyPath:keyPath onObject:object];
         [self.domain attributeModifiedWithNodeId:nodeId name:keyPath value:newValue];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -492,8 +492,8 @@ static const int kPDDOMNodeTypeDocument = 9;
         // Get strings for all the key paths in visibileAttributeKeyPaths
         for (NSString *keyPath in self.visibleAttributeKeyPaths) {
             
-            id value = [object valueForKeyPath:keyPath];
-            NSString *stringValue = [self stringValueForObject:value];
+            NSValue *value = [object valueForKeyPath:keyPath];
+            NSString *stringValue = [self stringForValue:value atKeyPath:keyPath onObject:object];
             if (stringValue) {
                 [attributes addObjectsFromArray:@[ keyPath, stringValue ]];
             }
@@ -503,22 +503,21 @@ static const int kPDDOMNodeTypeDocument = 9;
     return attributes;
 }
 
-- (NSString *)stringValueForObject:(id)object
+- (NSString *)stringForValue:(id)value atKeyPath:(NSString *)keyPath onObject:(id)object;
 {
     NSString *stringValue = nil;
-    if ([object isKindOfClass:[NSNumber class]]) {
-        stringValue = [object stringValue];
-    } else if ([object isKindOfClass:[NSValue class]]) {
-        NSValue *value = object;
-        const char *type = [value objCType];
-        
-        if (!strcmp(type, @encode(CGRect))) {
-            stringValue = NSStringFromCGRect([value CGRectValue]);
-        } else if (!strcmp(type, @encode(CGPoint))) {
-            stringValue = NSStringFromCGPoint([value CGPointValue]);
-        } else if (!strcmp(type, @encode(CGSize))) {
-            stringValue = NSStringFromCGSize([value CGSizeValue]);
-        }
+    NSString *typeEncoding = [self typeEncodingForKeyPath:keyPath onObject:object];
+    
+    if ([typeEncoding isEqualToString:@(@encode(BOOL))]) {
+        stringValue = [(id)value boolValue] ? @"YES" : @"NO";
+    } else if ([typeEncoding isEqualToString:@(@encode(CGPoint))]) {
+        stringValue = NSStringFromCGPoint([value CGPointValue]);
+    } else if ([typeEncoding isEqualToString:@(@encode(CGSize))]) {
+        stringValue = NSStringFromCGSize([value CGSizeValue]);
+    } else if ([typeEncoding isEqualToString:@(@encode(CGRect))]) {
+        stringValue = NSStringFromCGRect([value CGRectValue]);
+    } else if ([value isKindOfClass:[NSNumber class]]) {
+        stringValue = [(NSNumber *)value stringValue];
     }
     return stringValue;
 }
