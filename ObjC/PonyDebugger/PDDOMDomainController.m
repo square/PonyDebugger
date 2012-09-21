@@ -147,7 +147,7 @@ static const int kPDDOMNodeTypeDocument = 9;
         
         self.highlightOverlay = [[UIView alloc] initWithFrame:highlightFrame];
         
-        // TODO: fix PDDOMRGBA & PDDOMHighlightConfig
+        // TODO: PDDOMRGBA & PDDOMHighlightConfig objects aren't coming back. Just NSDictionaries
         
         PDDOMRGBA *contentColor = [highlightConfig valueForKey:@"contentColor"];
         NSNumber *r = [contentColor valueForKey:@"r"];
