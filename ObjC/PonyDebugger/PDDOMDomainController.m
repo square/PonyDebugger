@@ -188,6 +188,84 @@ static const int kPDDOMNodeTypeDocument = 9;
     
     callback(nil);
 }
+
+- (void)domain:(PDDOMDomain *)domain setAttributesAsTextWithNodeId:(NSNumber *)nodeId text:(NSString *)text name:(NSString *)name callback:(void (^)(id))callback
+{
+    id nodeObject = [self.objectsForNodeIds objectForKey:nodeId];
+    NSString *typeEncoding = [self typeEncodingForKeyPath:name onObject:nodeObject];
+    
+    // Try to parse out the value
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[\"'](.*)[\"']" options:0 error:NULL];
+    NSTextCheckingResult *firstMatch = [regex firstMatchInString:text options:0 range:NSMakeRange(0, [text length])];
+    if (firstMatch) {
+        NSString *valueString = [text substringWithRange:[firstMatch rangeAtIndex:1]];
+        
+        // Note: this is by no means complete...
+        // Allow BOOLs to be set with YES/NO
+        if ([typeEncoding isEqualToString:@(@encode(BOOL))] && ([valueString isEqualToString:@"YES"] || [valueString isEqualToString:@"NO"])) {
+            BOOL boolValue = [valueString isEqualToString:@"YES"];
+            [nodeObject setValue:[NSNumber numberWithBool:boolValue] forKeyPath:name];
+        } else if ([typeEncoding isEqualToString:@(@encode(CGPoint))]) {
+            CGPoint point = CGPointFromString(valueString);
+            [nodeObject setValue:[NSValue valueWithCGPoint:point] forKeyPath:name];
+        } else if ([typeEncoding isEqualToString:@(@encode(CGSize))]) {
+            CGSize size = CGSizeFromString(valueString);
+            [nodeObject setValue:[NSValue valueWithCGSize:size] forKeyPath:name];
+        } else if ([typeEncoding isEqualToString:@(@encode(CGRect))]) {
+            CGRect rect = CGRectFromString(valueString);
+            [nodeObject setValue:[NSValue valueWithCGRect:rect] forKeyPath:name];
+        } else {
+            NSNumber *number = @([valueString doubleValue]);
+            [nodeObject setValue:number forKeyPath:name];
+        }
+    }
+    
+    callback(nil);
+}
+
+- (NSString *)typeEncodingForKeyPath:(NSString *)keyPath onObject:(id)object
+{
+    NSString *encoding = nil;
+    
+    // Look for a matching set* method to infer the type
+    NSString *selectorString = [NSString stringWithFormat:@"set%@:", [keyPath stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[keyPath substringToIndex:1] uppercaseString]]];
+    NSMethodSignature *methodSignature = [object methodSignatureForSelector:NSSelectorFromString(selectorString)];
+    if (methodSignature) {
+        // We don't care about arg0 (self) or arg1 (_cmd)
+        encoding = @([methodSignature getArgumentTypeAtIndex:2]);
+        
+    } else {
+        // No method found, start looking at ivars and properties
+        Class class = [object class];
+        
+        // Move up the class tree
+        while (class && !encoding) {
+            objc_property_t property = class_getProperty(class, [keyPath UTF8String]);
+            
+            if (property) {
+                const char *attributesString = property_getAttributes(property);
+                NSArray *attributes = [[NSString stringWithUTF8String:attributesString] componentsSeparatedByString: @","];
+                
+                for (NSString *attribute in attributes) {
+                    if ([[attribute substringToIndex:1] isEqualToString:@"T"]) {
+                        encoding = [attribute substringFromIndex:1];
+                    }
+                }
+            } else {
+                // If we couldn't find a matching property, look for an ivar with the name
+                Ivar ivar = class_getInstanceVariable(class, [keyPath UTF8String]);
+                if (ivar) {
+                    encoding = @(ivar_getTypeEncoding(ivar));
+                }
+            }
+            
+            class = [class superclass];
+        }
+    }
+
+    return encoding;
+}
+
 #pragma mark - View Hierarchy Changes
 
 - (void)windowsChanged
