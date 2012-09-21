@@ -407,7 +407,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     PDDOMNode *rootElement = [[PDDOMNode alloc] init];
     rootElement.nodeId = [self getAndIncrementNodeIdCount];
     rootElement.nodeType = @(kPDDOMNodeTypeElement);
-    rootElement.nodeName = @"view_hierarchy";
+    rootElement.nodeName = @"iosml";
     rootElement.children = [self windowNodes];
     
     return rootElement;
