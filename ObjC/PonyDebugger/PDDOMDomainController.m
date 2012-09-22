@@ -41,8 +41,8 @@ static const int kPDDOMNodeTypeDocument = 9;
 {
     if (self = [super init]) {
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowsChanged) name:UIWindowDidBecomeHiddenNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowsChanged) name:UIWindowDidBecomeVisibleNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowHidden:) name:UIWindowDidBecomeHiddenNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowShown:) name:UIWindowDidBecomeVisibleNotification object:nil];
         
         self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesure:)];
         self.panGestureRecognizer.maximumNumberOfTouches = 1;
@@ -251,7 +251,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     if (panGR.state == UIGestureRecognizerStateBegan) {
         self.lastPanPoint = [panGR locationInView:self.viewToHighlight.superview];
     } else {
-        // Convert to window coordinates for a consistent basis
+        // Convert to superview coordinates for a consistent basis
         CGPoint newPanPoint = [panGR locationInView:self.viewToHighlight.superview];
         CGFloat deltaX = newPanPoint.x - self.lastPanPoint.x;
         CGFloat deltaY = newPanPoint.y - self.lastPanPoint.y;
@@ -297,10 +297,14 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 #pragma mark - View Hierarchy Changes
 
-- (void)windowsChanged;
+- (void)windowHidden:(NSNotification *)windowNotification;
 {
-    // TODO: don't drop this bomb here, can do better
-    [self.domain documentUpdated];
+    [self removeView:windowNotification.object];
+}
+
+- (void)windowShown:(NSNotification *)windowNotification;
+{
+    [self addView:windowNotification.object];
 }
 
 - (void)removeView:(UIView *)view;
@@ -315,7 +319,15 @@ static const int kPDDOMNodeTypeDocument = 9;
     // Only proceed if this is a node we know about
     if ([self.objectsForNodeIds objectForKey:nodeId]) {
         
-        NSNumber *parentNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:view.superview]];
+        NSNumber *parentNodeId = nil;
+        
+        if (view.superview) {
+            parentNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:view.superview]];
+        } else if ([view isKindOfClass:[UIWindow class]]) {
+            // Windows are always children of the root element node
+            parentNodeId = @(1);
+        }
+        
         [self stopTrackingView:view];
         [self.domain childNodeRemovedWithParentNodeId:parentNodeId nodeId:nodeId];
     }
@@ -329,7 +341,11 @@ static const int kPDDOMNodeTypeDocument = 9;
     }
 
     // Only proceed if we know about this view's superview (corresponding to the parent node)
-    NSNumber *parentNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:view.superview]];
+    NSNumber *parentNodeId = nil;
+    if (view.superview) {
+        parentNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:view.superview]];
+    }
+    
     if ([self.objectsForNodeIds objectForKey:parentNodeId]) {
         
         PDDOMNode *node = [self nodeForView:view];
@@ -347,6 +363,22 @@ static const int kPDDOMNodeTypeDocument = 9;
         }
         
         [self.domain childNodeInsertedWithParentNodeId:parentNodeId previousNodeId:previousNodeId node:node];
+    } else if ([view isKindOfClass:[UIWindow class]]) {
+        
+        PDDOMNode *node = [self nodeForView:view];
+        
+        // Look at the other windows to find where to place this window
+        NSNumber *previousNodeId = nil;
+        NSArray *windows = [[UIApplication sharedApplication] windows];
+        NSUInteger indexOfWindow = [windows indexOfObject:view];
+        
+        if (indexOfWindow > 0) {
+            UIWindow *previousWindow = [windows objectAtIndex:indexOfWindow - 1];
+            previousNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:previousWindow]];
+        }
+        
+        // Note that windows are always children of the root element node (id 1)
+        [self.domain childNodeInsertedWithParentNodeId:@(1) previousNodeId:previousNodeId node:node];
     }
 }
 
