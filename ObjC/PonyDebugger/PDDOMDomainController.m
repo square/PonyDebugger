@@ -45,6 +45,7 @@ static const int kPDDOMNodeTypeDocument = 9;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowsChanged) name:UIWindowDidBecomeVisibleNotification object:nil];
         
         self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesure:)];
+        self.panGestureRecognizer.maximumNumberOfTouches = 1;
         self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
     }
     return self;
@@ -248,10 +249,10 @@ static const int kPDDOMNodeTypeDocument = 9;
 - (void)handlePanGesure:(UIPanGestureRecognizer *)panGR;
 {
     if (panGR.state == UIGestureRecognizerStateBegan) {
-        self.lastPanPoint = [panGR locationInView:nil];
+        self.lastPanPoint = [panGR locationInView:self.viewToHighlight.superview];
     } else {
         // Convert to window coordinates for a consistent basis
-        CGPoint newPanPoint = [panGR locationInView:nil];
+        CGPoint newPanPoint = [panGR locationInView:self.viewToHighlight.superview];
         CGFloat deltaX = newPanPoint.x - self.lastPanPoint.x;
         CGFloat deltaY = newPanPoint.y - self.lastPanPoint.y;
         
@@ -268,7 +269,7 @@ static const int kPDDOMNodeTypeDocument = 9;
 {
     if (pinchGR.state == UIGestureRecognizerStateBegan) {
         self.originalPinchFrame = self.viewToHighlight.frame;
-        self.originalPinchLocation = [pinchGR locationInView:nil];
+        self.originalPinchLocation = [pinchGR locationInView:self.viewToHighlight.superview];
     } else if (pinchGR.state == UIGestureRecognizerStateChanged) {
         // Scale the frame by the pinch amount
         CGFloat scale = [pinchGR scale];
@@ -280,7 +281,7 @@ static const int kPDDOMNodeTypeDocument = 9;
         newFrame.size.height *= 1.0 + scaleByFactor;
         
         // Translate the center by the difference between the current centroid and the original centroid
-        CGPoint location = [pinchGR locationInView:nil];
+        CGPoint location = [pinchGR locationInView:self.viewToHighlight.superview];
         CGPoint center = CGPointMake(floor(CGRectGetMidX(self.originalPinchFrame)), floor(CGRectGetMidY(self.originalPinchFrame)));
         center.x += location.x - self.originalPinchLocation.x;
         center.y += location.y - self.originalPinchLocation.y;
