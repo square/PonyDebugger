@@ -286,49 +286,6 @@ static const int kPDDOMNodeTypeDocument = 9;
     }
 }
 
-- (NSString *)typeEncodingForKeyPath:(NSString *)keyPath onObject:(id)object;
-{
-    NSString *encoding = nil;
-    
-    // Look for a matching set* method to infer the type
-    NSString *selectorString = [NSString stringWithFormat:@"set%@:", [keyPath stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[keyPath substringToIndex:1] uppercaseString]]];
-    NSMethodSignature *methodSignature = [object methodSignatureForSelector:NSSelectorFromString(selectorString)];
-    if (methodSignature) {
-        // We don't care about arg0 (self) or arg1 (_cmd)
-        encoding = @([methodSignature getArgumentTypeAtIndex:2]);
-        
-    } else {
-        // No method found, start looking at ivars and properties
-        Class class = [object class];
-        
-        // Move up the class tree
-        while (class && !encoding) {
-            objc_property_t property = class_getProperty(class, [keyPath UTF8String]);
-            
-            if (property) {
-                const char *attributesString = property_getAttributes(property);
-                NSArray *attributes = [[NSString stringWithUTF8String:attributesString] componentsSeparatedByString: @","];
-                
-                for (NSString *attribute in attributes) {
-                    if ([[attribute substringToIndex:1] isEqualToString:@"T"]) {
-                        encoding = [attribute substringFromIndex:1];
-                    }
-                }
-            } else {
-                // If we couldn't find a matching property, look for an ivar with the name
-                Ivar ivar = class_getInstanceVariable(class, [keyPath UTF8String]);
-                if (ivar) {
-                    encoding = @(ivar_getTypeEncoding(ivar));
-                }
-            }
-            
-            class = [class superclass];
-        }
-    }
-
-    return encoding;
-}
-
 #pragma mark - View Hierarchy Changes
 
 - (void)windowsChanged;
@@ -583,6 +540,49 @@ static const int kPDDOMNodeTypeDocument = 9;
         stringValue = [(NSNumber *)value stringValue];
     }
     return stringValue;
+}
+
+- (NSString *)typeEncodingForKeyPath:(NSString *)keyPath onObject:(id)object;
+{
+    NSString *encoding = nil;
+    
+    // Look for a matching set* method to infer the type
+    NSString *selectorString = [NSString stringWithFormat:@"set%@:", [keyPath stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[keyPath substringToIndex:1] uppercaseString]]];
+    NSMethodSignature *methodSignature = [object methodSignatureForSelector:NSSelectorFromString(selectorString)];
+    if (methodSignature) {
+        // We don't care about arg0 (self) or arg1 (_cmd)
+        encoding = @([methodSignature getArgumentTypeAtIndex:2]);
+        
+    } else {
+        // No method found, start looking at ivars and properties
+        Class class = [object class];
+        
+        // Move up the class tree
+        while (class && !encoding) {
+            objc_property_t property = class_getProperty(class, [keyPath UTF8String]);
+            
+            if (property) {
+                const char *attributesString = property_getAttributes(property);
+                NSArray *attributes = [[NSString stringWithUTF8String:attributesString] componentsSeparatedByString: @","];
+                
+                for (NSString *attribute in attributes) {
+                    if ([[attribute substringToIndex:1] isEqualToString:@"T"]) {
+                        encoding = [attribute substringFromIndex:1];
+                    }
+                }
+            } else {
+                // If we couldn't find a matching property, look for an ivar with the name
+                Ivar ivar = class_getInstanceVariable(class, [keyPath UTF8String]);
+                if (ivar) {
+                    encoding = @(ivar_getTypeEncoding(ivar));
+                }
+            }
+            
+            class = [class superclass];
+        }
+    }
+    
+    return encoding;
 }
 
 @end
