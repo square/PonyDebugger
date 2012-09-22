@@ -336,13 +336,16 @@ static const int kPDDOMNodeTypeDocument = 9;
         
         PDDOMNode *node = [self nodeForView:view];
 
-        // Find the preceeding sibling view to insert in the right place
+        // Find the sibling view to insert the node in the right place
+        // We're actually looking for the next view in the subviews array. Index 0 holds the back-most view.
+        // We essentialy dispay the subviews array backwards.
         NSNumber *previousNodeId = nil;
         NSUInteger indexOfView = [view.superview.subviews indexOfObject:view];
         
-        if (indexOfView > 0) {
-            UIView *previousSibling = [view.superview.subviews objectAtIndex:indexOfView - 1];
-            previousNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:previousSibling]];
+        // If this is the last subview in the array, it has no previous node.
+        if (indexOfView < [view.superview.subviews count] - 1) {
+            UIView *aheadSibling = [view.superview.subviews objectAtIndex:indexOfView + 1];
+            previousNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:aheadSibling]];
         }
         
         [self.domain childNodeInsertedWithParentNodeId:parentNodeId previousNodeId:previousNodeId node:node];
@@ -467,7 +470,7 @@ static const int kPDDOMNodeTypeDocument = 9;
 {
     // Build the child nodes by recursing on this view's subviews
     NSMutableArray *childNodes = [[NSMutableArray alloc] initWithCapacity:[view.subviews count]];
-    for (UIView *subview in view.subviews) {
+    for (UIView *subview in [view.subviews reverseObjectEnumerator]) {
         [childNodes addObject:[self nodeForView:subview]];
     }
     
