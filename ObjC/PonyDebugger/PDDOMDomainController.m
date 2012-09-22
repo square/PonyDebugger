@@ -39,7 +39,7 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 #pragma mark - NSObject
 
-- (id)init
+- (id)init;
 {
     if (self = [super init]) {
         self.visibleAttributeKeyPaths = @[@"frame", @"opaque", @"clipsToBounds", @"alpha"];
@@ -53,7 +53,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     return self;
 }
 
-- (void)dealloc
+- (void)dealloc;
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -121,7 +121,7 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 #pragma mark - Setter Overrides
 
-- (void)setHighlightOverlay:(UIView *)highlightOverlay
+- (void)setHighlightOverlay:(UIView *)highlightOverlay;
 {
     [_highlightOverlay removeFromSuperview];
     _highlightOverlay = highlightOverlay;
@@ -137,7 +137,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     callback([self rootNode], nil);
 }
 
-- (void)domain:(PDDOMDomain *)domain highlightNodeWithNodeId:(NSNumber *)nodeId highlightConfig:(PDDOMHighlightConfig *)highlightConfig callback:(void (^)(id))callback
+- (void)domain:(PDDOMDomain *)domain highlightNodeWithNodeId:(NSNumber *)nodeId highlightConfig:(PDDOMHighlightConfig *)highlightConfig callback:(void (^)(id))callback;
 {
     id objectForNodeId = [self.objectsForNodeIds objectForKey:nodeId];
     if ([objectForNodeId isKindOfClass:[UIView class]]) {
@@ -185,7 +185,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     callback(nil);
 }
 
-- (void)domain:(PDDOMDomain *)domain hideHighlightWithCallback:(void (^)(id))callback
+- (void)domain:(PDDOMDomain *)domain hideHighlightWithCallback:(void (^)(id))callback;
 {
     self.highlightOverlay = nil;
     self.viewToHighlight = nil;
@@ -193,7 +193,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     callback(nil);
 }
 
-- (void)domain:(PDDOMDomain *)domain removeNodeWithNodeId:(NSNumber *)nodeId callback:(void (^)(id))callback
+- (void)domain:(PDDOMDomain *)domain removeNodeWithNodeId:(NSNumber *)nodeId callback:(void (^)(id))callback;
 {
     UIView *view = [self.objectsForNodeIds objectForKey:nodeId];
     [view removeFromSuperview];
@@ -201,7 +201,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     callback(nil);
 }
 
-- (void)domain:(PDDOMDomain *)domain setAttributesAsTextWithNodeId:(NSNumber *)nodeId text:(NSString *)text name:(NSString *)name callback:(void (^)(id))callback
+- (void)domain:(PDDOMDomain *)domain setAttributesAsTextWithNodeId:(NSNumber *)nodeId text:(NSString *)text name:(NSString *)name callback:(void (^)(id))callback;
 {
     id nodeObject = [self.objectsForNodeIds objectForKey:nodeId];
     NSString *typeEncoding = [self typeEncodingForKeyPath:name onObject:nodeObject];
@@ -237,7 +237,7 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 #pragma mark - Gesture Moving and Resizing
 
-- (void)handlePanGesure:(UIPanGestureRecognizer *)panGR
+- (void)handlePanGesure:(UIPanGestureRecognizer *)panGR;
 {
     if (panGR.state == UIGestureRecognizerStateBegan) {
         self.lastPanPoint = [panGR locationInView:nil];
@@ -256,7 +256,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     }
 }
 
-- (void)handlePinchGesture:(UIPinchGestureRecognizer *)pinchGR
+- (void)handlePinchGesture:(UIPinchGestureRecognizer *)pinchGR;
 {
     if (pinchGR.state == UIGestureRecognizerStateBegan) {
         self.originalPinchFrame = self.viewToHighlight.frame;
@@ -286,7 +286,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     }
 }
 
-- (NSString *)typeEncodingForKeyPath:(NSString *)keyPath onObject:(id)object
+- (NSString *)typeEncodingForKeyPath:(NSString *)keyPath onObject:(id)object;
 {
     NSString *encoding = nil;
     
@@ -331,7 +331,7 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 #pragma mark - View Hierarchy Changes
 
-- (void)windowsChanged
+- (void)windowsChanged;
 {
     // TODO: don't drop this bomb here, can do better
     [self.domain documentUpdated];
@@ -422,7 +422,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     }
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 {
     // Make sure this is a node we know about and a key path we're observing
     NSNumber *nodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:object]];
@@ -476,7 +476,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     return rootElement;
 }
 
-- (NSArray *)windowNodes
+- (NSArray *)windowNodes;
 {
     NSArray *windows = [[UIApplication sharedApplication] windows];
     NSMutableArray *windowNodes = [NSMutableArray arrayWithCapacity:[windows count]];
@@ -542,7 +542,7 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 #pragma mark - Attribute Generation
 
-- (NSArray *)attributesArrayForObject:(id)object
+- (NSArray *)attributesArrayForObject:(id)object;
 {
     // No attributes for a nil object
     if (!object) {
