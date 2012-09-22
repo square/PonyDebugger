@@ -18,6 +18,12 @@
 + (PDDOMDomainController *)defaultInstance;
 + (void)startMonitoringUIViewChanges;
 
+// The key paths will be reflected as attributes of the DOM node
+// Note that support is currently limited to CGPoint, CGSize, CGRect, and numeric types (including BOOL).
+// ex @[@"frame", @"bounds", @"alpha", @"hidden"]
+@property (nonatomic, strong) NSArray *viewKeyPathsToDisplay;
+
+// These should only be used by the swizzled UIView observing methods
 - (void)removeView:(UIView *)view;
 - (void)addView:(UIView *)view;
 

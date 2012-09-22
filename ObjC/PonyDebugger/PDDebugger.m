@@ -269,7 +269,16 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 - (void)enableViewHierarchyDebugging;
 {
     [self _addController:[PDDOMDomainController defaultInstance]];
+    
+    // Choosing frame, alpha, and hidden as the default key paths to display
+    [[PDDOMDomainController defaultInstance] setViewKeyPathsToDisplay:@[@"frame", @"alpha", @"hidden"]];
+    
     [PDDOMDomainController startMonitoringUIViewChanges];
+}
+
+- (void)setDisplayedViewAttributeKeyPaths:(NSArray *)keyPaths;
+{
+    [[PDDOMDomainController defaultInstance] setViewKeyPathsToDisplay:keyPaths];
 }
 
 #pragma mark - Private Methods

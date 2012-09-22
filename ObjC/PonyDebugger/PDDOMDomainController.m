@@ -22,8 +22,6 @@ static const int kPDDOMNodeTypeDocument = 9;
 @property (nonatomic, strong) NSMutableDictionary * nodeIdsForObjects;
 @property (nonatomic, assign) NSUInteger nodeIdCounter;
 
-@property (nonatomic, strong) NSArray *visibleAttributeKeyPaths;
-
 @property (nonatomic, strong) UIView *viewToHighlight;
 @property (nonatomic, strong) UIView *highlightOverlay;
 
@@ -42,7 +40,6 @@ static const int kPDDOMNodeTypeDocument = 9;
 - (id)init;
 {
     if (self = [super init]) {
-        self.visibleAttributeKeyPaths = @[@"frame", @"opaque", @"clipsToBounds", @"alpha"];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowsChanged) name:UIWindowDidBecomeHiddenNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowsChanged) name:UIWindowDidBecomeVisibleNotification object:nil];
@@ -120,6 +117,20 @@ static const int kPDDOMNodeTypeDocument = 9;
 }
 
 #pragma mark - Setter Overrides
+
+- (void)setViewKeyPathsToDisplay:(NSArray *)viewKeyPathsToDisplay;
+{
+    if (![_viewKeyPathsToDisplay isEqualToArray:viewKeyPathsToDisplay]) {
+        // Stop tracking all the views to remove KVO
+        [self stopTrackingAllViews];
+        
+        // Now that the observers have been removed, it's safe to change the keyPaths array
+        _viewKeyPathsToDisplay = viewKeyPathsToDisplay;
+        
+        // Refresh the DOM tree to see the new attributes
+        [self.domain documentUpdated];
+    }
+}
 
 - (void)setHighlightOverlay:(UIView *)highlightOverlay;
 {
@@ -344,7 +355,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     [self.objectsForNodeIds setObject:view forKey:nodeId];
     
     // Use KVO to keep the displayed properties fresh
-    for (NSString *keyPath in self.visibleAttributeKeyPaths) {
+    for (NSString *keyPath in self.viewKeyPathsToDisplay) {
         [view addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
     }
 }
@@ -374,8 +385,15 @@ static const int kPDDOMNodeTypeDocument = 9;
     [self.objectsForNodeIds removeObjectForKey:nodeId];
     
     // Unregister from KVO
-    for (NSString *keyPath in self.visibleAttributeKeyPaths) {
+    for (NSString *keyPath in self.viewKeyPathsToDisplay) {
         [view removeObserver:self forKeyPath:keyPath];
+    }
+}
+
+- (void)stopTrackingAllViews
+{
+    for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
+        [self stopTrackingView:window];
     }
 }
 
@@ -384,7 +402,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     // Make sure this is a node we know about and a key path we're observing
     NSNumber *nodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:object]];
     
-    if ([self.objectsForNodeIds objectForKey:nodeId] && [self.visibleAttributeKeyPaths containsObject:keyPath]) {
+    if ([self.objectsForNodeIds objectForKey:nodeId] && [self.viewKeyPathsToDisplay containsObject:keyPath]) {
         // Update the the attributes on the DOM node
         NSString *newValue = [self stringForValue:[change objectForKey:NSKeyValueChangeNewKey] atKeyPath:keyPath onObject:object];
         [self.domain attributeModifiedWithNodeId:nodeId name:keyPath value:newValue];
@@ -510,7 +528,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     
     if ([object isKindOfClass:[UIView class]]) {
         // Get strings for all the key paths in visibileAttributeKeyPaths
-        for (NSString *keyPath in self.visibleAttributeKeyPaths) {
+        for (NSString *keyPath in self.viewKeyPathsToDisplay) {
             
             NSValue *value = [object valueForKeyPath:keyPath];
             NSString *stringValue = [self stringForValue:value atKeyPath:keyPath onObject:object];

@@ -42,6 +42,7 @@
 
 // View Hierarchy Debugging
 - (void)enableViewHierarchyDebugging;
+- (void)setDisplayedViewAttributeKeyPaths:(NSArray *)keyPaths;
 
 @end
 
