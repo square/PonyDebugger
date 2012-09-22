@@ -132,12 +132,6 @@ static const int kPDDOMNodeTypeDocument = 9;
     }
 }
 
-- (void)setHighlightOverlay:(UIView *)highlightOverlay;
-{
-    [_highlightOverlay removeFromSuperview];
-    _highlightOverlay = highlightOverlay;
-}
-
 #pragma mark - PDDOMCommandDelegate
 
 - (void)domain:(PDDOMDomain *)domain getDocumentWithCallback:(void (^)(PDDOMNode *root, id error))callback;
@@ -165,7 +159,15 @@ static const int kPDDOMNodeTypeDocument = 9;
             highlightFrame = [window convertRect:self.viewToHighlight.frame fromView:self.viewToHighlight.superview];
         }
         
-        self.highlightOverlay = [[UIView alloc] initWithFrame:highlightFrame];
+        if (!self.highlightOverlay) {
+            self.highlightOverlay = [[UIView alloc] initWithFrame:CGRectZero];
+            self.highlightOverlay.layer.borderWidth = 1.0;
+            
+            [self.highlightOverlay addGestureRecognizer:self.panGestureRecognizer];
+            [self.highlightOverlay addGestureRecognizer:self.pinchGestureRecognizer];
+        }
+        
+        self.highlightOverlay.frame = highlightFrame;
         
         // TODO: PDDOMRGBA & PDDOMHighlightConfig objects aren't coming back. Just NSDictionaries
         
@@ -185,11 +187,6 @@ static const int kPDDOMNodeTypeDocument = 9;
         
         self.highlightOverlay.layer.borderColor = [[UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]] CGColor];
         
-        self.highlightOverlay.layer.borderWidth = 1.0;
-        
-        [self.highlightOverlay addGestureRecognizer:self.panGestureRecognizer];
-        [self.highlightOverlay addGestureRecognizer:self.pinchGestureRecognizer];
-        
         [window addSubview:self.highlightOverlay];
     }
     
@@ -198,7 +195,7 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 - (void)domain:(PDDOMDomain *)domain hideHighlightWithCallback:(void (^)(id))callback;
 {
-    self.highlightOverlay = nil;
+    [self.highlightOverlay removeFromSuperview];
     self.viewToHighlight = nil;
     
     callback(nil);
@@ -380,7 +377,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     
     // Remove the highlight if necessary
     if (view == self.viewToHighlight) {
-        self.highlightOverlay = nil;
+        [self.highlightOverlay removeFromSuperview];
         self.viewToHighlight = nil;
     }
     
