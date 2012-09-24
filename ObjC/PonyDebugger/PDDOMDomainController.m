@@ -309,8 +309,8 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 - (void)removeView:(UIView *)view;
 {
-    // Bail early if we're ignoring this view
-    if ([self shouldIgnoreView:view]) {
+    // Bail early if we're ignoring this view or if the document hasn't been requested yet
+    if ([self shouldIgnoreView:view] || !self.objectsForNodeIds) {
         return;
     }
     
@@ -335,8 +335,8 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 - (void)addView:(UIView *)view;
 {
-    // Bail early if we're ignoring this view
-    if ([self shouldIgnoreView:view]) {
+    // Bail early if we're ignoring this view or if the document hasn't been requested yet
+    if ([self shouldIgnoreView:view] || !self.objectsForNodeIds) {
         return;
     }
 
