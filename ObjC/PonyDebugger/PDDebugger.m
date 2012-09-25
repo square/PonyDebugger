@@ -109,7 +109,7 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
     if (appIconFile) {
         UIImage *appIcon = [UIImage imageNamed:appIconFile];
         if (appIcon) {
-            NSString *base64IconString = [UIImagePNGRepresentation(appIcon) SR_stringByBase64Encoding];
+            NSString *base64IconString = UIImagePNGRepresentation(appIcon).PD_stringByBase64Encoding;
             [parameters setObject:base64IconString forKey:@"app_icon_base64"];
         }
     }

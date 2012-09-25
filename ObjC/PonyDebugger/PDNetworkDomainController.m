@@ -386,7 +386,7 @@
 - (void)setResponse:(NSData *)response forRequestID:(NSString *)requestID isBinary:(BOOL)isBinary;
 {
     NSString *encodedBody = isBinary ?
-                            response.SR_stringByBase64Encoding :
+                            response.PD_stringByBase64Encoding :
                             [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
 
     NSDictionary *responseDict = [NSDictionary dictionaryWithObjectsAndKeys:
