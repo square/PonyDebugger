@@ -573,7 +573,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     NSMutableArray *attributes = [NSMutableArray arrayWithArray:@[ @"class", [[object class] description] ]];
     
     if ([object isKindOfClass:[UIView class]]) {
-        // Get strings for all the key paths in visibileAttributeKeyPaths
+        // Get strings for all the key paths in viewKeyPathsToDisplay
         for (NSString *keyPath in self.viewKeyPathsToDisplay) {
             
             NSValue *value = [object valueForKeyPath:keyPath];
