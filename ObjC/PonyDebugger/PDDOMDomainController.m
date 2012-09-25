@@ -387,6 +387,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     [self.nodeIdsForObjects setObject:nodeId forKey:[NSValue valueWithNonretainedObject:view]];
     [self.objectsForNodeIds setObject:view forKey:nodeId];
     
+    NSAssert(view != self.highlightOverlay, @"We really don't want to KVO the highlight overlay");
     // Use KVO to keep the displayed properties fresh
     for (NSString *keyPath in self.viewKeyPathsToDisplay) {
         [view addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
@@ -491,7 +492,10 @@ static const int kPDDOMNodeTypeDocument = 9;
     NSMutableArray *windowNodes = [NSMutableArray arrayWithCapacity:[windows count]];
     
     for (id window in windows) {
-        [windowNodes addObject:[self nodeForView:window]];
+        PDDOMNode *windowNode = [self nodeForView:window];
+        if (windowNode) {
+            [windowNodes addObject:windowNode];
+        }
     }
     
     return windowNodes;
@@ -499,10 +503,18 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 - (PDDOMNode *)nodeForView:(UIView *)view;
 {
+    // Don't generate nodes for views we want to ignore
+    if ([self shouldIgnoreView:view]) {
+        return nil;
+    }
+    
     // Build the child nodes by recursing on this view's subviews
     NSMutableArray *childNodes = [[NSMutableArray alloc] initWithCapacity:[view.subviews count]];
     for (UIView *subview in [view.subviews reverseObjectEnumerator]) {
-        [childNodes addObject:[self nodeForView:subview]];
+        PDDOMNode *childNode = [self nodeForView:subview];
+        if (childNode) {
+            [childNodes addObject:childNode];
+        }
     }
     
     PDDOMNode *viewNode = [self elementNodeForObject:view withChildNodes:childNodes];
