@@ -11,7 +11,7 @@
 
 #import "PDNetworkDomainController.h"
 
-#import <SocketRocket/NSData+SRB64Additions.h>
+#import "NSData+PDB64Additions.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <dispatch/queue.h>

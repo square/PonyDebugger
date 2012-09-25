@@ -9,7 +9,6 @@
 //  which Square, Inc. licenses this file to you.
 //
 
-#import <SocketRocket/NSData+SRB64Additions.h>
 #import <SocketRocket/SRWebSocket.h>
 #import <UIKit/UIKit.h>
 
@@ -22,6 +21,7 @@
 #import "PDRuntimeDomainController.h"
 #import "PDPageDomainController.h"
 #import "PDIndexedDBDomainController.h"
+#import "NSData+PDB64Additions.h"
 
 
 static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
