@@ -425,7 +425,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     [self.objectsForNodeIds removeObjectForKey:nodeId];
 }
 
-- (void)stopTrackingAllViews
+- (void)stopTrackingAllViews;
 {
     for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
         [self stopTrackingView:window];
