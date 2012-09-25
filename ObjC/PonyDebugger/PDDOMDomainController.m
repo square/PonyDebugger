@@ -18,8 +18,8 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 @interface PDDOMDomainController ()
 
-@property (nonatomic, strong) NSMutableDictionary * objectsForNodeIds;
-@property (nonatomic, strong) NSMutableDictionary * nodeIdsForObjects;
+@property (nonatomic, strong) NSMutableDictionary *objectsForNodeIds;
+@property (nonatomic, strong) NSMutableDictionary *nodeIdsForObjects;
 @property (nonatomic, assign) NSUInteger nodeIdCounter;
 
 @property (nonatomic, strong) UIView *viewToHighlight;
