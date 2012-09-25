@@ -414,13 +414,14 @@ static const int kPDDOMNodeTypeDocument = 9;
         self.viewToHighlight = nil;
     }
     
-    [self.nodeIdsForObjects removeObjectForKey:viewKey];
-    [self.objectsForNodeIds removeObjectForKey:nodeId];
-    
     // Unregister from KVO
     for (NSString *keyPath in self.viewKeyPathsToDisplay) {
         [view removeObserver:self forKeyPath:keyPath];
     }
+    
+    // Important that this comes last, so we don't get KVO observations for objects we don't konw about
+    [self.nodeIdsForObjects removeObjectForKey:viewKey];
+    [self.objectsForNodeIds removeObjectForKey:nodeId];
 }
 
 - (void)stopTrackingAllViews
