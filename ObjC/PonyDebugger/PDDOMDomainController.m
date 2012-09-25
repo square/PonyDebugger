@@ -438,7 +438,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     NSNumber *nodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:object]];
     
     if ([self.objectsForNodeIds objectForKey:nodeId] && [self.viewKeyPathsToDisplay containsObject:keyPath]) {
-        // Update the the attributes on the DOM node
+        // Update the attributes on the DOM node
         NSString *newValue = [self stringForValue:[change objectForKey:NSKeyValueChangeNewKey] atKeyPath:keyPath onObject:object];
         [self.domain attributeModifiedWithNodeId:nodeId name:keyPath value:newValue];
     } else {
