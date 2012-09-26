@@ -384,10 +384,11 @@ static const int kPDDOMNodeTypeDocument = 9;
 
 - (void)startTrackingView:(UIView *)view withNodeId:(NSNumber *)nodeId;
 {
+    NSAssert(view != self.highlightOverlay, @"The highlight overlay should not be tracked. We update its frame in the KVO observe method, so tracking it will lead to infinite recursion");
+    
     [self.nodeIdsForObjects setObject:nodeId forKey:[NSValue valueWithNonretainedObject:view]];
     [self.objectsForNodeIds setObject:view forKey:nodeId];
     
-    NSAssert(view != self.highlightOverlay, @"We really don't want to KVO the highlight overlay");
     // Use KVO to keep the displayed properties fresh
     for (NSString *keyPath in self.viewKeyPathsToDisplay) {
         [view addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
