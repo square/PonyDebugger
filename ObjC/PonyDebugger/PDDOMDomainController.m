@@ -13,14 +13,18 @@
 #import <objc/runtime.h>
 #import <QuartzCore/QuartzCore.h>
 
+// Constants defined in the DOM Level 2 Core: http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-1950641247
 static const int kPDDOMNodeTypeElement = 1;
 static const int kPDDOMNodeTypeAttribute = 2;
 static const int kPDDOMNodeTypeText = 3;
 static const int kPDDOMNodeTypeComment = 8;
 static const int kPDDOMNodeTypeDocument = 9;
 
+static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
+
 @interface PDDOMDomainController ()
 
+// Use mirrored dictionaries to map between objets and node ids with fast lookup in both directions
 @property (nonatomic, strong) NSMutableDictionary *objectsForNodeIds;
 @property (nonatomic, strong) NSMutableDictionary *nodeIdsForObjects;
 @property (nonatomic, assign) NSUInteger nodeIdCounter;
@@ -151,7 +155,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     id objectForNodeId = [self.objectsForNodeIds objectForKey:nodeId];
     if ([objectForNodeId isKindOfClass:[UIView class]]) {
         // Add a highlight overlay directly to the window if this is a window, otherwise to the view's window
-        self.viewToHighlight = (id)objectForNodeId;
+        self.viewToHighlight = objectForNodeId;
         
         UIWindow *window = self.viewToHighlight.window;
         CGRect highlightFrame = CGRectZero;
@@ -219,7 +223,7 @@ static const int kPDDOMNodeTypeDocument = 9;
     NSString *typeEncoding = [self typeEncodingForKeyPath:name onObject:nodeObject];
     
     // Try to parse out the value
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[\"'](.*)[\"']" options:0 error:NULL];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:kPDDOMAttributeParsingRegex options:0 error:NULL];
     NSTextCheckingResult *firstMatch = [regex firstMatchInString:text options:0 range:NSMakeRange(0, [text length])];
     if (firstMatch) {
         NSString *valueString = [text substringWithRange:[firstMatch rangeAtIndex:1]];
