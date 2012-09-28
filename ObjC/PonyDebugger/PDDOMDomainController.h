@@ -4,6 +4,9 @@
 //
 //  Created by Ryan Olson on 2012-09-19.
 //
+//  Licensed to Square, Inc. under one or more contributor license agreements.
+//  See the LICENSE file distributed with this work for the terms under
+//  which Square, Inc. licenses this file to you.
 //
 
 #import <PonyDebugger/PonyDebugger.h>
