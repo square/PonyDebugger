@@ -449,7 +449,6 @@ static const int kPDDOMNodeTypeDocument = 9;
     // If this is the view we're highlighting, update appropriately
     if (object == self.viewToHighlight && [keyPath isEqualToString:@"frame"]) {
         CGRect updatedFrame = [[change objectForKey:NSKeyValueChangeNewKey] CGRectValue];
-        // TODO: Investigate setting property, which is also an observed keyPath, for infinite loop.
         self.highlightOverlay.frame = [self.viewToHighlight.superview convertRect:updatedFrame toView:nil];
     }
 }
