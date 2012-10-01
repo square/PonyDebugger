@@ -11,7 +11,7 @@
 
 #import "PDNetworkDomainController.h"
 
-#import <SocketRocket/NSData+SRB64Additions.h>
+#import "NSData+PDB64Additions.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <dispatch/queue.h>
@@ -386,7 +386,7 @@
 - (void)setResponse:(NSData *)response forRequestID:(NSString *)requestID isBinary:(BOOL)isBinary;
 {
     NSString *encodedBody = isBinary ?
-                            response.SR_stringByBase64Encoding :
+                            response.PD_stringByBase64Encoding :
                             [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
 
     NSDictionary *responseDict = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -560,7 +560,7 @@
         NSURLResponse *response = [self responseForConnection:connection];
         NSString *requestID = [self requestIDForConnection:connection];
         
-        BOOL isBinary = ([response.MIMEType rangeOfString:@"json"].location == NSNotFound) && ([response.MIMEType rangeOfString:@"text"].location == NSNotFound);
+        BOOL isBinary = ([response.MIMEType rangeOfString:@"json"].location == NSNotFound) && ([response.MIMEType rangeOfString:@"text"].location == NSNotFound) && ([response.MIMEType rangeOfString:@"xml"].location == NSNotFound);
         
         NSData *accumulatedData = [self accumulatedDataForConnection:connection];
         

@@ -112,6 +112,8 @@
 		3DE2293115D5874C0035A508 /* PonyDebugger-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228C915D5874C0035A508 /* PonyDebugger-Prefix.pch */; };
 		3DE2293215D5874C0035A508 /* PonyDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228CA15D5874C0035A508 /* PonyDebugger.h */; settings = {ATTRIBUTES = (); }; };
 		F683ADB014FC1B4D008EBBA7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */; };
+		F6EA51A716124E7D00A27364 /* NSData+PDB64Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = F6EA51A316124E7D00A27364 /* NSData+PDB64Additions.h */; };
+		F6EA51A816124E7D00A27364 /* NSData+PDB64Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EA51A416124E7D00A27364 /* NSData+PDB64Additions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -266,6 +268,8 @@
 		F66E1ED214FC7CF0000E0707 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F683ADAC14FC1B4C008EBBA7 /* libPonyDebugger.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPonyDebugger.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		F6EA51A316124E7D00A27364 /* NSData+PDB64Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+PDB64Additions.h"; sourceTree = "<group>"; };
+		F6EA51A416124E7D00A27364 /* NSData+PDB64Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+PDB64Additions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -364,6 +368,8 @@
 				3DE2293415D5876F0035A508 /* PDObject */,
 				3DE228AF15D5874C0035A508 /* NSObject+PDRuntimePropertyDescriptor.h */,
 				3DE228B015D5874C0035A508 /* NSObject+PDRuntimePropertyDescriptor.m */,
+				F6EA51A316124E7D00A27364 /* NSData+PDB64Additions.h */,
+				F6EA51A416124E7D00A27364 /* NSData+PDB64Additions.m */,
 				3DE228AD15D5874C0035A508 /* NSManagedObject+PDRuntimePropertyDescriptor.h */,
 				3DE228AE15D5874C0035A508 /* NSManagedObject+PDRuntimePropertyDescriptor.m */,
 				3DE228B115D5874C0035A508 /* PDArrayContainer.h */,
@@ -527,6 +533,7 @@
 				2516719615E61023002F2F95 /* PDWebGLDomain.h in Headers */,
 				2516719815E61023002F2F95 /* PDWebGLTypes.h in Headers */,
 				2516719A15E61023002F2F95 /* PDWorkerDomain.h in Headers */,
+				F6EA51A716124E7D00A27364 /* NSData+PDB64Additions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -669,6 +676,7 @@
 				2516719715E61023002F2F95 /* PDWebGLDomain.m in Sources */,
 				2516719915E61023002F2F95 /* PDWebGLTypes.m in Sources */,
 				2516719B15E61023002F2F95 /* PDWorkerDomain.m in Sources */,
+				F6EA51A816124E7D00A27364 /* NSData+PDB64Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

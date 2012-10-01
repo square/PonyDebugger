@@ -9,7 +9,6 @@
 //  which Square, Inc. licenses this file to you.
 //
 
-#import <SocketRocket/NSData+SRB64Additions.h>
 #import <SocketRocket/SRWebSocket.h>
 #import <UIKit/UIKit.h>
 
@@ -22,6 +21,7 @@
 #import "PDRuntimeDomainController.h"
 #import "PDPageDomainController.h"
 #import "PDIndexedDBDomainController.h"
+#import "NSData+PDB64Additions.h"
 
 
 static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
@@ -109,7 +109,7 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
     if (appIconFile) {
         UIImage *appIcon = [UIImage imageNamed:appIconFile];
         if (appIcon) {
-            NSString *base64IconString = [UIImagePNGRepresentation(appIcon) SR_stringByBase64Encoding];
+            NSString *base64IconString = UIImagePNGRepresentation(appIcon).PD_stringByBase64Encoding;
             [parameters setObject:base64IconString forKey:@"app_icon_base64"];
         }
     }
