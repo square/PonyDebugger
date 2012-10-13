@@ -29,6 +29,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 @interface PDDebugger () <SRWebSocketDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
+- (void)_resolveService:(NSNetService*)service;
 - (void)_addController:(PDDomainController *)controller;
 - (NSString *)_domainNameForController:(PDDomainController *)controller;
 - (BOOL)_isTrackingDomainController:(PDDomainController *)controller;
@@ -188,37 +189,51 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 	[_bonjourServices addObject:service];
     
     if (!_currentService) {
-        _currentService = service;
-        _currentService.delegate = self;
-        [_currentService resolveWithTimeout:10.f];
+        [self _resolveService:service];
     }
 }
 
 - (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didRemoveService:(NSNetService*)service moreComing:(BOOL)moreComing
 {
-    if (service == _currentService) {
+    if ([service isEqual:_currentService]) {
         [_currentService stop];
         _currentService = nil;
     }
-	[_bonjourServices removeObject:service];
-    NSLog(@"Removed ponyd bonjour service: %@", service);
     
-    // TODO: try next one
+    NSUInteger serviceIndex = [_bonjourServices indexOfObject:service];
+    if (NSNotFound != serviceIndex) {
+        [_bonjourServices removeObjectAtIndex:serviceIndex];
+        NSLog(@"Removed ponyd bonjour service: %@", service);
+        
+        // Try next one
+        if (!_currentService && _bonjourServices.count){
+            NSNetService* nextService = [_bonjourServices objectAtIndex:(serviceIndex % _bonjourServices.count)];
+            [self _resolveService:nextService];
+        }
+    }
 }
 
 #pragma mark - NSNetServiceDelegate
 
 - (void)netService:(NSNetService *)service didNotResolve:(NSDictionary *)errorDict
 {
-    NSAssert(service == _currentService, @"Did not resolved incorrect service!");
+    NSAssert([service isEqual:_currentService], @"Did not resolve incorrect service!");
+    _currentService = nil;
     
-	// TODO: try next one
+	// Try next one, we may retry the same one if there's only 1 service in _bonjourServices
+    NSUInteger serviceIndex = [_bonjourServices indexOfObject:service];
+    if (NSNotFound != serviceIndex) {
+        if (_bonjourServices.count){
+            NSNetService* nextService = [_bonjourServices objectAtIndex:((serviceIndex + 1) % _bonjourServices.count)];
+            [self _resolveService:nextService];
+        }
+    }
 }
 
 
 - (void)netServiceDidResolveAddress:(NSNetService *)service
 {
-	NSAssert(service == _currentService, @"Resolved incorrect service!");
+	NSAssert([service isEqual:_currentService], @"Resolved incorrect service!");
 	
 	[self connectToURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://%@:%d/device", [service hostName], [service port]]]];
 }
@@ -260,6 +275,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 - (void)connectToURL:(NSURL *)url;
 {
+    NSLog(@"Connecting to %@", url);
     [_socket close];
     _socket.delegate = nil;
     
@@ -324,6 +340,14 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 }
 
 #pragma mark - Private Methods
+
+- (void)_resolveService:(NSNetService*)service
+{
+    NSLog(@"Resolving %@", service);
+    _currentService = service;
+    _currentService.delegate = self;
+    [_currentService resolveWithTimeout:10.f];
+}
 
 - (NSString *)_domainNameForController:(PDDomainController *)controller;
 {
