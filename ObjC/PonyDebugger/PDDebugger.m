@@ -38,6 +38,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 
 @implementation PDDebugger {
+    NSString *_bonjourServiceName;
     NSNetServiceBrowser *_bonjourBrowser;
     NSMutableArray *_bonjourServices;
     NSNetService *_currentService;
@@ -185,6 +186,12 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 - (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didFindService:(NSNetService*)service moreComing:(BOOL)moreComing
 {
+    if (_bonjourServiceName
+        && NSOrderedSame != [_bonjourServiceName compare:service.name
+                                                 options:NSCaseInsensitiveSearch | NSNumericSearch | NSDiacriticInsensitiveSearch]) {
+        return;
+    }
+    
     NSLog(@"Found ponyd bonjour service: %@", service);
 	[_bonjourServices addObject:service];
     
@@ -261,15 +268,26 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 - (void)autoConnect
 {
+    // Connect to any bonjour service
+    [self autoConnectToBonjourServiceNamed:nil];
+}
+
+- (void)autoConnectToBonjourServiceNamed:(NSString*)serviceName
+{
     if (_bonjourBrowser) {
         return;
     }
     
+    _bonjourServiceName = serviceName;
     _bonjourServices = [NSMutableArray array];
     _bonjourBrowser = [[NSNetServiceBrowser alloc] init];
     [_bonjourBrowser setDelegate:self];
     
-    NSLog(@"Waiting for ponyd bonjour service...");
+    if (_bonjourServiceName) {
+        NSLog(@"Waiting for ponyd bonjour service '%@'...", _bonjourServiceName);
+    } else {
+        NSLog(@"Waiting for ponyd bonjour service...");
+    }
     [_bonjourBrowser searchForServicesOfType:PDBonjourServiceType inDomain:@""];
 }
 
