@@ -184,7 +184,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 #pragma mark - NSNetServiceBrowserDelegate
 
-- (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didFindService:(NSNetService*)service moreComing:(BOOL)moreComing
+- (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didFindService:(NSNetService*)service moreComing:(BOOL)moreComing;
 {
     if (_bonjourServiceName
         && NSOrderedSame != [_bonjourServiceName compare:service.name
@@ -200,7 +200,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
     }
 }
 
-- (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didRemoveService:(NSNetService*)service moreComing:(BOOL)moreComing
+- (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didRemoveService:(NSNetService*)service moreComing:(BOOL)moreComing;
 {
     if ([service isEqual:_currentService]) {
         [_currentService stop];
@@ -222,7 +222,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 #pragma mark - NSNetServiceDelegate
 
-- (void)netService:(NSNetService *)service didNotResolve:(NSDictionary *)errorDict
+- (void)netService:(NSNetService *)service didNotResolve:(NSDictionary *)errorDict;
 {
     NSAssert([service isEqual:_currentService], @"Did not resolve incorrect service!");
     _currentService = nil;
@@ -238,7 +238,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 }
 
 
-- (void)netServiceDidResolveAddress:(NSNetService *)service
+- (void)netServiceDidResolveAddress:(NSNetService *)service;
 {
 	NSAssert([service isEqual:_currentService], @"Resolved incorrect service!");
 	
@@ -266,13 +266,13 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 #pragma mark Connect / Disconnect
 
-- (void)autoConnect
+- (void)autoConnect;
 {
     // Connect to any bonjour service
     [self autoConnectToBonjourServiceNamed:nil];
 }
 
-- (void)autoConnectToBonjourServiceNamed:(NSString*)serviceName
+- (void)autoConnectToBonjourServiceNamed:(NSString*)serviceName;
 {
     if (_bonjourBrowser) {
         return;
@@ -359,7 +359,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 #pragma mark - Private Methods
 
-- (void)_resolveService:(NSNetService*)service
+- (void)_resolveService:(NSNetService*)service;
 {
     NSLog(@"Resolving %@", service);
     _currentService = service;
