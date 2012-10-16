@@ -24,7 +24,7 @@ setup(
     author_email='eng@squareup.com',
     url='https://github.com/square/PonyDebugger',
     license='Apache Licence 2.0',
-    install_requires=['tornado'],
+    install_requires=['tornado', 'pybonjour'],
     packages=['ponyd'],
     include_package_data=True,
     zip_safe=False,
