@@ -309,6 +309,15 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 - (void)disconnect;
 {
+    [_bonjourBrowser stop];
+    _bonjourBrowser.delegate = nil;
+    _bonjourBrowser = nil;
+    _bonjourServiceName = nil;
+    _bonjourServices = nil;
+    [_currentService stop];
+    _currentService.delegate = nil;
+    _currentService = nil;
+    
     [_socket close];
     _socket.delegate = nil;
     _socket = nil;
