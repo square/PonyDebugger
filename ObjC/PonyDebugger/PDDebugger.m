@@ -193,7 +193,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
     }
     
     NSLog(@"Found ponyd bonjour service: %@", service);
-	[_bonjourServices addObject:service];
+    [_bonjourServices addObject:service];
     
     if (!_currentService) {
         [self _resolveService:service];
@@ -229,7 +229,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
     _currentService.delegate = nil;
     _currentService = nil;
     
-	// Try next one, we may retry the same one if there's only 1 service in _bonjourServices
+    // Try next one, we may retry the same one if there's only 1 service in _bonjourServices
     NSUInteger serviceIndex = [_bonjourServices indexOfObject:service];
     if (NSNotFound != serviceIndex) {
         if (_bonjourServices.count){
@@ -242,9 +242,9 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 - (void)netServiceDidResolveAddress:(NSNetService *)service;
 {
-	NSAssert([service isEqual:_currentService], @"Resolved incorrect service!");
-	
-	[self connectToURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://%@:%d/device", [service hostName], [service port]]]];
+    NSAssert([service isEqual:_currentService], @"Resolved incorrect service!");
+
+    [self connectToURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://%@:%d/device", [service hostName], [service port]]]];
 }
 
 #pragma mark - Public Methods
