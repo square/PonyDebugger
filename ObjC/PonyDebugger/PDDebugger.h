@@ -25,6 +25,10 @@
 - (void)sendEventWithName:(NSString *)string parameters:(id)params;
 
 // Connect/Disconnect
+- (void)autoConnect; // Connect to any ponyd service found via Bonjour
+// Only connect to the specified Bonjour service name, this makes things easier in a teamwork
+// environment where multiple instances of ponyd may run on the same network
+- (void)autoConnectToBonjourServiceNamed:(NSString*)serviceName;
 - (void)connectToURL:(NSURL *)url;
 - (BOOL)isConnected;
 - (void)disconnect;

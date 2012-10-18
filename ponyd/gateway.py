@@ -8,11 +8,14 @@ from ponyd.command import PonydCommand
 from ponyd.argbase import Arg
 
 import os
+import thread
 
 import json
 import uuid
 
 import argparse
+
+import bonjour
 
 import logging
 
@@ -213,6 +216,10 @@ class Gateway(PonydCommand):
                            default='127.0.0.1',
                            metavar='IFACE')
 
+    bonjour_name = Arg('-b', '--bonjour-name',
+                       help='name of the bonjour service. [default: %(default)s]',
+                       default='Pony Gateway')
+
     def __call__(self):
         if not os.path.exists(self.devtools_path):
             print "Error: devtools directory %s does not exist. Use ponydownloader to download a compatible version of Chrome Developer Tools." % self.devtools_path
@@ -232,6 +239,8 @@ class Gateway(PonydCommand):
         ])
 
         print "PonyGateway starting. Listening on %s:%s" % (self.listen_interface, self.listen_port)
+
+        thread.start_new_thread(bonjour.register_service, (self.bonjour_name, "_ponyd._tcp", self.listen_port))
 
         application.listen(self.listen_port, self.listen_interface)
         tornado.ioloop.IOLoop.instance().start()
