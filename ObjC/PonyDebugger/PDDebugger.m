@@ -204,6 +204,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 {
     if ([service isEqual:_currentService]) {
         [_currentService stop];
+        _currentService.delegate = nil;
         _currentService = nil;
     }
     
@@ -225,6 +226,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 - (void)netService:(NSNetService *)service didNotResolve:(NSDictionary *)errorDict;
 {
     NSAssert([service isEqual:_currentService], @"Did not resolve incorrect service!");
+    _currentService.delegate = nil;
     _currentService = nil;
     
 	// Try next one, we may retry the same one if there's only 1 service in _bonjourServices
