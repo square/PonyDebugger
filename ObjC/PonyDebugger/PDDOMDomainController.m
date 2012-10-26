@@ -449,8 +449,6 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         // Update the attributes on the DOM node
         NSString *newValue = [self stringForValue:[change objectForKey:NSKeyValueChangeNewKey] atKeyPath:keyPath onObject:object];
         [self.domain attributeModifiedWithNodeId:nodeId name:keyPath value:newValue];
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
     
     // If this is the view we're highlighting, update appropriately
@@ -458,6 +456,8 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         CGRect updatedFrame = [[change objectForKey:NSKeyValueChangeNewKey] CGRectValue];
         self.highlightOverlay.frame = [self.viewToHighlight.superview convertRect:updatedFrame toView:nil];
     }
+    
+    // Note that we do not call [super observeValueForKeyPath:...] because super doesn't implement the method
 }
 
 - (BOOL)shouldIgnoreView:(UIView *)view;
