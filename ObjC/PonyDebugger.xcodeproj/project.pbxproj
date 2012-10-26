@@ -111,6 +111,8 @@
 		3DE2293015D5874C0035A508 /* PDRuntimeDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE228C815D5874C0035A508 /* PDRuntimeDomainController.m */; };
 		3DE2293115D5874C0035A508 /* PonyDebugger-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228C915D5874C0035A508 /* PonyDebugger-Prefix.pch */; };
 		3DE2293215D5874C0035A508 /* PonyDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228CA15D5874C0035A508 /* PonyDebugger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		943D444D160A73810091CA77 /* PDDOMDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = 943D444B160A73810091CA77 /* PDDOMDomainController.h */; };
+		943D444E160A73810091CA77 /* PDDOMDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943D444C160A73810091CA77 /* PDDOMDomainController.m */; };
 		F683ADB014FC1B4D008EBBA7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */; };
 		F6EA51A716124E7D00A27364 /* NSData+PDB64Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = F6EA51A316124E7D00A27364 /* NSData+PDB64Additions.h */; };
 		F6EA51A816124E7D00A27364 /* NSData+PDB64Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EA51A416124E7D00A27364 /* NSData+PDB64Additions.m */; };
@@ -260,6 +262,8 @@
 		3DE228C915D5874C0035A508 /* PonyDebugger-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PonyDebugger-Prefix.pch"; sourceTree = "<group>"; };
 		3DE228CA15D5874C0035A508 /* PonyDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PonyDebugger.h; sourceTree = "<group>"; };
 		3DE2294915D5885C0035A508 /* SocketRocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SocketRocket.xcodeproj; path = SocketRocket/SocketRocket.xcodeproj; sourceTree = "<group>"; };
+		943D444B160A73810091CA77 /* PDDOMDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDOMDomainController.h; sourceTree = "<group>"; };
+		943D444C160A73810091CA77 /* PDDOMDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDOMDomainController.m; sourceTree = "<group>"; };
 		F60EBEA114FC87EE0095B011 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		F60EBEA714FC92450095B011 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		F60EBEAA14FC92630095B011 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
@@ -391,6 +395,8 @@
 		3DE2293315D587540035A508 /* Domain Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				943D444B160A73810091CA77 /* PDDOMDomainController.h */,
+				943D444C160A73810091CA77 /* PDDOMDomainController.m */,
 				3DE228BF15D5874C0035A508 /* PDIndexedDBDomainController.h */,
 				3DE228C015D5874C0035A508 /* PDIndexedDBDomainController.m */,
 				3DE228C115D5874C0035A508 /* PDNetworkDomainController.h */,
@@ -534,6 +540,7 @@
 				2516719815E61023002F2F95 /* PDWebGLTypes.h in Headers */,
 				2516719A15E61023002F2F95 /* PDWorkerDomain.h in Headers */,
 				F6EA51A716124E7D00A27364 /* NSData+PDB64Additions.h in Headers */,
+				943D444D160A73810091CA77 /* PDDOMDomainController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -677,6 +684,7 @@
 				2516719915E61023002F2F95 /* PDWebGLTypes.m in Sources */,
 				2516719B15E61023002F2F95 /* PDWorkerDomain.m in Sources */,
 				F6EA51A816124E7D00A27364 /* NSData+PDB64Additions.m in Sources */,
+				943D444E160A73810091CA77 /* PDDOMDomainController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

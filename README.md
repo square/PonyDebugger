@@ -36,6 +36,13 @@ The Core Data browsing feature allows you to register your applcation's `NSManag
 
 These are read-only stores at the moment.  There are plans to implement data mutation in a future release.
 
+### View Hierarchy Debugging
+
+PonyDebugger displays your application's view hierarchy in the Elements tab of the Chrome Developer Tools. As you move through the XML tree, the corresponding views are highlighted in your app. You can edit the displayed attributes (i.e. frame, alpha, ...) straight from the Elements tab, and you can change which attributes to display by giving PonyDebugger an array of UIView key paths. Deleting a node in the elements panel will remove that node from the view hierarchy. Finally, when a view is highlighted, you can move it or resize it from the app using pan and pinch gestures.
+
+![PonyDebugger View Hierarchy Debugging Screenshot](https://github.com/Flipboard/PonyDebugger/raw/master/Documentation/Images/ViewHierarchyDebugging.png)
+
+Currently only a subset of the actions possible from the elements panel have been implemented. There is significant room for continued work and improvement, but the current functionality should prove useful nonetheless.
 
 Quick Start
 -----------
@@ -175,6 +182,24 @@ To register a managed object context:
 ``` objective-c
 [debugger addManagedObjectContext:self.managedObjectContext withName:@"My MOC"];
 ```
+
+### View Hierarchy Debugging
+
+To enable view hierarchy debugging:
+
+``` objective-c
+[debugger enableViewHierarchyDebugging];
+```
+
+PonyDebugger will inject logic into `UIView` add/remove methods to monitor changes in the view hierarchy.
+
+You can also set the attributes you want to see in the elements panel by passing an array of `UIView` key path strings
+
+``` objective-c
+[debugger setDisplayedViewAttributeKeyPaths:@[@"frame", @"hidden", @"alpha", @"opaque"]];
+```
+
+PonyDebugger uses KVO to monitor changes in the attributes of all views in the hierarchy, so the information in the elements panel stays fresh.
 
 The repository contains a test application to demonstrate PonyDebugger's capabilities and usage.
 

@@ -40,6 +40,10 @@
 - (void)addManagedObjectContext:(NSManagedObjectContext *)context withName:(NSString *)name;
 - (void)removeManagedObjectContext:(NSManagedObjectContext *)context;
 
+// View Hierarchy Debugging
+- (void)enableViewHierarchyDebugging;
+- (void)setDisplayedViewAttributeKeyPaths:(NSArray *)keyPaths;
+
 @end
 
 @interface NSDate (PDDebugger)
