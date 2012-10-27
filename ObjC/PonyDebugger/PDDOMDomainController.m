@@ -255,50 +255,65 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 
 - (void)handlePanGesure:(UIPanGestureRecognizer *)panGR;
 {
-    if (panGR.state == UIGestureRecognizerStateBegan) {
-        self.lastPanPoint = [panGR locationInView:self.viewToHighlight.superview];
-    } else {
-        // Convert to superview coordinates for a consistent basis
-        CGPoint newPanPoint = [panGR locationInView:self.viewToHighlight.superview];
-        CGFloat deltaX = newPanPoint.x - self.lastPanPoint.x;
-        CGFloat deltaY = newPanPoint.y - self.lastPanPoint.y;
-        
-        CGRect frame = self.viewToHighlight.frame;
-        frame.origin.x += deltaX;
-        frame.origin.y += deltaY;
-        self.viewToHighlight.frame = frame;
-        
-        self.lastPanPoint = newPanPoint;
+    switch (panGR.state) {
+        case UIGestureRecognizerStateBegan:
+            self.lastPanPoint = [panGR locationInView:self.viewToHighlight.superview];
+            break;
+            
+        default: {
+            // Convert to superview coordinates for a consistent basis
+            CGPoint newPanPoint = [panGR locationInView:self.viewToHighlight.superview];
+            CGFloat deltaX = newPanPoint.x - self.lastPanPoint.x;
+            CGFloat deltaY = newPanPoint.y - self.lastPanPoint.y;
+            
+            CGRect frame = self.viewToHighlight.frame;
+            frame.origin.x += deltaX;
+            frame.origin.y += deltaY;
+            self.viewToHighlight.frame = frame;
+            
+            self.lastPanPoint = newPanPoint;
+            break;
+        }
     }
 }
 
 - (void)handlePinchGesture:(UIPinchGestureRecognizer *)pinchGR;
 {
-    if (pinchGR.state == UIGestureRecognizerStateBegan) {
-        self.originalPinchFrame = self.viewToHighlight.frame;
-        self.originalPinchLocation = [pinchGR locationInView:self.viewToHighlight.superview];
-    } else if (pinchGR.state == UIGestureRecognizerStateChanged) {
-        // Scale the frame by the pinch amount
-        CGFloat scale = [pinchGR scale];
-        CGRect newFrame = self.originalPinchFrame;
-        CGFloat scaleByFactor = (scale - 1.0) / 1.0;
-        scaleByFactor /= 3.0;
+    switch (pinchGR.state) {
+        case UIGestureRecognizerStateBegan:
+            self.originalPinchFrame = self.viewToHighlight.frame;
+            self.originalPinchLocation = [pinchGR locationInView:self.viewToHighlight.superview];
+            break;
         
-        newFrame.size.width *= 1.0 + scaleByFactor;
-        newFrame.size.height *= 1.0 + scaleByFactor;
+        case UIGestureRecognizerStateChanged: {
+            // Scale the frame by the pinch amount
+            CGFloat scale = [pinchGR scale];
+            CGRect newFrame = self.originalPinchFrame;
+            CGFloat scaleByFactor = (scale - 1.0) / 1.0;
+            scaleByFactor /= 3.0;
+            
+            newFrame.size.width *= 1.0 + scaleByFactor;
+            newFrame.size.height *= 1.0 + scaleByFactor;
+            
+            // Translate the center by the difference between the current centroid and the original centroid
+            CGPoint location = [pinchGR locationInView:self.viewToHighlight.superview];
+            CGPoint center = CGPointMake(floor(CGRectGetMidX(self.originalPinchFrame)), floor(CGRectGetMidY(self.originalPinchFrame)));
+            center.x += location.x - self.originalPinchLocation.x;
+            center.y += location.y - self.originalPinchLocation.y;
+            
+            newFrame.origin.x = center.x - newFrame.size.width / 2.0;
+            newFrame.origin.y = center.y - newFrame.size.height / 2.0;
+            self.viewToHighlight.frame = newFrame;
+            break;
+        }
         
-        // Translate the center by the difference between the current centroid and the original centroid
-        CGPoint location = [pinchGR locationInView:self.viewToHighlight.superview];
-        CGPoint center = CGPointMake(floor(CGRectGetMidX(self.originalPinchFrame)), floor(CGRectGetMidY(self.originalPinchFrame)));
-        center.x += location.x - self.originalPinchLocation.x;
-        center.y += location.y - self.originalPinchLocation.y;
-        
-        newFrame.origin.x = center.x - newFrame.size.width / 2.0;
-        newFrame.origin.y = center.y - newFrame.size.height / 2.0;
-        self.viewToHighlight.frame = newFrame;
-        
-    } else if (pinchGR.state == UIGestureRecognizerStateEnded || pinchGR.state == UIGestureRecognizerStateCancelled) {
-        self.viewToHighlight.frame = CGRectIntegral(self.viewToHighlight.frame);
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled:
+            self.viewToHighlight.frame = CGRectIntegral(self.viewToHighlight.frame);
+            break;
+            
+        default:
+            break;
     }
 }
 
