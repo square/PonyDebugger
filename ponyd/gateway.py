@@ -8,7 +8,6 @@ from ponyd.command import PonydCommand
 from ponyd.argbase import Arg
 
 import os
-import thread
 
 import json
 import uuid
