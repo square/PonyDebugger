@@ -240,7 +240,7 @@ class Gateway(PonydCommand):
 
         print "PonyGateway starting. Listening on %s:%s" % (self.listen_interface, self.listen_port)
 
-        thread.start_new_thread(bonjour.register_service, (self.bonjour_name, "_ponyd._tcp", self.listen_port))
+        bonjour.register_service(self.bonjour_name, "_ponyd._tcp", self.listen_port)
 
         application.listen(self.listen_port, self.listen_interface)
         tornado.ioloop.IOLoop.instance().start()
