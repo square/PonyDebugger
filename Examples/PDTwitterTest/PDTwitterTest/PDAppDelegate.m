@@ -46,12 +46,12 @@
     [debugger enableCoreDataDebugging];
     [debugger addManagedObjectContext:self.managedObjectContext withName:@"Twitter Test MOC"];
     
-    // Auto connect via bonjour discovery
-    [debugger autoConnect];
+    // Connect to a specific host
+    [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
+    // Or auto connect via bonjour discovery
+    //[debugger autoConnect];
     // Or to a specific ponyd bonjour service
     //[debugger autoConnectToBonjourServiceNamed:@"MY PONY"];
-    // Or connect to a specific host
-    //[debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
     
 #endif
     
