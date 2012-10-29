@@ -186,9 +186,8 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 - (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didFindService:(NSNetService*)service moreComing:(BOOL)moreComing;
 {
-    if (_bonjourServiceName
-        && NSOrderedSame != [_bonjourServiceName compare:service.name
-                                                 options:NSCaseInsensitiveSearch | NSNumericSearch | NSDiacriticInsensitiveSearch]) {
+    const NSStringCompareOptions compareOptions = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch;
+    if (_bonjourServiceName != nil && [_bonjourServiceName compare:service.name options:compareOptions] != NSOrderedSame) {
         return;
     }
     
