@@ -220,7 +220,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 - (void)domain:(PDDOMDomain *)domain setAttributesAsTextWithNodeId:(NSNumber *)nodeId text:(NSString *)text name:(NSString *)name callback:(void (^)(id))callback;
 {
     id nodeObject = [self.objectsForNodeIds objectForKey:nodeId];
-    NSString *typeEncoding = [self typeEncodingForKeyPath:name onObject:nodeObject];
+    const char *typeEncoding = [self typeEncodingForKeyPath:name onObject:nodeObject];
     
     // Try to parse out the value
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:kPDDOMAttributeParsingRegex options:0 error:NULL];
@@ -230,16 +230,16 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         
         // Note: this is by no means complete...
         // Allow BOOLs to be set with YES/NO
-        if ([typeEncoding isEqualToString:@(@encode(BOOL))] && ([valueString isEqualToString:@"YES"] || [valueString isEqualToString:@"NO"])) {
+        if (typeEncoding && !strcmp(typeEncoding, @encode(BOOL)) && ([valueString isEqualToString:@"YES"] || [valueString isEqualToString:@"NO"])) {
             BOOL boolValue = [valueString isEqualToString:@"YES"];
             [nodeObject setValue:[NSNumber numberWithBool:boolValue] forKeyPath:name];
-        } else if ([typeEncoding isEqualToString:@(@encode(CGPoint))]) {
+        } else if (typeEncoding && !strcmp(typeEncoding, @encode(CGPoint))) {
             CGPoint point = CGPointFromString(valueString);
             [nodeObject setValue:[NSValue valueWithCGPoint:point] forKeyPath:name];
-        } else if ([typeEncoding isEqualToString:@(@encode(CGSize))]) {
+        } else if (typeEncoding && !strcmp(typeEncoding, @encode(CGSize))) {
             CGSize size = CGSizeFromString(valueString);
             [nodeObject setValue:[NSValue valueWithCGSize:size] forKeyPath:name];
-        } else if ([typeEncoding isEqualToString:@(@encode(CGRect))]) {
+        } else if (typeEncoding && !strcmp(typeEncoding, @encode(CGRect))) {
             CGRect rect = CGRectFromString(valueString);
             [nodeObject setValue:[NSValue valueWithCGRect:rect] forKeyPath:name];
         } else {
@@ -255,50 +255,65 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 
 - (void)handlePanGesure:(UIPanGestureRecognizer *)panGR;
 {
-    if (panGR.state == UIGestureRecognizerStateBegan) {
-        self.lastPanPoint = [panGR locationInView:self.viewToHighlight.superview];
-    } else {
-        // Convert to superview coordinates for a consistent basis
-        CGPoint newPanPoint = [panGR locationInView:self.viewToHighlight.superview];
-        CGFloat deltaX = newPanPoint.x - self.lastPanPoint.x;
-        CGFloat deltaY = newPanPoint.y - self.lastPanPoint.y;
-        
-        CGRect frame = self.viewToHighlight.frame;
-        frame.origin.x += deltaX;
-        frame.origin.y += deltaY;
-        self.viewToHighlight.frame = frame;
-        
-        self.lastPanPoint = newPanPoint;
+    switch (panGR.state) {
+        case UIGestureRecognizerStateBegan:
+            self.lastPanPoint = [panGR locationInView:self.viewToHighlight.superview];
+            break;
+            
+        default: {
+            // Convert to superview coordinates for a consistent basis
+            CGPoint newPanPoint = [panGR locationInView:self.viewToHighlight.superview];
+            CGFloat deltaX = newPanPoint.x - self.lastPanPoint.x;
+            CGFloat deltaY = newPanPoint.y - self.lastPanPoint.y;
+            
+            CGRect frame = self.viewToHighlight.frame;
+            frame.origin.x += deltaX;
+            frame.origin.y += deltaY;
+            self.viewToHighlight.frame = frame;
+            
+            self.lastPanPoint = newPanPoint;
+            break;
+        }
     }
 }
 
 - (void)handlePinchGesture:(UIPinchGestureRecognizer *)pinchGR;
 {
-    if (pinchGR.state == UIGestureRecognizerStateBegan) {
-        self.originalPinchFrame = self.viewToHighlight.frame;
-        self.originalPinchLocation = [pinchGR locationInView:self.viewToHighlight.superview];
-    } else if (pinchGR.state == UIGestureRecognizerStateChanged) {
-        // Scale the frame by the pinch amount
-        CGFloat scale = [pinchGR scale];
-        CGRect newFrame = self.originalPinchFrame;
-        CGFloat scaleByFactor = (scale - 1.0) / 1.0;
-        scaleByFactor /= 3.0;
+    switch (pinchGR.state) {
+        case UIGestureRecognizerStateBegan:
+            self.originalPinchFrame = self.viewToHighlight.frame;
+            self.originalPinchLocation = [pinchGR locationInView:self.viewToHighlight.superview];
+            break;
         
-        newFrame.size.width *= 1.0 + scaleByFactor;
-        newFrame.size.height *= 1.0 + scaleByFactor;
+        case UIGestureRecognizerStateChanged: {
+            // Scale the frame by the pinch amount
+            CGFloat scale = [pinchGR scale];
+            CGRect newFrame = self.originalPinchFrame;
+            CGFloat scaleByFactor = (scale - 1.0) / 1.0;
+            scaleByFactor /= 3.0;
+            
+            newFrame.size.width *= 1.0 + scaleByFactor;
+            newFrame.size.height *= 1.0 + scaleByFactor;
+            
+            // Translate the center by the difference between the current centroid and the original centroid
+            CGPoint location = [pinchGR locationInView:self.viewToHighlight.superview];
+            CGPoint center = CGPointMake(floor(CGRectGetMidX(self.originalPinchFrame)), floor(CGRectGetMidY(self.originalPinchFrame)));
+            center.x += location.x - self.originalPinchLocation.x;
+            center.y += location.y - self.originalPinchLocation.y;
+            
+            newFrame.origin.x = center.x - newFrame.size.width / 2.0;
+            newFrame.origin.y = center.y - newFrame.size.height / 2.0;
+            self.viewToHighlight.frame = newFrame;
+            break;
+        }
         
-        // Translate the center by the difference between the current centroid and the original centroid
-        CGPoint location = [pinchGR locationInView:self.viewToHighlight.superview];
-        CGPoint center = CGPointMake(floor(CGRectGetMidX(self.originalPinchFrame)), floor(CGRectGetMidY(self.originalPinchFrame)));
-        center.x += location.x - self.originalPinchLocation.x;
-        center.y += location.y - self.originalPinchLocation.y;
-        
-        newFrame.origin.x = center.x - newFrame.size.width / 2.0;
-        newFrame.origin.y = center.y - newFrame.size.height / 2.0;
-        self.viewToHighlight.frame = newFrame;
-        
-    } else if (pinchGR.state == UIGestureRecognizerStateEnded || pinchGR.state == UIGestureRecognizerStateCancelled) {
-        self.viewToHighlight.frame = CGRectIntegral(self.viewToHighlight.frame);
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled:
+            self.viewToHighlight.frame = CGRectIntegral(self.viewToHighlight.frame);
+            break;
+            
+        default:
+            break;
     }
 }
 
@@ -449,8 +464,6 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         // Update the attributes on the DOM node
         NSString *newValue = [self stringForValue:[change objectForKey:NSKeyValueChangeNewKey] atKeyPath:keyPath onObject:object];
         [self.domain attributeModifiedWithNodeId:nodeId name:keyPath value:newValue];
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
     
     // If this is the view we're highlighting, update appropriately
@@ -458,6 +471,8 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         CGRect updatedFrame = [[change objectForKey:NSKeyValueChangeNewKey] CGRectValue];
         self.highlightOverlay.frame = [self.viewToHighlight.superview convertRect:updatedFrame toView:nil];
     }
+    
+    // Note that we do not call [super observeValueForKeyPath:...] because super doesn't implement the method
 }
 
 - (BOOL)shouldIgnoreView:(UIView *)view;
@@ -598,60 +613,37 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 - (NSString *)stringForValue:(id)value atKeyPath:(NSString *)keyPath onObject:(id)object;
 {
     NSString *stringValue = nil;
-    NSString *typeEncoding = [self typeEncodingForKeyPath:keyPath onObject:object];
+    const char *typeEncoding = [self typeEncodingForKeyPath:keyPath onObject:object];
     
-    if ([typeEncoding isEqualToString:@(@encode(BOOL))]) {
-        stringValue = [(id)value boolValue] ? @"YES" : @"NO";
-    } else if ([typeEncoding isEqualToString:@(@encode(CGPoint))]) {
-        stringValue = NSStringFromCGPoint([value CGPointValue]);
-    } else if ([typeEncoding isEqualToString:@(@encode(CGSize))]) {
-        stringValue = NSStringFromCGSize([value CGSizeValue]);
-    } else if ([typeEncoding isEqualToString:@(@encode(CGRect))]) {
-        stringValue = NSStringFromCGRect([value CGRectValue]);
-    } else if ([value isKindOfClass:[NSNumber class]]) {
+    if (typeEncoding) {
+        if (!strcmp(typeEncoding,@encode(BOOL))) {
+            stringValue = [(id)value boolValue] ? @"YES" : @"NO";
+        } else if (!strcmp(typeEncoding,@encode(CGPoint))) {
+            stringValue = NSStringFromCGPoint([value CGPointValue]);
+        } else if (!strcmp(typeEncoding,@encode(CGSize))) {
+            stringValue = NSStringFromCGSize([value CGSizeValue]);
+        } else if (!strcmp(typeEncoding,@encode(CGRect))) {
+            stringValue = NSStringFromCGRect([value CGRectValue]);
+        }
+    }
+    
+    if (!stringValue && [value isKindOfClass:[NSNumber class]]) {
         stringValue = [(NSNumber *)value stringValue];
     }
+    
     return stringValue;
 }
 
-- (NSString *)typeEncodingForKeyPath:(NSString *)keyPath onObject:(id)object;
+- (const char *)typeEncodingForKeyPath:(NSString *)keyPath onObject:(id)object;
 {
-    NSString *encoding = nil;
+    const char *encoding = NULL;
     
     // Look for a matching set* method to infer the type
     NSString *selectorString = [NSString stringWithFormat:@"set%@:", [keyPath stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[keyPath substringToIndex:1] uppercaseString]]];
     NSMethodSignature *methodSignature = [object methodSignatureForSelector:NSSelectorFromString(selectorString)];
     if (methodSignature) {
         // We don't care about arg0 (self) or arg1 (_cmd)
-        encoding = @([methodSignature getArgumentTypeAtIndex:2]);
-        
-    } else {
-        // No method found, start looking at ivars and properties
-        Class class = [object class];
-        
-        // Move up the class tree
-        while (class && !encoding) {
-            objc_property_t property = class_getProperty(class, [keyPath UTF8String]);
-            
-            if (property) {
-                const char *attributesString = property_getAttributes(property);
-                NSArray *attributes = [[NSString stringWithUTF8String:attributesString] componentsSeparatedByString: @","];
-                
-                for (NSString *attribute in attributes) {
-                    if ([[attribute substringToIndex:1] isEqualToString:@"T"]) {
-                        encoding = [attribute substringFromIndex:1];
-                    }
-                }
-            } else {
-                // If we couldn't find a matching property, look for an ivar with the name
-                Ivar ivar = class_getInstanceVariable(class, [keyPath UTF8String]);
-                if (ivar) {
-                    encoding = @(ivar_getTypeEncoding(ivar));
-                }
-            }
-            
-            class = [class superclass];
-        }
+        encoding = [methodSignature getArgumentTypeAtIndex:2];
     }
     
     return encoding;
