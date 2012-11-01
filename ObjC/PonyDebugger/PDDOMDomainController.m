@@ -32,8 +32,6 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 @property (nonatomic, strong) UIView *viewToHighlight;
 @property (nonatomic, strong) UIView *highlightOverlay;
 
-@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
-@property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
 @property (nonatomic, assign) CGPoint lastPanPoint;
 @property (nonatomic, assign) CGRect originalPinchFrame;
 @property (nonatomic, assign) CGPoint originalPinchLocation;
@@ -51,9 +49,16 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowHidden:) name:UIWindowDidBecomeHiddenNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowShown:) name:UIWindowDidBecomeVisibleNotification object:nil];
         
-        self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesure:)];
-        self.panGestureRecognizer.maximumNumberOfTouches = 1;
-        self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
+        UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovePanGesure:)];
+        panGR.maximumNumberOfTouches = 1;
+        UIPinchGestureRecognizer *pinchGR = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleResizePinchGesture:)];
+        
+        self.highlightOverlay = [[UIView alloc] initWithFrame:CGRectZero];
+        self.highlightOverlay.layer.borderWidth = 1.0;
+        
+        [self.highlightOverlay addGestureRecognizer:panGR];
+        [self.highlightOverlay addGestureRecognizer:pinchGR];
+        
     }
     return self;
 }
@@ -154,48 +159,8 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 {
     id objectForNodeId = [self.objectsForNodeIds objectForKey:nodeId];
     if ([objectForNodeId isKindOfClass:[UIView class]]) {
-        // Add a highlight overlay directly to the window if this is a window, otherwise to the view's window
-        self.viewToHighlight = objectForNodeId;
-        
-        UIWindow *window = self.viewToHighlight.window;
-        CGRect highlightFrame = CGRectZero;
-        
-        if (!window && [self.viewToHighlight isKindOfClass:[UIWindow class]]) {
-            window = (UIWindow *)self.viewToHighlight;
-            highlightFrame = window.bounds;
-        } else {
-            highlightFrame = [window convertRect:self.viewToHighlight.frame fromView:self.viewToHighlight.superview];
-        }
-        
-        if (!self.highlightOverlay) {
-            self.highlightOverlay = [[UIView alloc] initWithFrame:CGRectZero];
-            self.highlightOverlay.layer.borderWidth = 1.0;
-            
-            [self.highlightOverlay addGestureRecognizer:self.panGestureRecognizer];
-            [self.highlightOverlay addGestureRecognizer:self.pinchGestureRecognizer];
-        }
-        
-        self.highlightOverlay.frame = highlightFrame;
-        
-        // TODO: PDDOMRGBA & PDDOMHighlightConfig objects aren't coming back. Just NSDictionaries
-        
-        PDDOMRGBA *contentColor = [highlightConfig valueForKey:@"contentColor"];
-        NSNumber *r = [contentColor valueForKey:@"r"];
-        NSNumber *g = [contentColor valueForKey:@"g"];
-        NSNumber *b = [contentColor valueForKey:@"b"];
-        NSNumber *a = [contentColor valueForKey:@"a"];
-        
-        self.highlightOverlay.backgroundColor = [UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]];
-        
-        PDDOMRGBA *borderColor = [highlightConfig valueForKey:@"borderColor"];
-        r = [borderColor valueForKey:@"r"];
-        g = [borderColor valueForKey:@"g"];
-        b = [borderColor valueForKey:@"b"];
-        a = [borderColor valueForKey:@"a"];
-        
-        self.highlightOverlay.layer.borderColor = [[UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]] CGColor];
-        
-        [window addSubview:self.highlightOverlay];
+        [self configureHighlightOverlayWithConfig:highlightConfig];
+        [self revealHighlightOverlayForView:objectForNodeId allowInteractions:YES];
     }
     
     callback(nil);
@@ -253,7 +218,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 
 #pragma mark - Gesture Moving and Resizing
 
-- (void)handlePanGesure:(UIPanGestureRecognizer *)panGR;
+- (void)handleMovePanGesure:(UIPanGestureRecognizer *)panGR;
 {
     switch (panGR.state) {
         case UIGestureRecognizerStateBegan:
@@ -277,7 +242,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
     }
 }
 
-- (void)handlePinchGesture:(UIPinchGestureRecognizer *)pinchGR;
+- (void)handleResizePinchGesture:(UIPinchGestureRecognizer *)pinchGR;
 {
     switch (pinchGR.state) {
         case UIGestureRecognizerStateBegan:
@@ -315,6 +280,48 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         default:
             break;
     }
+}
+
+#pragma mark - Highlight Overlay
+
+- (void)configureHighlightOverlayWithConfig:(PDDOMHighlightConfig *)highlightConfig;
+{
+    PDDOMRGBA *contentColor = [highlightConfig valueForKey:@"contentColor"];
+    NSNumber *r = [contentColor valueForKey:@"r"];
+    NSNumber *g = [contentColor valueForKey:@"g"];
+    NSNumber *b = [contentColor valueForKey:@"b"];
+    NSNumber *a = [contentColor valueForKey:@"a"];
+    
+    self.highlightOverlay.backgroundColor = [UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]];
+    
+    PDDOMRGBA *borderColor = [highlightConfig valueForKey:@"borderColor"];
+    r = [borderColor valueForKey:@"r"];
+    g = [borderColor valueForKey:@"g"];
+    b = [borderColor valueForKey:@"b"];
+    a = [borderColor valueForKey:@"a"];
+    
+    self.highlightOverlay.layer.borderColor = [[UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]] CGColor];
+}
+
+- (void)revealHighlightOverlayForView:(UIView *)view allowInteractions:(BOOL)interactionEnabled;
+{
+    // Add a highlight overlay directly to the window if this is a window, otherwise to the view's window
+    self.viewToHighlight = view;
+    
+    UIWindow *window = self.viewToHighlight.window;
+    CGRect highlightFrame = CGRectZero;
+    
+    if (!window && [self.viewToHighlight isKindOfClass:[UIWindow class]]) {
+        window = (UIWindow *)self.viewToHighlight;
+        highlightFrame = window.bounds;
+    } else {
+        highlightFrame = [window convertRect:self.viewToHighlight.frame fromView:self.viewToHighlight.superview];
+    }
+    
+    self.highlightOverlay.frame = highlightFrame;
+    self.highlightOverlay.userInteractionEnabled = interactionEnabled;
+    
+    [window addSubview:self.highlightOverlay];
 }
 
 #pragma mark - View Hierarchy Changes
