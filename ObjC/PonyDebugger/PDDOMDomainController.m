@@ -12,6 +12,8 @@
 #import "PDDOMDomainController.h"
 #import <objc/runtime.h>
 #import <QuartzCore/QuartzCore.h>
+#import "PDInspectorDomainController.h"
+#import "PDRuntimeTypes.h"
 
 // Constants defined in the DOM Level 2 Core: http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-1950641247
 static const int kPDDOMNodeTypeElement = 1;
@@ -32,11 +34,11 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 @property (nonatomic, strong) UIView *viewToHighlight;
 @property (nonatomic, strong) UIView *highlightOverlay;
 
-@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
-@property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
 @property (nonatomic, assign) CGPoint lastPanPoint;
 @property (nonatomic, assign) CGRect originalPinchFrame;
 @property (nonatomic, assign) CGPoint originalPinchLocation;
+
+@property (nonatomic, strong) UIView *inspectModeOverlay;
 
 @end
 
@@ -51,9 +53,26 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowHidden:) name:UIWindowDidBecomeHiddenNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowShown:) name:UIWindowDidBecomeVisibleNotification object:nil];
         
-        self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesure:)];
-        self.panGestureRecognizer.maximumNumberOfTouches = 1;
-        self.pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
+        UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovePanGesure:)];
+        panGR.maximumNumberOfTouches = 1;
+        UIPinchGestureRecognizer *pinchGR = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleResizePinchGesture:)];
+        
+        self.highlightOverlay = [[UIView alloc] initWithFrame:CGRectZero];
+        self.highlightOverlay.layer.borderWidth = 1.0;
+        
+        [self.highlightOverlay addGestureRecognizer:panGR];
+        [self.highlightOverlay addGestureRecognizer:pinchGR];
+        
+        UITapGestureRecognizer *inspectTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleInspectTapGesture:)];
+        UIPanGestureRecognizer *inspectPanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleInspectPanGesture:)];
+        inspectPanGR.maximumNumberOfTouches = 1;
+        
+        self.inspectModeOverlay = [[UIView alloc] initWithFrame:CGRectZero];
+        self.inspectModeOverlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.inspectModeOverlay.backgroundColor = [UIColor clearColor];
+        
+        [self.inspectModeOverlay addGestureRecognizer:inspectTapGR];
+        [self.inspectModeOverlay addGestureRecognizer:inspectPanGR];
     }
     return self;
 }
@@ -154,48 +173,8 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 {
     id objectForNodeId = [self.objectsForNodeIds objectForKey:nodeId];
     if ([objectForNodeId isKindOfClass:[UIView class]]) {
-        // Add a highlight overlay directly to the window if this is a window, otherwise to the view's window
-        self.viewToHighlight = objectForNodeId;
-        
-        UIWindow *window = self.viewToHighlight.window;
-        CGRect highlightFrame = CGRectZero;
-        
-        if (!window && [self.viewToHighlight isKindOfClass:[UIWindow class]]) {
-            window = (UIWindow *)self.viewToHighlight;
-            highlightFrame = window.bounds;
-        } else {
-            highlightFrame = [window convertRect:self.viewToHighlight.frame fromView:self.viewToHighlight.superview];
-        }
-        
-        if (!self.highlightOverlay) {
-            self.highlightOverlay = [[UIView alloc] initWithFrame:CGRectZero];
-            self.highlightOverlay.layer.borderWidth = 1.0;
-            
-            [self.highlightOverlay addGestureRecognizer:self.panGestureRecognizer];
-            [self.highlightOverlay addGestureRecognizer:self.pinchGestureRecognizer];
-        }
-        
-        self.highlightOverlay.frame = highlightFrame;
-        
-        // TODO: PDDOMRGBA & PDDOMHighlightConfig objects aren't coming back. Just NSDictionaries
-        
-        PDDOMRGBA *contentColor = [highlightConfig valueForKey:@"contentColor"];
-        NSNumber *r = [contentColor valueForKey:@"r"];
-        NSNumber *g = [contentColor valueForKey:@"g"];
-        NSNumber *b = [contentColor valueForKey:@"b"];
-        NSNumber *a = [contentColor valueForKey:@"a"];
-        
-        self.highlightOverlay.backgroundColor = [UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]];
-        
-        PDDOMRGBA *borderColor = [highlightConfig valueForKey:@"borderColor"];
-        r = [borderColor valueForKey:@"r"];
-        g = [borderColor valueForKey:@"g"];
-        b = [borderColor valueForKey:@"b"];
-        a = [borderColor valueForKey:@"a"];
-        
-        self.highlightOverlay.layer.borderColor = [[UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]] CGColor];
-        
-        [window addSubview:self.highlightOverlay];
+        [self configureHighlightOverlayWithConfig:highlightConfig];
+        [self revealHighlightOverlayForView:objectForNodeId allowInteractions:YES];
     }
     
     callback(nil);
@@ -251,9 +230,28 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
     callback(nil);
 }
 
+- (void)domain:(PDDOMDomain *)domain setInspectModeEnabledWithEnabled:(NSNumber *)enabled highlightConfig:(PDDOMHighlightConfig *)highlightConfig callback:(void (^)(id))callback;
+{
+    if ([enabled boolValue]) {
+        [self configureHighlightOverlayWithConfig:highlightConfig];
+        UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+        self.inspectModeOverlay.frame = keyWindow.frame;
+        [keyWindow addSubview:self.inspectModeOverlay];
+    } else {
+        [self.inspectModeOverlay removeFromSuperview];
+    }
+    
+    callback(nil);
+}
+
+- (void)domain:(PDDOMDomain *)domain requestNodeWithObjectId:(NSString *)objectId callback:(void (^)(NSNumber *, id))callback;
+{
+    callback(@([objectId intValue]), nil);
+}
+
 #pragma mark - Gesture Moving and Resizing
 
-- (void)handlePanGesure:(UIPanGestureRecognizer *)panGR;
+- (void)handleMovePanGesure:(UIPanGestureRecognizer *)panGR;
 {
     switch (panGR.state) {
         case UIGestureRecognizerStateBegan:
@@ -277,7 +275,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
     }
 }
 
-- (void)handlePinchGesture:(UIPinchGestureRecognizer *)pinchGR;
+- (void)handleResizePinchGesture:(UIPinchGestureRecognizer *)pinchGR;
 {
     switch (pinchGR.state) {
         case UIGestureRecognizerStateBegan:
@@ -314,6 +312,122 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
             
         default:
             break;
+    }
+}
+
+#pragma mark - Inspect Mode
+
+- (void)handleInspectTapGesture:(UITapGestureRecognizer *)tapGR;
+{
+    switch (tapGR.state) {
+        case UIGestureRecognizerStateRecognized:
+            [self inspectViewAtPoint:[tapGR locationInView:nil]];
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+- (void)handleInspectPanGesture:(UIPanGestureRecognizer *)panGR;
+{
+    switch (panGR.state) {
+        case UIGestureRecognizerStateBegan:
+        case UIGestureRecognizerStateChanged: {
+            // As the user drags, highlight the view that we would inspect
+            CGPoint panPoint = [panGR locationInView:nil];
+            UIView *chosenView = [self chooseViewAtPoint:panPoint givenStartingView:[[UIApplication sharedApplication] keyWindow]];
+            [self revealHighlightOverlayForView:chosenView allowInteractions:NO];
+            break;
+        }
+        case UIGestureRecognizerStateCancelled:
+        case UIGestureRecognizerStateFailed:
+        case UIGestureRecognizerStateEnded:
+            // When the user finishes dragging, send the inspect command
+            [self inspectViewAtPoint:[panGR locationInView:nil]];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (void)inspectViewAtPoint:(CGPoint)point;
+{
+    PDInspectorDomain *inspectorDomain = [[PDInspectorDomainController defaultInstance] domain];
+    PDRuntimeRemoteObject *remoteObject = [[PDRuntimeRemoteObject alloc] init];
+    
+    UIView *chosenView = [self chooseViewAtPoint:point givenStartingView:[[UIApplication sharedApplication] keyWindow]];
+    NSNumber *chosenNodeId = [self.nodeIdsForObjects objectForKey:[NSValue valueWithNonretainedObject:chosenView]];
+    
+    remoteObject.type = @"object";
+    remoteObject.subtype = @"node";
+    remoteObject.objectId = [chosenNodeId stringValue];
+    
+    [inspectorDomain inspectWithObject:remoteObject hints:nil];
+    [self.inspectModeOverlay removeFromSuperview];
+}
+
+- (UIView *)chooseViewAtPoint:(CGPoint)point givenStartingView:(UIView *)startingView;
+{
+    // Look into the subviews (topmost first) to see if there's a view there that we should select
+    for (UIView *subview in [startingView.subviews reverseObjectEnumerator]) {
+        CGRect subviewFrameInWindowCoordinates = [startingView convertRect:subview.frame toView:nil];
+        if (![self shouldIgnoreView:subview] && !subview.hidden && subview.alpha > 0.0 && CGRectContainsPoint(subviewFrameInWindowCoordinates, point)) {
+            // We've found a promising looking subview. Recurse to check it out
+            return [self chooseViewAtPoint:point givenStartingView:subview];
+        }
+    }
+    
+    // We didn't find anything in the subviews, so just return the starting view
+    return startingView;
+}
+
+#pragma mark - Highlight Overlay
+
+- (void)configureHighlightOverlayWithConfig:(PDDOMHighlightConfig *)highlightConfig;
+{
+    PDDOMRGBA *contentColor = [highlightConfig valueForKey:@"contentColor"];
+    NSNumber *r = [contentColor valueForKey:@"r"];
+    NSNumber *g = [contentColor valueForKey:@"g"];
+    NSNumber *b = [contentColor valueForKey:@"b"];
+    NSNumber *a = [contentColor valueForKey:@"a"];
+    
+    self.highlightOverlay.backgroundColor = [UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]];
+    
+    PDDOMRGBA *borderColor = [highlightConfig valueForKey:@"borderColor"];
+    r = [borderColor valueForKey:@"r"];
+    g = [borderColor valueForKey:@"g"];
+    b = [borderColor valueForKey:@"b"];
+    a = [borderColor valueForKey:@"a"];
+    
+    self.highlightOverlay.layer.borderColor = [[UIColor colorWithRed:[r floatValue] / 255.0 green:[g floatValue] / 255.0 blue:[b floatValue] / 255.0 alpha:[a floatValue]] CGColor];
+}
+
+- (void)revealHighlightOverlayForView:(UIView *)view allowInteractions:(BOOL)interactionEnabled;
+{
+    // Add a highlight overlay directly to the window if this is a window, otherwise to the view's window
+    self.viewToHighlight = view;
+    
+    UIWindow *window = self.viewToHighlight.window;
+    CGRect highlightFrame = CGRectZero;
+    
+    if (!window && [self.viewToHighlight isKindOfClass:[UIWindow class]]) {
+        window = (UIWindow *)self.viewToHighlight;
+        highlightFrame = window.bounds;
+    } else {
+        highlightFrame = [window convertRect:self.viewToHighlight.frame fromView:self.viewToHighlight.superview];
+    }
+    
+    self.highlightOverlay.frame = highlightFrame;
+    self.highlightOverlay.userInteractionEnabled = interactionEnabled;
+    
+    // Make sure the highlight goes behind the inspect overlay if it's on screen
+    if (self.inspectModeOverlay.superview == window) {
+        [window insertSubview:self.highlightOverlay belowSubview:self.inspectModeOverlay];
+    } else {
+        [window addSubview:self.highlightOverlay];
     }
 }
 
@@ -477,7 +591,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 
 - (BOOL)shouldIgnoreView:(UIView *)view;
 {
-    return view == nil || view == self.highlightOverlay;
+    return view == nil || view == self.highlightOverlay || view == self.inspectModeOverlay;
 }
 
 - (NSNumber *)getAndIncrementNodeIdCount;

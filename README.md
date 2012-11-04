@@ -42,6 +42,8 @@ PonyDebugger displays your application's view hierarchy in the Elements tab of t
 
 ![PonyDebugger View Hierarchy Debugging Screenshot](https://github.com/Flipboard/PonyDebugger/raw/master/Documentation/Images/ViewHierarchyDebugging.png)
 
+An "inspect" mode can be entered by clicking on the magnifying glass in the lower left corner of the Developer Tools window. In this mode, tapping on a view in the iOS app will select the corresponding node in the elements panel. You can also hold and drag your finger around to see the different views highlighted. When you lift your finger, the highlighted view will be selected in the elements panel.
+
 Currently only a subset of the actions possible from the elements panel have been implemented. There is significant room for continued work and improvement, but the current functionality should prove useful nonetheless.
 
 Quick Start

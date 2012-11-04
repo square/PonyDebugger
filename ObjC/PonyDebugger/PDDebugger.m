@@ -22,6 +22,7 @@
 #import "PDPageDomainController.h"
 #import "PDIndexedDBDomainController.h"
 #import "PDDOMDomainController.h"
+#import "PDInspectorDomainController.h"
 #import "NSData+PDB64Additions.h"
 
 
@@ -269,6 +270,7 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 - (void)enableViewHierarchyDebugging;
 {
     [self _addController:[PDDOMDomainController defaultInstance]];
+    [self _addController:[PDInspectorDomainController defaultInstance]];
     
     // Choosing frame, alpha, and hidden as the default key paths to display
     [[PDDOMDomainController defaultInstance] setViewKeyPathsToDisplay:@[@"frame", @"alpha", @"hidden"]];
