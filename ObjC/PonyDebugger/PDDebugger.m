@@ -174,7 +174,7 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error;
 {
-    NSLog(@"Debugger failed");
+    NSLog(@"Debugger failed with web socket error: %@", [error localizedDescription]);
     _socket.delegate = nil;
     _socket = nil;
 }
