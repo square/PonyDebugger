@@ -823,7 +823,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 {
     [[PDDOMDomainController defaultInstance] removeView:[[self subviews] objectAtIndex:index1]];
     [[PDDOMDomainController defaultInstance] removeView:[[self subviews] objectAtIndex:index2]];
-    [self pd_swizzled_exchangeSubviewAtIndex:index1 withSubviewAtIndex:index1];
+    [self pd_swizzled_exchangeSubviewAtIndex:index1 withSubviewAtIndex:index2];
     [[PDDOMDomainController defaultInstance] addView:[[self subviews] objectAtIndex:index1]];
     [[PDDOMDomainController defaultInstance] addView:[[self subviews] objectAtIndex:index2]];
 }
