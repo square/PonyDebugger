@@ -458,7 +458,8 @@
 // This removes storing the accumulated request/response from the dictionary so we can release connection
 - (void)connectionFinished:(NSURLConnection *)connection;
 {
-    [_connectionStates removeObjectForKey:connection];
+    NSValue *key = [NSValue valueWithNonretainedObject:connection];
+    [_connectionStates removeObjectForKey:key];
 }
 
 - (void)performBlock:(dispatch_block_t)block;
