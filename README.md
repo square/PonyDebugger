@@ -15,6 +15,14 @@ gateway server.
 PonyDebugger is licensed under the Apache Licence, Version 2.0
 (http://www.apache.org/licenses/LICENSE-2.0.html).
 
+Changes
+-------
+### v0.2.1-beta1 - 2013-01-12
+
+- Bonjour support (Thanks @jeanregisser!)
+- Memory leak fix (Thanks @rwickliffe!)
+
+
 Features
 --------
 
