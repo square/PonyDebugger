@@ -27,10 +27,11 @@
 
 
 static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
+static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
+@interface PDDebugger () <SRWebSocketDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
-@interface PDDebugger () <SRWebSocketDelegate>
-
+- (void)_resolveService:(NSNetService*)service;
 - (void)_addController:(PDDomainController *)controller;
 - (NSString *)_domainNameForController:(PDDomainController *)controller;
 - (BOOL)_isTrackingDomainController:(PDDomainController *)controller;
@@ -39,6 +40,10 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 
 
 @implementation PDDebugger {
+    NSString *_bonjourServiceName;
+    NSNetServiceBrowser *_bonjourBrowser;
+    NSMutableArray *_bonjourServices;
+    NSNetService *_currentService;
     NSMutableDictionary *_domains;
     NSMutableDictionary *_controllers;
     __strong SRWebSocket *_socket;
@@ -179,6 +184,70 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
     _socket = nil;
 }
 
+#pragma mark - NSNetServiceBrowserDelegate
+
+- (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didFindService:(NSNetService*)service moreComing:(BOOL)moreComing;
+{
+    const NSStringCompareOptions compareOptions = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch;
+    if (_bonjourServiceName != nil && [_bonjourServiceName compare:service.name options:compareOptions] != NSOrderedSame) {
+        return;
+    }
+    
+    NSLog(@"Found ponyd bonjour service: %@", service);
+    [_bonjourServices addObject:service];
+    
+    if (!_currentService) {
+        [self _resolveService:service];
+    }
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser*)netServiceBrowser didRemoveService:(NSNetService*)service moreComing:(BOOL)moreComing;
+{
+    if ([service isEqual:_currentService]) {
+        [_currentService stop];
+        _currentService.delegate = nil;
+        _currentService = nil;
+    }
+    
+    NSUInteger serviceIndex = [_bonjourServices indexOfObject:service];
+    if (NSNotFound != serviceIndex) {
+        [_bonjourServices removeObjectAtIndex:serviceIndex];
+        NSLog(@"Removed ponyd bonjour service: %@", service);
+        
+        // Try next one
+        if (!_currentService && _bonjourServices.count){
+            NSNetService* nextService = [_bonjourServices objectAtIndex:(serviceIndex % _bonjourServices.count)];
+            [self _resolveService:nextService];
+        }
+    }
+}
+
+#pragma mark - NSNetServiceDelegate
+
+- (void)netService:(NSNetService *)service didNotResolve:(NSDictionary *)errorDict;
+{
+    NSAssert([service isEqual:_currentService], @"Did not resolve incorrect service!");
+    _currentService.delegate = nil;
+    _currentService = nil;
+    
+    // Try next one, we may retry the same one if there's only 1 service in _bonjourServices
+    NSUInteger serviceIndex = [_bonjourServices indexOfObject:service];
+    if (NSNotFound != serviceIndex) {
+        if (_bonjourServices.count){
+            NSNetService* nextService = [_bonjourServices objectAtIndex:((serviceIndex + 1) % _bonjourServices.count)];
+            [self _resolveService:nextService];
+        }
+    }
+}
+
+
+- (void)netServiceDidResolveAddress:(NSNetService *)service;
+{
+    NSAssert([service isEqual:_currentService], @"Resolved incorrect service!");
+
+    [self connectToURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://%@:%d/device", [service hostName], [service port]]]];
+}
+
 #pragma mark - Public Methods
 
 - (id)domainForName:(NSString *)name;
@@ -200,8 +269,34 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 
 #pragma mark Connect / Disconnect
 
+- (void)autoConnect;
+{
+    // Connect to any bonjour service
+    [self autoConnectToBonjourServiceNamed:nil];
+}
+
+- (void)autoConnectToBonjourServiceNamed:(NSString*)serviceName;
+{
+    if (_bonjourBrowser) {
+        return;
+    }
+    
+    _bonjourServiceName = serviceName;
+    _bonjourServices = [NSMutableArray array];
+    _bonjourBrowser = [[NSNetServiceBrowser alloc] init];
+    [_bonjourBrowser setDelegate:self];
+    
+    if (_bonjourServiceName) {
+        NSLog(@"Waiting for ponyd bonjour service '%@'...", _bonjourServiceName);
+    } else {
+        NSLog(@"Waiting for ponyd bonjour service...");
+    }
+    [_bonjourBrowser searchForServicesOfType:PDBonjourServiceType inDomain:@""];
+}
+
 - (void)connectToURL:(NSURL *)url;
 {
+    NSLog(@"Connecting to %@", url);
     [_socket close];
     _socket.delegate = nil;
     
@@ -217,6 +312,15 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 
 - (void)disconnect;
 {
+    [_bonjourBrowser stop];
+    _bonjourBrowser.delegate = nil;
+    _bonjourBrowser = nil;
+    _bonjourServiceName = nil;
+    _bonjourServices = nil;
+    [_currentService stop];
+    _currentService.delegate = nil;
+    _currentService = nil;
+    
     [_socket close];
     _socket.delegate = nil;
     _socket = nil;
@@ -284,6 +388,14 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 }
 
 #pragma mark - Private Methods
+
+- (void)_resolveService:(NSNetService*)service;
+{
+    NSLog(@"Resolving %@", service);
+    _currentService = service;
+    _currentService.delegate = self;
+    [_currentService resolveWithTimeout:10.f];
+}
 
 - (NSString *)_domainNameForController:(PDDomainController *)controller;
 {

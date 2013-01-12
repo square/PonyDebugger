@@ -132,7 +132,13 @@ PonyDebugger's main entry points exist in the `PDDebugger` singleton.
 PDDebugger *debugger = [PDDebugger defaultInstance];
 ```
 
-To open the connection to `ws://localhost:9000/device`:
+To connect automatically to the PonyGateway on your LAN (via Bonjour):
+
+``` objective-c
+[debugger autoConnect];
+```
+
+Or to open the connection to a specific host, for instance `ws://localhost:9000/device`:
 
 ``` objective-c
 [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
