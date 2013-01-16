@@ -23,6 +23,7 @@
 #import "PDIndexedDBDomainController.h"
 #import "PDDOMDomainController.h"
 #import "PDInspectorDomainController.h"
+#import "PDConsoleDomainController.h"
 #import "NSData+PDB64Additions.h"
 
 
@@ -385,6 +386,23 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 - (void)setDisplayedViewAttributeKeyPaths:(NSArray *)keyPaths;
 {
     [[PDDOMDomainController defaultInstance] setViewKeyPathsToDisplay:keyPaths];
+}
+
+#pragma mark - Remote Logging
+
+- (void)enableRemoteLogging;
+{
+    [self _addController:[PDConsoleDomainController defaultInstance]];
+}
+
+- (void)sendRemoteMessage:(NSString *)text;
+{
+    [[PDConsoleDomainController defaultInstance] sendMessage:text];
+}
+
+- (void)clearRemoteMessages;
+{
+    [[PDConsoleDomainController defaultInstance] clearMessages];
 }
 
 #pragma mark - Private Methods
