@@ -12,8 +12,15 @@
 #import "PDViewController.h"
 #import "PDTweet.h"
 #import "PDUser.h"
-#import "AFNetworking.h"
 
+#import <objc/runtime.h>
+
+typedef void (^PDSuccessBlock)(NSURL *from, NSData *results);
+typedef void (^PDFailureBlock)(NSError *error);
+
+static void *const PDSuccessBlockKey = @"PDSuccessBlockKey";
+static void *const PDFailureBlockKey = @"PDFailureBlockKey";
+static void *const PDResponseDataKey = @"PDResponseDataKey";
 
 #pragma mark - Private Interface
 
@@ -35,7 +42,7 @@
 
 @implementation PDViewController {
     NSFetchedResultsController *_resultsController;
-    AFHTTPClient *_client;
+    NSMutableDictionary *_imageCache;
 }
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -44,14 +51,14 @@
 
 #pragma mark - Initialization
 
-- (id)initWithCoder:(NSCoder *)coder;
+- (id) initWithCoder:(NSCoder *)aDecoder;
 {
-    self = [super initWithCoder:coder];
-    if (self) {
-        _client = [[AFHTTPClient alloc] initWithBaseURL:[[NSURL alloc] initWithString:@"https://api.twitter.com/1/"]];
-        [_client registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    if (!(self = [super initWithCoder:aDecoder])) {
+        return nil;
     }
-    
+
+    _imageCache = [[NSMutableDictionary alloc] init];
+
     return self;
 }
 
@@ -124,6 +131,38 @@
     [searchBar setShowsCancelButton:NO animated:YES];
 }
 
+#pragma mark - NSURLConnection
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
+{
+    PDFailureBlock failureBlock = objc_getAssociatedObject(connection, PDFailureBlockKey);
+    if (failureBlock) {
+        failureBlock(error);
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
+{
+    NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
+    if ((HTTPResponse.statusCode / 100) == 2) {
+        objc_setAssociatedObject(connection, PDResponseDataKey, [NSMutableData data], OBJC_ASSOCIATION_RETAIN);
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)receivedData;
+{
+    NSMutableData *responseData = objc_getAssociatedObject(connection, PDResponseDataKey);
+    [responseData appendData:receivedData];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection;
+{
+    PDSuccessBlock successBlock = objc_getAssociatedObject(connection, PDSuccessBlockKey);
+    if (successBlock) {
+        successBlock(connection.originalRequest.URL, objc_getAssociatedObject(connection, PDResponseDataKey));
+    }
+}
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller;
@@ -176,11 +215,6 @@
     return tweetCell;
 }
 
-- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
-{
-    [cell.imageView cancelImageRequestOperation];
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
 {
     return _resultsController.fetchedObjects.count;
@@ -213,14 +247,29 @@
 - (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 {
     PDTweet *tweet = [_resultsController objectAtIndexPath:indexPath];
-    [cell.imageView setImageWithURL:[NSURL URLWithString:tweet.user.profilePictureURL] placeholderImage:[UIImage imageNamed:@"twitter_egg.png"]];
+    NSURL *imageURL = [NSURL URLWithString:tweet.user.profilePictureURL];
+    cell.imageView.image = [_imageCache objectForKey:imageURL];
+
+    if (!cell.imageView.image) {
+        cell.imageView.image = [UIImage imageNamed:@"twitter_egg.png"];
+
+        __weak NSMutableDictionary *weakImageCache = _imageCache;
+        __weak UITableView *weakTableView = self.tableView;
+        [self _fetchFromURL:imageURL withSuccessBlock:^(NSURL *from, NSData *response) {
+            [weakImageCache setObject:[UIImage imageWithData:response] forKey:from];
+
+            [weakTableView reloadData];
+        } failureBlock:NULL];
+    }
+
     cell.textLabel.text = [NSString stringWithFormat:@"@%@ %@", tweet.user.screenName, tweet.text];
 }
 
 - (void)_reloadFeed;
 {
-    [_client getPath:@"statuses/public_timeline.json?count=30" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSArray *responseArray = responseObject;
+    NSString *path = @"https://api.twitter.com/1/statuses/public_timeline.json?count=30";
+    [self _fetchFromURL:[NSURL URLWithString:path] withSuccessBlock:^(NSURL *from, NSData *results) {
+        NSArray *responseArray = [NSJSONSerialization JSONObjectWithData:results options:NSJSONReadingAllowFragments error:NULL];
         
         NSMutableSet *tweetIDs = [[NSMutableSet alloc] initWithCapacity:[responseArray count]];
         for (NSDictionary *tweetDict in responseArray) {
@@ -264,16 +313,17 @@
         }
         
         [self.managedObjectContext save:NULL];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failureBlock:^(NSError *error) {
         [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
     }];
 }
 
 - (void)_reloadFeedWithSearchTerm:(NSString *)searchTerm;
 {
-    NSString *path = [NSString stringWithFormat:@"search.json?q=%@", [searchTerm stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    [_client getPath:path parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSArray *responseArray = [responseObject objectForKey:@"results"];
+    NSString *path = [NSString stringWithFormat:@"https://api.twitter.com/1/search.json?q=%@", [searchTerm stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    [self _fetchFromURL:[NSURL URLWithString:path] withSuccessBlock:^(NSURL *from, NSData *results) {
+        NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:results options:NSJSONReadingAllowFragments error:NULL];
+        NSArray *responseArray = [responseDictionary objectForKey:@"results"];
         
         NSMutableSet *tweetIDs = [[NSMutableSet alloc] initWithCapacity:[responseArray count]];
         for (NSDictionary *tweetDict in responseArray) {
@@ -317,7 +367,7 @@
         }
         
         [self.managedObjectContext save:NULL];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failureBlock:^(NSError *error) {
         [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
     }];
 }
@@ -325,6 +375,17 @@
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
 {
     [self _reloadFeed];
+}
+
+- (void)_fetchFromURL:(NSURL *) url withSuccessBlock:(PDSuccessBlock) successBlock failureBlock:(PDFailureBlock) failureBlock
+{
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
+
+    objc_setAssociatedObject(connection, PDSuccessBlockKey, successBlock, OBJC_ASSOCIATION_COPY);
+    objc_setAssociatedObject(connection, PDFailureBlockKey, failureBlock, OBJC_ASSOCIATION_COPY);
+
+    [connection start];
 }
 
 @end
