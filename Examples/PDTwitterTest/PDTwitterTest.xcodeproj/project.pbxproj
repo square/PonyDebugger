@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		25660E6716B79BF0003A6145 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 25660E6616B79BF0003A6145 /* Default-568h@2x.png */; };
 		3D0696EC15D58D800025D563 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D0696D815D58D800025D563 /* AFHTTPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3D0696ED15D58D800025D563 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D0696DA15D58D800025D563 /* AFHTTPRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		3D0696EE15D58D800025D563 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D0696DC15D58D800025D563 /* AFImageRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -57,6 +58,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		25660E6616B79BF0003A6145 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		3D0696BD15D58B840025D563 /* PonyDebugger.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PonyDebugger.xcodeproj; path = ../../ObjC/PonyDebugger.xcodeproj; sourceTree = "<group>"; };
 		3D0696D715D58D800025D563 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		3D0696D815D58D800025D563 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 		3DE229AE15D58A950035A508 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				25660E6616B79BF0003A6145 /* Default-568h@2x.png */,
 				3DCEE23E15E6D55900294627 /* Icon@2x.png */,
 				3DCEE23C15E6D55200294627 /* Icon.png */,
 				3DE229A615D58A950035A508 /* main.m */,
@@ -306,6 +309,7 @@
 				3DE229BF15D58A950035A508 /* twitter_egg@2x.png in Resources */,
 				3DCEE23D15E6D55200294627 /* Icon.png in Resources */,
 				3DCEE23F15E6D55900294627 /* Icon@2x.png in Resources */,
+				25660E6716B79BF0003A6145 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
