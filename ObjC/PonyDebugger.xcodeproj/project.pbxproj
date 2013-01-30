@@ -77,6 +77,8 @@
 		2516719915E61023002F2F95 /* PDWebGLTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516715315E61023002F2F95 /* PDWebGLTypes.m */; };
 		2516719A15E61023002F2F95 /* PDWorkerDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = 2516715415E61023002F2F95 /* PDWorkerDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2516719B15E61023002F2F95 /* PDWorkerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516715515E61023002F2F95 /* PDWorkerDomain.m */; };
+		25E5BCD916B9205200152A45 /* PDConsoleDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = 25E5BCD716B9205200152A45 /* PDConsoleDomainController.h */; };
+		25E5BCDA16B9205200152A45 /* PDConsoleDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25E5BCD816B9205200152A45 /* PDConsoleDomainController.m */; };
 		3DE2290F15D5874C0035A508 /* NSArray+PD_JSONObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228A715D5874C0035A508 /* NSArray+PD_JSONObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3DE2291015D5874C0035A508 /* NSArray+PD_JSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE228A815D5874C0035A508 /* NSArray+PD_JSONObject.m */; };
 		3DE2291115D5874C0035A508 /* NSDate+PD_JSONObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228A915D5874C0035A508 /* NSDate+PD_JSONObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -229,6 +231,8 @@
 		2516715315E61023002F2F95 /* PDWebGLTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDWebGLTypes.m; sourceTree = "<group>"; };
 		2516715415E61023002F2F95 /* PDWorkerDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDWorkerDomain.h; sourceTree = "<group>"; };
 		2516715515E61023002F2F95 /* PDWorkerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDWorkerDomain.m; sourceTree = "<group>"; };
+		25E5BCD716B9205200152A45 /* PDConsoleDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDConsoleDomainController.h; sourceTree = "<group>"; };
+		25E5BCD816B9205200152A45 /* PDConsoleDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDConsoleDomainController.m; sourceTree = "<group>"; };
 		3DE228A715D5874C0035A508 /* NSArray+PD_JSONObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+PD_JSONObject.h"; sourceTree = "<group>"; };
 		3DE228A815D5874C0035A508 /* NSArray+PD_JSONObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+PD_JSONObject.m"; sourceTree = "<group>"; };
 		3DE228A915D5874C0035A508 /* NSDate+PD_JSONObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+PD_JSONObject.h"; sourceTree = "<group>"; };
@@ -401,6 +405,8 @@
 			children = (
 				947CE06D163CA24E0035FB90 /* PDInspectorDomainController.h */,
 				947CE06E163CA24E0035FB90 /* PDInspectorDomainController.m */,
+				25E5BCD716B9205200152A45 /* PDConsoleDomainController.h */,
+				25E5BCD816B9205200152A45 /* PDConsoleDomainController.m */,
 				943D444B160A73810091CA77 /* PDDOMDomainController.h */,
 				943D444C160A73810091CA77 /* PDDOMDomainController.m */,
 				3DE228BF15D5874C0035A508 /* PDIndexedDBDomainController.h */,
@@ -548,6 +554,7 @@
 				F6EA51A716124E7D00A27364 /* NSData+PDB64Additions.h in Headers */,
 				943D444D160A73810091CA77 /* PDDOMDomainController.h in Headers */,
 				947CE06F163CA24E0035FB90 /* PDInspectorDomainController.h in Headers */,
+				25E5BCD916B9205200152A45 /* PDConsoleDomainController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -693,6 +700,7 @@
 				F6EA51A816124E7D00A27364 /* NSData+PDB64Additions.m in Sources */,
 				943D444E160A73810091CA77 /* PDDOMDomainController.m in Sources */,
 				947CE070163CA24E0035FB90 /* PDInspectorDomainController.m in Sources */,
+				25E5BCDA16B9205200152A45 /* PDConsoleDomainController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

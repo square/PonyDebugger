@@ -13,6 +13,9 @@
 #import <CoreData/CoreData.h>
 
 
+#define PDLog(arr) [[PDDebugger defaultInstance] logWithArguments:arr]
+
+
 @class SRWebSocket;
 @class PDDomainController;
 
@@ -47,6 +50,10 @@
 // View Hierarchy Debugging
 - (void)enableViewHierarchyDebugging;
 - (void)setDisplayedViewAttributeKeyPaths:(NSArray *)keyPaths;
+
+// Remote Logging
+- (void)logWithArguments:(NSArray *)args;
+- (void)enableRemoteLogging;
 
 @end
 

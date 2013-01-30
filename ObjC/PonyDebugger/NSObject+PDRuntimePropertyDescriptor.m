@@ -96,7 +96,7 @@
     remoteValueObject.type = [propertyTypeDetails objectForKey:@"type"];
     remoteValueObject.subtype = [propertyTypeDetails objectForKey:@"subtype"];
     remoteValueObject.classNameString = NSStringFromClass([propertyValue class]);
-    
+
     if ([remoteValueObject.type isEqualToString:@"object"]) {
         if (propertyValue) {
             if (!remoteValueObject.subtype) {

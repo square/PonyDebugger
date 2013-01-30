@@ -57,6 +57,8 @@
     //[debugger autoConnect];
     // Or to a specific ponyd bonjour service
     //[debugger autoConnectToBonjourServiceNamed:@"MY PONY"];
+
+    [debugger enableRemoteLogging];
     
 #endif
     

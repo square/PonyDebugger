@@ -9,6 +9,8 @@
 //  which Square, Inc. licenses this file to you.
 //
 
+#import <PonyDebugger/PonyDebugger.h>
+
 #import "PDViewController.h"
 #import "PDTweet.h"
 #import "PDUser.h"
@@ -112,6 +114,9 @@
     if (!searchText.length) {
         [self.searchBar resignFirstResponder];
     }
+
+    NSLog(@"Updating text to: %@", searchText);
+    [[PDDebugger defaultInstance] logWithArguments:@[@"Updating text to:", self]];
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar;
