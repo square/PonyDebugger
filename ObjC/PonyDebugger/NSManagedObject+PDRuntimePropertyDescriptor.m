@@ -24,8 +24,16 @@
 
 - (NSArray *)PD_propertiesForPropertyDescriptors;
 {
-    NSArray *properties = [super PD_propertiesForPropertyDescriptors];
+    NSMutableArray *properties = (NSMutableArray *)[super PD_propertiesForPropertyDescriptors];
     if (properties) {
+        // NSObject's implementation will catch the @property definitions, so replace those with the
+        // NSPropertyDescription instance.
+        for (NSPropertyDescription *propertyDescription in self.entity.properties) {
+            if ([properties containsObject:propertyDescription.name]) {
+                [properties removeObject:propertyDescription.name];
+            }
+        }
+
         return [properties arrayByAddingObjectsFromArray:self.entity.properties];
     }
     

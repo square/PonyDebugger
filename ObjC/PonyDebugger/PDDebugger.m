@@ -30,6 +30,13 @@
 static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
+
+void _PDLogObjectsImpl(NSArray *arguments)
+{
+    [[PDConsoleDomainController defaultInstance] logWithArguments:arguments];
+}
+
+
 @interface PDDebugger () <SRWebSocketDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
 - (void)_resolveService:(NSNetService*)service;
@@ -270,12 +277,18 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 #pragma mark Connect / Disconnect
 
+/**
+ * Connect to any ponyd service found via Bonjour.
+ */
 - (void)autoConnect;
 {
-    // Connect to any bonjour service
     [self autoConnectToBonjourServiceNamed:nil];
 }
 
+/**
+ * Only connect to the specified Bonjour service name, this makes things easier in a teamwork
+ * environment where multiple instances of ponyd may run on the same network.
+ */
 - (void)autoConnectToBonjourServiceNamed:(NSString*)serviceName;
 {
     if (_bonjourBrowser) {
@@ -390,11 +403,6 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 #pragma mark Remote Logging
 
-- (void)logWithArguments:(NSArray *)args;
-{
-    [[PDConsoleDomainController defaultInstance] logWithArguments:args];
-}
-
 - (void)enableRemoteLogging;
 {
     [self _addController:[PDConsoleDomainController defaultInstance]];
@@ -439,16 +447,6 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
     }
     
     return NO;
-}
-
-@end
-
-
-@implementation NSDate (PDDebugger)
-
-+ (NSNumber *)PD_timestamp;
-{
-    return [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 }
 
 @end

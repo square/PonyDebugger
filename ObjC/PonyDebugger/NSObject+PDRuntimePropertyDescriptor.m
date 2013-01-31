@@ -18,11 +18,90 @@
 #import <PonyDebugger/PDDictionaryContainer.h>
 #import <objc/runtime.h>
 
+
 @implementation NSObject (PDRuntimePropertyDescriptor)
+
+#pragma mark - Class Methods
+
++ (PDRuntimeRemoteObject *)PD_remoteObjectRepresentationForObject:(id)object;
+{
+    id propertyValue = object;
+    if ([propertyValue class] == propertyValue) {
+        propertyValue = NSStringFromClass(propertyValue);
+    }
+    
+    NSDictionary *propertyTypeDetails = PDRemoteObjectPropertyTypeDetailsForObject(propertyValue);
+    
+    PDRuntimeRemoteObject *remoteValueObject = [[PDRuntimeRemoteObject alloc] init];
+    remoteValueObject.type = [propertyTypeDetails objectForKey:@"type"];
+    remoteValueObject.subtype = [propertyTypeDetails objectForKey:@"subtype"];
+    remoteValueObject.classNameString = NSStringFromClass([propertyValue class]);
+
+    if ([remoteValueObject.type isEqualToString:@"object"]) {
+        if (propertyValue) {
+            if (!remoteValueObject.subtype) {
+                if ([propertyValue isKindOfClass:[NSDictionary class]]) {
+                    NSDictionary *dictionary = propertyValue;
+                    PDDictionaryContainer *container = [[PDDictionaryContainer alloc] initWithDictionary:dictionary];
+                    remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:container];
+                    remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ <count: %d>", [propertyValue class], dictionary.count];
+                } else {
+                    remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:propertyValue];
+                }
+            } else if ([remoteValueObject.subtype isEqualToString:@"array"]) {
+                PDArrayContainer *container = [[PDArrayContainer alloc] initWithContainer:propertyValue];
+                if (container) {
+                    remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:container];
+                    remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ <count: %d>", [propertyValue class], container.count];
+                }
+            } else if ([remoteValueObject.subtype isEqualToString:@"date"]) {
+                NSDate *date = propertyValue;
+                remoteValueObject.value = [date description];
+                remoteValueObject.objectDescription = @"";
+            } else if ([remoteValueObject.subtype isEqualToString:@"regexp"]) {
+                NSRegularExpression *regEx = propertyValue;
+                remoteValueObject.value = regEx.pattern;
+                remoteValueObject.objectDescription = @"";
+            }
+            
+            if (!remoteValueObject.objectDescription) {
+                remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ %@", [propertyValue class], [propertyValue description]];
+            }
+        }
+    } else {
+        remoteValueObject.value = propertyValue;
+    }
+    
+    if (!propertyValue) {
+        remoteValueObject.value = [NSNull null];
+        remoteValueObject.type = @"object";
+        remoteValueObject.subtype = @"null";
+    }
+    
+    return remoteValueObject;
+}
+
+#pragma mark - Instance Methods
 
 - (NSArray *)PD_propertiesForPropertyDescriptors;
 {
-    return [NSArray arrayWithObjects:@"class", nil];
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    [array addObject:@"class"];
+
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList([self class], &outCount);
+    for (i = 0; i < outCount; i++) {
+    	objc_property_t property = properties[i];
+    	const char *propName = property_getName(property);
+    	if (propName) {
+    		NSString *propertyName = [NSString stringWithCString:propName encoding:NSASCIIStringEncoding];
+            [array addObject:propertyName];
+    	}
+    }
+    
+    free(properties);
+
+    return array;
 }
 
 - (NSArray *)PD_propertyDescriptors;
@@ -85,62 +164,9 @@
 
 - (PDRuntimeRemoteObject *)PD_propertyDescriptorValueForObject:(id)object;
 {
-    id propertyValue = object;
-    if ([propertyValue class] == propertyValue) {
-        propertyValue = NSStringFromClass(propertyValue);
-    }
-    
-    NSDictionary *propertyTypeDetails = PDRemoteObjectPropertyTypeDetailsForObject(propertyValue);
-    
-    PDRuntimeRemoteObject *remoteValueObject = [[PDRuntimeRemoteObject alloc] init];
-    remoteValueObject.type = [propertyTypeDetails objectForKey:@"type"];
-    remoteValueObject.subtype = [propertyTypeDetails objectForKey:@"subtype"];
-    remoteValueObject.classNameString = NSStringFromClass([propertyValue class]);
-
-    if ([remoteValueObject.type isEqualToString:@"object"]) {
-        if (propertyValue) {
-            if (!remoteValueObject.subtype) {
-                if ([propertyValue isKindOfClass:[NSDictionary class]]) {
-                    NSDictionary *dictionary = propertyValue;
-                    PDDictionaryContainer *container = [[PDDictionaryContainer alloc] initWithDictionary:dictionary];
-                    remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:container];
-                    remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ <count: %d>", [propertyValue class], dictionary.count];
-                } else {
-                    remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:propertyValue];
-                }
-            } else if ([remoteValueObject.subtype isEqualToString:@"array"]) {
-                PDArrayContainer *container = [[PDArrayContainer alloc] initWithContainer:propertyValue];
-                if (container) {
-                    remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:container];
-                    remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ <count: %d>", [propertyValue class], container.count];
-                }
-            } else if ([remoteValueObject.subtype isEqualToString:@"date"]) {
-                NSDate *date = propertyValue;
-                remoteValueObject.value = [date description];
-                remoteValueObject.objectDescription = @"";
-            } else if ([remoteValueObject.subtype isEqualToString:@"regexp"]) {
-                NSRegularExpression *regEx = propertyValue;
-                remoteValueObject.value = regEx.pattern;
-                remoteValueObject.objectDescription = @"";
-            }
-            
-            if (!remoteValueObject.objectDescription) {
-                remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ %@", [propertyValue class], [propertyValue description]];
-            }
-        }
-    } else {
-        remoteValueObject.value = propertyValue;
-    }
-    
-    if (!propertyValue) {
-        remoteValueObject.value = [NSNull null];
-        remoteValueObject.type = @"object";
-        remoteValueObject.subtype = @"null";
-    }
-    
+    PDRuntimeRemoteObject *remoteValueObject = [[self class] PD_remoteObjectRepresentationForObject:object];
     return remoteValueObject;
 }
-
 
 - (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForSelector:(SEL)selector;
 {
@@ -162,10 +188,17 @@
 
 - (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForProperty:(NSString *)propertyName;
 {
+    id object = nil;
+    @try {
+        object = [self valueForKey:propertyName];
+    } @catch (NSException *exception) {
+        object = @"unknown";
+    }
+
     PDRuntimePropertyDescriptor *descriptor = [[PDRuntimePropertyDescriptor alloc] init];
-    
+
     descriptor.name = propertyName;
-    descriptor.value = [self PD_propertyDescriptorValueForObject:[self valueForKey:propertyName]];
+    descriptor.value = [self PD_propertyDescriptorValueForObject:object];
     descriptor.writable = [NSNumber numberWithBool:NO];
     descriptor.configurable = [NSNumber numberWithBool:NO];
     descriptor.enumerable = [NSNumber numberWithBool:YES];

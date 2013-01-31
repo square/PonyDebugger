@@ -58,6 +58,7 @@
     // Or to a specific ponyd bonjour service
     //[debugger autoConnectToBonjourServiceNamed:@"MY PONY"];
 
+    // Enable remote logging to the DevTools Console via PDLog()/PDLogObjects().
     [debugger enableRemoteLogging];
     
 #endif

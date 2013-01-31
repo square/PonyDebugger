@@ -79,6 +79,8 @@
 		2516719B15E61023002F2F95 /* PDWorkerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516715515E61023002F2F95 /* PDWorkerDomain.m */; };
 		25E5BCD916B9205200152A45 /* PDConsoleDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = 25E5BCD716B9205200152A45 /* PDConsoleDomainController.h */; };
 		25E5BCDA16B9205200152A45 /* PDConsoleDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25E5BCD816B9205200152A45 /* PDConsoleDomainController.m */; };
+		25E5BCE616BA41EA00152A45 /* NSDate+PDDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 25E5BCE416BA41EA00152A45 /* NSDate+PDDebugger.h */; };
+		25E5BCE716BA41EA00152A45 /* NSDate+PDDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 25E5BCE516BA41EA00152A45 /* NSDate+PDDebugger.m */; };
 		3DE2290F15D5874C0035A508 /* NSArray+PD_JSONObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228A715D5874C0035A508 /* NSArray+PD_JSONObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3DE2291015D5874C0035A508 /* NSArray+PD_JSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE228A815D5874C0035A508 /* NSArray+PD_JSONObject.m */; };
 		3DE2291115D5874C0035A508 /* NSDate+PD_JSONObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228A915D5874C0035A508 /* NSDate+PD_JSONObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -233,6 +235,8 @@
 		2516715515E61023002F2F95 /* PDWorkerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDWorkerDomain.m; sourceTree = "<group>"; };
 		25E5BCD716B9205200152A45 /* PDConsoleDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDConsoleDomainController.h; sourceTree = "<group>"; };
 		25E5BCD816B9205200152A45 /* PDConsoleDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDConsoleDomainController.m; sourceTree = "<group>"; };
+		25E5BCE416BA41EA00152A45 /* NSDate+PDDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+PDDebugger.h"; sourceTree = "<group>"; };
+		25E5BCE516BA41EA00152A45 /* NSDate+PDDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+PDDebugger.m"; sourceTree = "<group>"; };
 		3DE228A715D5874C0035A508 /* NSArray+PD_JSONObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+PD_JSONObject.h"; sourceTree = "<group>"; };
 		3DE228A815D5874C0035A508 /* NSArray+PD_JSONObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+PD_JSONObject.m"; sourceTree = "<group>"; };
 		3DE228A915D5874C0035A508 /* NSDate+PD_JSONObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+PD_JSONObject.h"; sourceTree = "<group>"; };
@@ -373,17 +377,35 @@
 			path = DerivedSources;
 			sourceTree = "<group>";
 		};
+		25E5BCE016BA41B900152A45 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				25E5BCE816BA436900152A45 /* Runtime Property Descriptors */,
+				F6EA51A316124E7D00A27364 /* NSData+PDB64Additions.h */,
+				F6EA51A416124E7D00A27364 /* NSData+PDB64Additions.m */,
+				25E5BCE416BA41EA00152A45 /* NSDate+PDDebugger.h */,
+				25E5BCE516BA41EA00152A45 /* NSDate+PDDebugger.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+		25E5BCE816BA436900152A45 /* Runtime Property Descriptors */ = {
+			isa = PBXGroup;
+			children = (
+				3DE228AF15D5874C0035A508 /* NSObject+PDRuntimePropertyDescriptor.h */,
+				3DE228B015D5874C0035A508 /* NSObject+PDRuntimePropertyDescriptor.m */,
+				3DE228AD15D5874C0035A508 /* NSManagedObject+PDRuntimePropertyDescriptor.h */,
+				3DE228AE15D5874C0035A508 /* NSManagedObject+PDRuntimePropertyDescriptor.m */,
+			);
+			name = "Runtime Property Descriptors";
+			sourceTree = "<group>";
+		};
 		3DE228A615D5874C0035A508 /* PonyDebugger */ = {
 			isa = PBXGroup;
 			children = (
 				3DE2293315D587540035A508 /* Domain Controllers */,
 				3DE2293415D5876F0035A508 /* PDObject */,
-				3DE228AF15D5874C0035A508 /* NSObject+PDRuntimePropertyDescriptor.h */,
-				3DE228B015D5874C0035A508 /* NSObject+PDRuntimePropertyDescriptor.m */,
-				F6EA51A316124E7D00A27364 /* NSData+PDB64Additions.h */,
-				F6EA51A416124E7D00A27364 /* NSData+PDB64Additions.m */,
-				3DE228AD15D5874C0035A508 /* NSManagedObject+PDRuntimePropertyDescriptor.h */,
-				3DE228AE15D5874C0035A508 /* NSManagedObject+PDRuntimePropertyDescriptor.m */,
+				25E5BCE016BA41B900152A45 /* Categories */,
 				3DE228B115D5874C0035A508 /* PDArrayContainer.h */,
 				3DE228B215D5874C0035A508 /* PDArrayContainer.m */,
 				3DE228B915D5874C0035A508 /* PDDictionaryContainer.h */,
@@ -555,6 +577,7 @@
 				943D444D160A73810091CA77 /* PDDOMDomainController.h in Headers */,
 				947CE06F163CA24E0035FB90 /* PDInspectorDomainController.h in Headers */,
 				25E5BCD916B9205200152A45 /* PDConsoleDomainController.h in Headers */,
+				25E5BCE616BA41EA00152A45 /* NSDate+PDDebugger.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -701,6 +724,7 @@
 				943D444E160A73810091CA77 /* PDDOMDomainController.m in Sources */,
 				947CE070163CA24E0035FB90 /* PDInspectorDomainController.m in Sources */,
 				25E5BCDA16B9205200152A45 /* PDConsoleDomainController.m in Sources */,
+				25E5BCE716BA41EA00152A45 /* NSDate+PDDebugger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -16,7 +16,10 @@
 @class PDRuntimeRemoteObject;
 @class PDRuntimePropertyDescriptor;
 
+
 @interface NSObject (PDRuntimePropertyDescriptor)
+
++ (PDRuntimeRemoteObject *)PD_remoteObjectRepresentationForObject:(id)object;
 
 - (NSArray *)PD_propertiesForPropertyDescriptors;
 - (NSArray *)PD_propertyDescriptors;
