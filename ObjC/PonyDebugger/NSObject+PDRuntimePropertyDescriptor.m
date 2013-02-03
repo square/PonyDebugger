@@ -40,20 +40,10 @@
     if ([remoteValueObject.type isEqualToString:@"object"]) {
         if (propertyValue) {
             if (!remoteValueObject.subtype) {
-                if ([propertyValue isKindOfClass:[NSDictionary class]]) {
-                    NSDictionary *dictionary = propertyValue;
-                    PDDictionaryContainer *container = [[PDDictionaryContainer alloc] initWithDictionary:dictionary];
-                    remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:container];
-                    remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ <count: %d>", [propertyValue class], dictionary.count];
-                } else {
-                    remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:propertyValue];
-                }
+                remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:propertyValue];
             } else if ([remoteValueObject.subtype isEqualToString:@"array"]) {
-                PDArrayContainer *container = [[PDArrayContainer alloc] initWithContainer:propertyValue];
-                if (container) {
-                    remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:container];
-                    remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ <count: %d>", [propertyValue class], container.count];
-                }
+                remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:propertyValue];
+                remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ <count = %d>", [propertyValue class], [propertyValue count]];
             } else if ([remoteValueObject.subtype isEqualToString:@"date"]) {
                 NSDate *date = propertyValue;
                 remoteValueObject.value = [date description];
@@ -82,6 +72,11 @@
 }
 
 #pragma mark - Instance Methods
+
+- (id)PD_valueForKey:(NSString *)key;
+{
+    return [self valueForKey:key];
+}
 
 - (NSArray *)PD_propertiesForPropertyDescriptors;
 {
@@ -140,7 +135,7 @@
 
 - (PDRuntimeRemoteObject *)PD_propertyDescriptorValueForSelector:(SEL)selector;
 {
-    id value = [self valueForKey:NSStringFromSelector(selector)];
+    id value = [self PD_valueForKey:NSStringFromSelector(selector)];
     
     PDRuntimeRemoteObject *remoteValueObject = [self PD_propertyDescriptorValueForObject:value];
     

@@ -21,6 +21,8 @@
 
 + (PDRuntimeRemoteObject *)PD_remoteObjectRepresentationForObject:(id)object;
 
+- (id)PD_valueForKey:(NSString *)key;
+
 - (NSArray *)PD_propertiesForPropertyDescriptors;
 - (NSArray *)PD_propertyDescriptors;
 

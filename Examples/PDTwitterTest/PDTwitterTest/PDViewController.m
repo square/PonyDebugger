@@ -96,7 +96,7 @@
 
     // PDLogObjects() is used to output objects that are inspectable. To output different data types,
     // separate them out in different arguments.
-    PDLogObjects(@"Started search with bar ", searchBar, @"with search term:", searchBar.text);
+    PDLogObjects(@"Searched with bar:", searchBar, @"and search term:", searchBar.text);
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar;

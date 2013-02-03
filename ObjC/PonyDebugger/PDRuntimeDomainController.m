@@ -11,8 +11,13 @@
 
 #import "PDRuntimeDomainController.h"
 #import "PDRuntimeTypes.h"
+
 #import "NSObject+PDRuntimePropertyDescriptor.h"
 #import "NSManagedObject+PDRuntimePropertyDescriptor.h"
+#import "NSArray+PDRuntimePropertyDescriptor.h"
+#import "NSSet+PDRuntimePropertyDescriptor.h"
+#import "NSOrderedSet+PDRuntimePropertyDescriptor.h"
+#import "NSDictionary+PDRuntimePropertyDescriptor.h"
 
 
 @interface PDRuntimeDomainController () <PDRuntimeCommandDelegate>

@@ -1,15 +1,15 @@
 //
-//  PDArrayContainer.m
+//  NSSet+PDRuntimePropertyDescriptor.m
 //  PonyDebugger
 //
-//  Created by Wen-Hao Lue on 8/8/12.
+//  Created by Wen-Hao Lue on 2013-02-03.
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
 //  which Square, Inc. licenses this file to you.
 //
 
-#import "PDArrayContainer.h"
+#import "NSSet+PDRuntimePropertyDescriptor.h"
 #import "NSObject+PDRuntimePropertyDescriptor.h"
 
 #import "PDRuntimeTypes.h"
@@ -18,7 +18,7 @@
 
 #pragma mark - Private Classes
 
-@interface _PDArrayContainerIndex : NSObject
+@interface _PDSetIndex : NSObject
 
 - (id)initWithName:(NSString *)name index:(NSInteger)index;
 
@@ -28,95 +28,61 @@
 @end
 
 
-#pragma mark - Private Interface
-
-@interface PDArrayContainer ()
-
-@property (nonatomic, copy) NSArray *array;
-
-@end
-
-
 #pragma mark - Implementation
 
-@implementation PDArrayContainer
+@implementation NSSet (PDRuntimePropertyDescriptor)
 
-@synthesize array = _array;
-
-- (id)initWithContainer:(id)container;
+- (id)PD_objectAtIndex:(NSUInteger)index;
 {
-    if ([container isKindOfClass:[NSArray class]]) {
-        return [self initWithArray:container];
-    } else if ([container isKindOfClass:[NSSet class]]) {
-        return [self initWithSet:container];
+    return [[self PD_sortedArrayRepresentation] objectAtIndex:index];
+}
+
+/**
+ * Use this to get a consistent array ordering. Just sort by pointer value, since this won't change, and is 
+ * cheap to access.
+ */
+- (NSArray *)PD_sortedArrayRepresentation;
+{
+    return [[self allObjects] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        if ((int)obj1 > (int)obj2) {
+            return NSOrderedDescending;
+        } else if ((int)obj1 < (int)obj2) {
+            return NSOrderedAscending;
+        }
+
+        return NSOrderedSame;
+    }];
+}
+
+/**
+ * valueForKey behaves differently for NSArray/NSSet, so define our own behaviour to actually grab the 
+ * array's value for a key.
+ */
+- (id)PD_valueForKey:(NSString *)key;
+{
+    if ([key isEqualToString:@"class"]) {
+        return NSStringFromClass([self class]);
+    } else if ([key isEqualToString:@"count"]) {
+        return @(self.count);
     }
-    
+
     return nil;
 }
 
-- (id)initWithArray:(NSArray *)array;
-{
-    if (!(self = [super init])) {
-        return nil;
-    }
-    
-    self.array = array;
-    
-    return self;
-}
-
-- (id)initWithSet:(NSSet *)set;
-{
-    if (!(self = [super init])) {
-        return nil;
-    }
-    
-    self.array = [set allObjects];
-    
-    return self;
-}
-
-- (void)dealloc;
-{
-    self.array = nil;
-}
-
-- (NSUInteger)count;
-{
-    return self.array.count;
-}
-
-- PD_JSONObject;
-{
-    NSMutableDictionary *ret = [[NSMutableDictionary alloc] initWithCapacity:self.array.count];
-    
-    for (NSInteger index = 0; index < self.array.count; ++index) {
-        NSString *key = [NSString stringWithFormat:@"%d", index];
-        id value = [[self.array objectAtIndex:index] PD_JSONObject];
-        [ret setObject:value forKey:key];
-    }
-    
-    return ret;
-}
-
-@end
-
-
-@implementation PDArrayContainer (PDRuntimePropertyDescriptor)
-
 - (NSArray *)PD_propertiesForPropertyDescriptors;
 {
-    NSMutableArray *properties = [[NSMutableArray alloc] initWithCapacity:self.array.count + 1];
+    NSMutableArray *properties = [[NSMutableArray alloc] initWithCapacity:self.count];
     
-    for (NSInteger index = 0; index < self.array.count; ++index) {
+    for (NSInteger index = 0; index < self.count; ++index) {
         NSString *name = [NSString stringWithFormat:@"%d", index];
         
-        _PDArrayContainerIndex *containerIndex = [[_PDArrayContainerIndex alloc] initWithName:name index:index];
+        _PDSetIndex *containerIndex = [[_PDSetIndex alloc] initWithName:name index:index];
         [properties addObject:containerIndex];
     }
-    
+
+    [properties addObject:@"class"];
     [properties addObject:@"count"];
-    
+
     return properties;
 }
 
@@ -124,19 +90,19 @@
 {
     PDRuntimePropertyDescriptor *descriptor = [super PD_propertyDescriptorForPropertyObject:property];
     if (!descriptor) {
-        if ([property isKindOfClass:[_PDArrayContainerIndex class]]) {
-            descriptor = [self PD_propertyDescriptorForArrayContainerIndex:(_PDArrayContainerIndex *)property];
+        if ([property isKindOfClass:[_PDSetIndex class]]) {
+            descriptor = [self PD_propertyDescriptorForSetContainerIndex:(_PDSetIndex *)property];
         }
     }
     
     return descriptor;
 }
 
-- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForArrayContainerIndex:(_PDArrayContainerIndex *)containerIndex;
+- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForSetContainerIndex:(_PDSetIndex *)containerIndex;
 {
     PDRuntimePropertyDescriptor *descriptor = [[PDRuntimePropertyDescriptor alloc] init];
     
-    id propertyValue = [self.array objectAtIndex:containerIndex.index];
+    id propertyValue = [self PD_objectAtIndex:containerIndex.index];
     
     PDRuntimeRemoteObject *remoteValueObject = [[PDRuntimeRemoteObject alloc] init];
     
@@ -164,9 +130,9 @@
 @end
 
 
-#pragma mark - _PDArrayContainerIndex
+#pragma mark - _PDSetIndex
 
-@implementation _PDArrayContainerIndex
+@implementation _PDSetIndex
 
 @synthesize name = _name;
 @synthesize index = _index;
@@ -181,11 +147,6 @@
     self.index = index;
     
     return self;
-}
-
-- (void)dealloc;
-{
-    self.name = nil;
 }
 
 @end
