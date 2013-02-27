@@ -106,6 +106,8 @@
             }
         }
         
+        free(methods);
+        
         if (!implementsSelector) {
             return YES;
         }
