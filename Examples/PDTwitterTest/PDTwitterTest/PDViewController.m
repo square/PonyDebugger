@@ -48,7 +48,7 @@
 {
     self = [super initWithCoder:coder];
     if (self) {
-        _client = [[AFHTTPClient alloc] initWithBaseURL:[[NSURL alloc] initWithString:@"https://api.twitter.com/1/"]];
+        _client = [[AFHTTPClient alloc] initWithBaseURL:[[NSURL alloc] initWithString:@"http://search.twitter.com/"]];
         [_client registerHTTPOperationClass:[AFJSONRequestOperation class]];
     }
     
@@ -217,61 +217,9 @@
     cell.textLabel.text = [NSString stringWithFormat:@"@%@ %@", tweet.user.screenName, tweet.text];
 }
 
-- (void)_reloadFeed;
-{
-    [_client getPath:@"statuses/public_timeline.json?count=30" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSArray *responseArray = responseObject;
-        
-        NSMutableSet *tweetIDs = [[NSMutableSet alloc] initWithCapacity:[responseArray count]];
-        for (NSDictionary *tweetDict in responseArray) {
-            [tweetIDs addObject:[tweetDict objectForKey:@"id"]];
-        }
-        
-        NSFetchRequest *existingRequest = [NSFetchRequest fetchRequestWithEntityName:@"Tweet"];
-        existingRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID in %@", tweetIDs];
-        
-        NSArray *existingTweets = [self.managedObjectContext executeFetchRequest:existingRequest error:nil];
-        
-        for (PDTweet *tweet in existingTweets) {
-            [tweetIDs removeObject:tweet.remoteID];
-        }
-        
-        NSEntityDescription *ent = [NSEntityDescription entityForName:@"Tweet" inManagedObjectContext:self.managedObjectContext];
-        for (NSDictionary *tweetDict in responseArray) {
-            NSNumber *remoteID = [tweetDict objectForKey:@"id"];
-            if ([tweetIDs containsObject:remoteID]) {
-                PDTweet *newTweet = [[PDTweet alloc] initWithEntity:ent insertIntoManagedObjectContext:self.managedObjectContext];
-                newTweet.remoteID = remoteID;
-                newTweet.text = [tweetDict valueForKeyPath:@"text"];
-                newTweet.retrievalDate = [NSDate date];
-                
-                NSNumber *userRemoteID = [tweetDict valueForKeyPath:@"user.id"];
-                NSFetchRequest *existingUserRequest = [NSFetchRequest fetchRequestWithEntityName:@"User"];
-                existingUserRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID == %@", userRemoteID];
-                
-                PDUser *user = [[self.managedObjectContext executeFetchRequest:existingUserRequest error:NULL] lastObject];
-                if (!user) {
-                    NSEntityDescription *userEntity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
-                    user = [[PDUser alloc] initWithEntity:userEntity insertIntoManagedObjectContext:self.managedObjectContext];
-                    user.remoteID = userRemoteID;
-                    user.name = [tweetDict valueForKeyPath:@"user.name"];
-                    user.screenName = [tweetDict valueForKeyPath:@"user.screen_name"];
-                    user.profilePictureURL = [tweetDict valueForKeyPath:@"user.profile_image_url"];
-                }
-                
-                newTweet.user = user;
-            }
-        }
-        
-        [self.managedObjectContext save:NULL];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-    }];
-}
-
 - (void)_reloadFeedWithSearchTerm:(NSString *)searchTerm;
 {
-    NSString *path = [NSString stringWithFormat:@"search.json?q=%@", [searchTerm stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSString *path = [NSString stringWithFormat:@"/search.json?q=%@", [searchTerm stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     [_client getPath:path parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSArray *responseArray = [responseObject objectForKey:@"results"];
         
@@ -324,7 +272,8 @@
 
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
 {
-    [self _reloadFeed];
+    [self.searchBar setText:@"square"];
+    [self searchBarSearchButtonClicked:self.searchBar];
 }
 
 @end
