@@ -16,8 +16,14 @@
 #import <PonyDebugger/PDRuntimeTypes.h>
 #import <PonyDebugger/PDArrayContainer.h>
 #import <PonyDebugger/PDDictionaryContainer.h>
-#import <objc/runtime.h>
 
+
+#pragma mark - Definitions
+
+NSDictionary *PDExtractPropertyAttributes(objc_property_t property);
+
+
+#pragma mark - Implementation
 
 @implementation NSObject (PDRuntimePropertyDescriptor)
 
@@ -121,7 +127,7 @@
         
         objc_property_t propertyDefinition = class_getProperty([self class], [propertyName cStringUsingEncoding:NSASCIIStringEncoding]);
         if (propertyDefinition != NULL) {
-            descriptor = [self PD_propertyDescriptorForProperty:propertyName];
+            descriptor = [self PD_propertyDescriptorForPropertyName:propertyName property:propertyDefinition];
         } else {
             SEL selector = NSSelectorFromString(propertyName);
             if (selector != nil) {
@@ -136,7 +142,7 @@
 - (PDRuntimeRemoteObject *)PD_propertyDescriptorValueForSelector:(SEL)selector;
 {
     id value = [self PD_valueForKey:NSStringFromSelector(selector)];
-    
+
     PDRuntimeRemoteObject *remoteValueObject = [self PD_propertyDescriptorValueForObject:value];
     
     // Determine the real class name.
@@ -181,13 +187,15 @@
     return descriptor;
 }
 
-- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForProperty:(NSString *)propertyName;
+- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForPropertyName:(NSString *)propertyName property:(objc_property_t)property
 {
     id object = nil;
     @try {
         object = [self valueForKey:propertyName];
     } @catch (NSException *exception) {
-        object = @"unknown";
+        // valueForKey won't work for certain types (like selectors, pointers, blocks).
+        // TODO: Make introspection for primitive types work.
+        object = @"<PDDebugger: unsupported type>";
     }
 
     PDRuntimePropertyDescriptor *descriptor = [[PDRuntimePropertyDescriptor alloc] init];
@@ -203,3 +211,5 @@
 }
 
 @end
+
+

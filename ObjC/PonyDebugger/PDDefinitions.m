@@ -11,6 +11,7 @@
 
 #import "PDDefinitions.h"
 
+
 NSString *const PDDebuggerErrorDomain = @"PDErrorDomain";
 const NSInteger PDDebuggerUnimplementedDomainMethodErrorCode = 100;
 const NSInteger PDDebuggerRequiredAttributeMissingCode = 101;
@@ -160,4 +161,30 @@ NSDictionary *PDRemoteObjectPropertyTypeDetailsForRelationshipDescription(NSRela
     }
     
     return [NSDictionary dictionaryWithObject:@"object" forKey:@"type"];
+}
+
+NSDictionary *PDExtractPropertyAttributes(objc_property_t property)
+{
+    NSString *attributesString = [NSString stringWithCString:property_getAttributes(property) encoding:NSASCIIStringEncoding];
+    NSArray *components = [attributesString componentsSeparatedByString:@","];
+
+    // Find the custom getter.
+    NSString *customGetter = nil;
+    NSString *returnEncodeString = nil;
+    for (NSString *component in components) {
+        if ([component hasPrefix:@"G"]) {
+            customGetter = [component substringFromIndex:1];
+        } else if ([component hasPrefix:@"T"]) {
+            returnEncodeString = [component substringFromIndex:1];
+        }
+    }
+
+    if (!customGetter) {
+        customGetter = [NSString stringWithCString:property_getName(property) encoding:NSASCIIStringEncoding];
+    }
+
+    return @{
+        @"getter": customGetter,
+        @"return": returnEncodeString
+    };
 }
