@@ -11,52 +11,88 @@ To use PonyDebugger, you must implement the client in your application and
 connect it to the gateway server. There is currently an iOS client and the
 gateway server.
 
-
 PonyDebugger is licensed under the Apache Licence, Version 2.0
 (http://www.apache.org/licenses/LICENSE-2.0.html).
 
 Changes
 -------
+
 ### v0.2.1-beta1 - 2013-01-12
 
 - Bonjour support (Thanks @jeanregisser!)
 - Memory leak fix (Thanks @rwickliffe!)
-
 
 Features
 --------
 
 ### Network Traffic Debugging
 
-PonyDebugger sends your application's network traffic through [ponyd](https://github.com/square/PonyDebugger/tree/master/ponyd), PonyDebugger's proxy server.  You use Inspector's Network tools to debug network traffic like how you would debug network traffic on a website in Google Chrome.
+PonyDebugger sends your application's network traffic through
+[ponyd](https://github.com/square/PonyDebugger/tree/master/ponyd),
+PonyDebugger's proxy server.  You use Inspector's Network tools to debug network
+traffic like how you would debug network traffic on a website in Google Chrome.
 
 ![PonyDebugger Network Debugging Screenshot](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/NetworkDebugging.png)
 
-PonyDebugger forwards network traffic, and does not sniff network traffic.  This means that traffic sent over a secure protocol (https) is debuggable.
+PonyDebugger forwards network traffic, and does not sniff network traffic. This
+means that traffic sent over a secure protocol (https) is debuggable.
 
-Currently, the iOS client automatically proxies data that is sent via `NSURLConnection`.  This means that it will automatically work with AFNetworking, and other libraries that use `NSURLConnection` for network requests.
+Currently, the iOS client automatically proxies data that is sent via
+`NSURLConnection`. This means that it will automatically work with
+AFNetworking, and other libraries that use `NSURLConnection` for network
+requests.
 
 ### Core Data Browser
 
-The Core Data browsing feature allows you to register your applcation's `NSManagedObjectContext`s and browse all of its entities and managed objects.  You browse data from the IndexedDB section in the Resource tab in Chrome Developer Tools.
+The Core Data browsing feature allows you to register your applcation's
+`NSManagedObjectContext`s and browse all of its entities and managed objects.
+You browse data from the IndexedDB section in the Resource tab in Chrome
+Developer Tools.
 
 ![PonyDebugger Core Data Browser Screenshot](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/CoreDataBrowser.png)
 
-These are read-only stores at the moment.  There are plans to implement data mutation in a future release.
+These are read-only stores at the moment.  There are plans to implement data
+mutation in a future release.
 
 ### View Hierarchy Debugging
 
-PonyDebugger displays your application's view hierarchy in the Elements tab of the Chrome Developer Tools. As you move through the XML tree, the corresponding views are highlighted in your app. You can edit the displayed attributes (i.e. frame, alpha, ...) straight from the Elements tab, and you can change which attributes to display by giving PonyDebugger an array of UIView key paths. Deleting a node in the elements panel will remove that node from the view hierarchy. Finally, when a view is highlighted, you can move it or resize it from the app using pan and pinch gestures.
+PonyDebugger displays your application's view hierarchy in the Elements tab of
+the Chrome Developer Tools. As you move through the XML tree, the corresponding
+views are highlighted in your app. You can edit the displayed attributes (i.e.
+frame, alpha, ...) straight from the Elements tab, and you can change which
+attributes to display by giving PonyDebugger an array of UIView key paths.
+Deleting a node in the elements panel will remove that node from the view
+hierarchy. Finally, when a view is highlighted, you can move it or resize it
+from the app using pan and pinch gestures.
 
-![PonyDebugger View Hierarchy Debugging Screenshot](https://github.com/Flipboard/PonyDebugger/raw/master/Documentation/Images/ViewHierarchyDebugging.png)
+![PonyDebugger View Hierarchy Debugging Screenshot](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/ViewHierarchyDebugging.png)
 
-An "inspect" mode can be entered by clicking on the magnifying glass in the lower left corner of the Developer Tools window. In this mode, tapping on a view in the iOS app will select the corresponding node in the elements panel. You can also hold and drag your finger around to see the different views highlighted. When you lift your finger, the highlighted view will be selected in the elements panel.
+An "inspect" mode can be entered by clicking on the magnifying glass in the
+lower left corner of the Developer Tools window. In this mode, tapping on a view
+in the iOS app will select the corresponding node in the elements panel. You can
+also hold and drag your finger around to see the different views highlighted.
+When you lift your finger, the highlighted view will be selected in the elements
+panel.
 
-Currently only a subset of the actions possible from the elements panel have been implemented. There is significant room for continued work and improvement, but the current functionality should prove useful nonetheless.
+Currently only a subset of the actions possible from the elements panel have
+been implemented. There is significant room for continued work and improvement,
+but the current functionality should prove useful nonetheless.
+
+### Remote Logging
+
+PonyDebugger lets you remotely log text and object dumps via the `PDLog` and
+`PDLogObjects` function. This lets you reduce the amount of content being
+loggedin `NSLog`, while also allowing you dynamically introspect objects.
+
+![PonyDebugger Remote Loggin Screenshot](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/RemoteLogging.png)
+
+Introspected objects can be expanded recursively by property. This means that
+you don't have to breakpoint and log in GDB or LLDB to introspect an object.
 
 Quick Start
 -----------
-Prerequisite: Xcode's Command Line Tools must be installed from the "Downloads" preference pane.
+Prerequisite: Xcode's Command Line Tools must be installed from the "Downloads"
+preference pane.
 
 ```sh
 
@@ -83,7 +119,8 @@ For more detailed instructions, check out the gateway server
 PonyDebugger iOS Client
 =======================
 
-The PonyDebugger iOS client lets you to debug your application's network requests and track your managed object contexts.
+The PonyDebugger iOS client lets you to debug your application's network
+requests and track your managed object contexts.
 
 #### Technical
 
@@ -94,10 +131,11 @@ The PonyDebugger iOS client lets you to debug your application's network request
 Installing
 ----------
 
-- Extract a tarball or zipball of the repository into your project directory.  If you prefer, you may also add the project
-  as a submodule.  The iOS client uses [SocketRocket](https://github.com/square/SocketRocket) as a dependency, and it is included as a 
-  submodule.
-      
+- Extract a tarball or zipball of the repository into your project directory.
+  If you prefer, you may also add the project as a submodule.  The iOS client
+  uses [SocketRocket](https://github.com/square/SocketRocket) as a dependency,
+  and it is included as a submodule.
+
 ```
 cd /path/to/YourApplication
 mkdir Frameworks
@@ -109,21 +147,27 @@ git submodule update --init --recursive
 
 ![PonyDebugger Installing Subproject](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_Subproject.png)
 
-- In your Project Settings, add the PonyDebugger target as a Target Dependency in the Build Phases tab.
+- In your Project Settings, add the PonyDebugger target as a Target Dependency
+  in the Build Phases tab.
 
 ![PonyDebugger Installing Target Dependencies](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_TargetDependencies.png)
 
-- Link `libPonyDebugger.a`, `libSocketRocket.a`, and the Framework dependencies to your project.
+- Link `libPonyDebugger.a`, `libSocketRocket.a`, and the Framework dependencies
+  to your project.
 
 ![PonyDebugger Installing Link Libraries and Frameworks](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_LinkLibraries.png)
 
-- PonyDebugger and SocketRocket take advantage of Objective C's ability to add categories on an object, but this isn't enabled for static libraries by default. To enable this, add the `-ObjC` flag to the "Other Linker Flags" build setting.
+- PonyDebugger and SocketRocket take advantage of Objective C's ability to add
+  categories on an object, but this isn't enabled for static libraries by
+  default. To enable this, add the `-ObjC` flag to the "Other Linker Flags"
+  build setting.
 
 ![PonyDebugger Installing Other Linker Flags](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/Installing_OtherLinkerFlags.png)
 
 #### Framework Dependencies
 
-Your .app must be linked against the following frameworks/dylibs in addition to `libPonyDebugger.a` and `libSocketRocket.a`.
+Your .app must be linked against the following frameworks/dylibs in addition to
+`libPonyDebugger.a` and `libSocketRocket.a`.
 
 - libicucore.dylib
 - CFNetwork.framework
@@ -146,7 +190,8 @@ To connect automatically to the PonyGateway on your LAN (via Bonjour):
 [debugger autoConnect];
 ```
 
-Or to open the connection to a specific host, for instance `ws://localhost:9000/device`:
+Or to open the connection to a specific host, for instance
+`ws://localhost:9000/device`:
 
 ``` objective-c
 [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
@@ -166,14 +211,16 @@ To enable network debugging:
 [debugger enableNetworkTrafficDebugging];
 ```
 
-PonyDebugger inspects network data by injecting logic into `NSURLConnectionDelegate` classes. If you want PonyDebugger to automatically find these classes for you:
+PonyDebugger inspects network data by injecting logic into
+`NSURLConnectionDelegate` classes. If you want PonyDebugger to automatically
+find these classes for you:
 
 ``` objective-c
 [debugger forwardAllNetworkTraffic];
 ```
 
-This will swizzle methods from private APIs, so you should ensure that this only gets invoked 
-in debug builds.  To manually specify delegate classes:
+This will swizzle methods from private APIs, so you should ensure that this only
+gets invoked in debug builds. To manually specify delegate classes:
 
 ``` objective-c
 [debugger forwardNetworkTrafficFromDelegateClass:[MyClass class]];
@@ -183,7 +230,8 @@ These methods should be invoked before the connection is opened.
 
 ### Core Data Browser
 
-PonyDebugger also allows you to browse your application's managed objects. First, enable Core Data debugging:
+PonyDebugger also allows you to browse your application's managed objects.
+First, enable Core Data debugging:
 
 ``` objective-c
 [debugger enableCoreDataDebugging];
@@ -203,29 +251,54 @@ To enable view hierarchy debugging:
 [debugger enableViewHierarchyDebugging];
 ```
 
-PonyDebugger will inject logic into `UIView` add/remove methods to monitor changes in the view hierarchy.
+PonyDebugger will inject logic into `UIView` add/remove methods to monitor
+changes in the view hierarchy.
 
-You can also set the attributes you want to see in the elements panel by passing an array of `UIView` key path strings
+You can also set the attributes you want to see in the elements panel by passing
+an array of `UIView` key path strings
 
 ``` objective-c
 [debugger setDisplayedViewAttributeKeyPaths:@[@"frame", @"hidden", @"alpha", @"opaque"]];
 ```
 
-PonyDebugger uses KVO to monitor changes in the attributes of all views in the hierarchy, so the information in the elements panel stays fresh.
+PonyDebugger uses KVO to monitor changes in the attributes of all views in the
+hierarchy, so the information in the elements panel stays fresh.
 
-The repository contains a test application to demonstrate PonyDebugger's capabilities and usage.
+### Remote Logging
+
+To enable remote logging:
+
+``` objective-c
+[debugger enableRemoteLogging];
+```
+
+Example usage:
+
+``` objective-c
+PDLog("Hello world!");               // This logs a simple string to the console output.
+PDLogObjects(self);                  // This logs an introspectable version of "self" to the console.
+PDLogObjects("My object:", object);  // Combination of text and introspectable object.
+```
+
+The repository contains a test application to demonstrate PonyDebugger's
+capabilities and usage.
 
 ### Known Issues / Improvements
 
- * `CoreData.framework` must be linked, even if you do not use the Core Data browsing functionality.
- * iOS 5.1 and below: In certain cases, -[NSURLConnectionDataDelegate connection:willSendRequest:redirectResponse:] will never get 
-   called. PonyDebugger requires this call to know when the request was sent, and will warn you with a workaround 
-   that the timestamp is inaccurate.
+ * `CoreData.framework` must be linked, even if you do not use the Core Data
+   browsing functionality.
+ * iOS 5.1 and below: In certain cases,
+   `-[NSURLConnectionDataDelegate connection:willSendRequest:redirectResponse:]` 
+   will never get called.  PonyDebugger requires this call to know when the
+   request was sent, and will warn you with a workaround that the timestamp is
+   inaccurate.
 
-   To fix the timestamp, make sure that `Accept-Encoding` HTTP header in your `NSURLRequest` is not set (by default, iOS will set it to 
-   `gzip, deflate`, which is usually adequate.
+   To fix the timestamp, make sure that `Accept-Encoding` HTTP header in your
+   `NSURLRequest` is not set (by default, iOS will set it to `gzip, deflate`,
+   which is usually adequate.
 
-   AFNetworking users: if you subclass `AFHTTPClient`, call `[self setDefaultHeader:@"Accept-Encoding" value:nil];`.
+   AFNetworking users: if you subclass `AFHTTPClient`, call
+   `[self setDefaultHeader:@"Accept-Encoding" value:nil];`.
 
 Contributing
 ------------

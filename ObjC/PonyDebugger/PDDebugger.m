@@ -31,9 +31,9 @@ static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 
-void _PDLogObjectsImpl(NSArray *arguments)
+void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 {
-    [[PDConsoleDomainController defaultInstance] logWithArguments:arguments];
+    [[PDConsoleDomainController defaultInstance] logWithArguments:arguments severity:severity];
 }
 
 

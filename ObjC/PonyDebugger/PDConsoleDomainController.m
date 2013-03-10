@@ -55,7 +55,7 @@
 
 #pragma mark - Public Methods
 
-- (void)logWithArguments:(NSArray *)args;
+- (void)logWithArguments:(NSArray *)args severity:(NSString *)severity
 {
     // Construct the message by creating the runtime objects for each argument provided.
     NSMutableString *text = [[NSMutableString alloc] init];
@@ -72,7 +72,14 @@
     [text deleteCharactersInRange:NSMakeRange(text.length - 1, 1)];
 
     PDConsoleConsoleMessage *consoleMessage = [[PDConsoleConsoleMessage alloc] init];
-    consoleMessage.level = @"log";
+    
+    // debug, log, warn, info, error
+    if ( [severity isEqualToString:@"debug"] ) consoleMessage.level = @"debug";
+    else if ( [severity isEqualToString:@"warn"] ) consoleMessage.level = @"warn";
+    else if ( [severity isEqualToString:@"info"] ) consoleMessage.level = @"info";
+    else if ( [severity isEqualToString:@"error"] ) consoleMessage.level = @"error";
+    else consoleMessage.level = @"log";
+
     consoleMessage.source = @"console-api";
     consoleMessage.stackTrace = [[NSArray alloc] init];
     consoleMessage.parameters = parameters;
