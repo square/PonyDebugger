@@ -670,20 +670,16 @@ static NSArray *prettyStringPrinters = nil;
     
     NSData *body = request.HTTPBody;
     
-    NSString *contentType = [request valueForHTTPHeaderField:@"Content-Type"];
-    // Do some trivial redacting here.  In particular, redact password 
-    if (body && contentType && [contentType rangeOfString:@"json"].location != NSNotFound) {
-        NSMutableDictionary *obj = [NSJSONSerialization JSONObjectWithData:body options:0 error:NULL];
-        if ([obj isKindOfClass:[NSDictionary class]] && [obj objectForKey:@"password"]) {
-            obj = [obj mutableCopy];
-            [obj setObject:@"[REDACTED]" forKey:@"password"];
-            body = [NSJSONSerialization dataWithJSONObject:obj options:0 error:NULL];
-        }
+    // pretty print and redact sensitive fields
+    id<PDPrettyStringPrinting> prettyStringPrinter = [PDNetworkDomainController prettyStringPrinterForRequest:request];
+    if (prettyStringPrinter) {
+        self.postData = [prettyStringPrinter prettyStringForData:body forRequest:request];
     }
-     
-    // If the data isn't UTF-8 it will just be nil;
-    self.postData = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
-    
+    else {
+        // If the data isn't UTF-8 it will just be nil;
+        self.postData = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
+    }
+
     return self;
 }
 

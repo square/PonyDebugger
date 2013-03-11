@@ -47,3 +47,82 @@
 }
 
 @end
+
+@implementation PDJSONPrettyStringPrinter {
+    NSMutableSet *_redactedFields;
+}
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        _redactedFields = [[NSMutableSet alloc] initWithObjects:@"password", nil];
+    }
+    return self;
+}
+
+- (id)initWithRedactedFields:(NSArray *)redactedFields;
+{
+    self = [self init];
+    for (NSString* field in redactedFields) {
+        [_redactedFields addObject:field];
+    }
+    return self;
+}
+
+- (BOOL)canPrettyStringPrintContentType:(NSString *)contentType
+{
+    if ([contentType rangeOfString:@"json"].location != NSNotFound) {
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)canPrettyStringPrintRequest:(NSURLRequest *)request
+{
+    NSString *mimeType = [request valueForHTTPHeaderField:@"Content-Type"];
+    return [self canPrettyStringPrintContentType:mimeType];
+}
+
+- (BOOL)canPrettyStringPrintResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request
+{
+    return [self canPrettyStringPrintContentType:response.MIMEType];
+}
+
+- (NSString *)prettyStringForData:(NSData *)data;
+{
+    NSData *prettyData = data;
+    if (!data) {
+        return nil;
+    }
+    NSMutableDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    if (jsonObject) {
+        if ([jsonObject isKindOfClass:[NSDictionary class]]) {
+            jsonObject = [jsonObject mutableCopy];
+            for (NSString *redactedField in _redactedFields) {
+                if ([jsonObject objectForKey:redactedField]) {
+                    [jsonObject setObject:@"REDACTED" forKey:redactedField];
+                }
+            }
+        }
+        prettyData = [NSJSONSerialization dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:NULL];
+    }
+    return [[NSString alloc] initWithData:prettyData encoding:NSUTF8StringEncoding];
+}
+
+- (NSString *)prettyStringForData:(NSData *)data forRequest:(NSURLRequest *)request
+{
+    return [self prettyStringForData:data];
+}
+
+- (NSString *)prettyStringForData:(NSData *)data forResponse:(NSURLResponse *)response request:(NSURLRequest *)request
+{
+    return [self prettyStringForData:data];
+}
+
+- (void)addRedactedField:(NSString *)field;
+{
+    [_redactedFields addObject:field];
+}
+
+@end

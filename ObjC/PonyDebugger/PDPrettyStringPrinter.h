@@ -21,3 +21,10 @@
 @interface PDTextPrettyStringPrinter : NSObject <PDPrettyStringPrinting>
 
 @end
+
+@interface PDJSONPrettyStringPrinter : NSObject <PDPrettyStringPrinting>
+
+- (id)initWithRedactedFields:(NSArray *)redactedFields;
+- (void)addRedactedField:(NSString *)field;
+
+@end

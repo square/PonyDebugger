@@ -338,6 +338,7 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 - (void)forwardAllNetworkTraffic;
 {
+    [PDNetworkDomainController registerPrettyStringPrinter:[[PDJSONPrettyStringPrinter alloc] init]];
     [PDNetworkDomainController injectIntoAllNSURLConnectionDelegateClasses];
 }
 
