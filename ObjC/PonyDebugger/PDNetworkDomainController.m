@@ -643,18 +643,20 @@
     }
     
     self.url = [response.URL absoluteString];
-    
-    // TODO: Pretty version of status codes.
+
+    // Set statusText if this was a HTTP Response
     self.statusText = @"";
-    
+
     self.mimeType = response.MIMEType;
     self.requestHeaders = request.allHTTPHeaderFields;
     
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-        self.status = [NSNumber numberWithInteger:((NSHTTPURLResponse *)response).statusCode];
-        self.headers = ((NSHTTPURLResponse *)response).allHeaderFields;
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        self.status = [NSNumber numberWithInteger:httpResponse.statusCode];
+        self.statusText = [NSHTTPURLResponse localizedStringForStatusCode:httpResponse.statusCode];
+        self.headers = httpResponse.allHeaderFields;
     }
-    
+
     return self;
 }
 
