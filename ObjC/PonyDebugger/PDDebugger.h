@@ -15,7 +15,7 @@
 
 @class SRWebSocket;
 @class PDDomainController;
-
+@protocol PDPrettyStringPrinting;
 
 @interface PDDebugger : NSObject
 
@@ -37,6 +37,8 @@
 - (void)enableNetworkTrafficDebugging;
 - (void)forwardAllNetworkTraffic;
 - (void)forwardNetworkTrafficFromDelegateClass:(Class)cls;
++ (void)registerPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
++ (void)unregisterPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
 
 // Core Data Debugging
 - (void)enableCoreDataDebugging;

@@ -15,6 +15,7 @@
 #import "PDDebugger.h"
 #import "PDDynamicDebuggerDomain.h"
 #import "PDNetworkDomain.h"
+#import "PDPrettyStringPrinter.h"
 #import "PDDomainController.h"
 
 #import "PDNetworkDomainController.h"
@@ -343,6 +344,16 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 - (void)forwardNetworkTrafficFromDelegateClass:(Class)cls;
 {
     [PDNetworkDomainController injectIntoDelegateClass:cls];
+}
+
++ (void)registerPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
+{
+    [PDNetworkDomainController registerPrettyStringPrinter:prettyStringPrinter];
+}
+
++ (void)unregisterPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
+{
+    [PDNetworkDomainController unregisterPrettyStringPrinter:prettyStringPrinter];
 }
 
 #pragma mark Core Data Debugging

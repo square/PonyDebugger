@@ -10,6 +10,7 @@
 //
 
 #import "PDNetworkDomainController.h"
+#import "PDPrettyStringPrinter.h"
 
 #import "NSData+PDB64Additions.h"
 #import <objc/runtime.h>
@@ -51,6 +52,9 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         defaultInstance = [[PDNetworkDomainController alloc] init];
+        // Always register the default to differentiate text vs binary data
+        id<PDPrettyStringPrinting> prettyStringPrinter = [[PDTextPrettyStringPrinter alloc] init];
+        [PDNetworkDomainController registerPrettyStringPrinter:prettyStringPrinter];
     });
     return defaultInstance;
 }
@@ -72,6 +76,56 @@
 + (Class)domainClass;
 {
     return [PDNetworkDomain class];
+}
+
+#pragma mark Pretty String Printing registration and usage
+
+static NSArray *prettyStringPrinters = nil;
+
++ (void)registerPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        prettyStringPrinters = [[NSArray alloc] initWithObjects:prettyStringPrinter, nil];
+    });
+
+    @synchronized(prettyStringPrinters) {
+        NSMutableArray *newPrinters = [prettyStringPrinters mutableCopy];
+        [newPrinters addObject:prettyStringPrinter];
+        prettyStringPrinters = newPrinters;
+    }
+}
+
++ (void)unregisterPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
+{
+    if (!prettyStringPrinters) {
+        return;
+    }
+    @synchronized(prettyStringPrinters) {
+        NSMutableArray *newPrinters = [prettyStringPrinters mutableCopy];
+        [newPrinters removeObjectIdenticalTo:prettyStringPrinter];
+        prettyStringPrinters = newPrinters;
+    }
+}
+
++ (id<PDPrettyStringPrinting>)prettyStringPrinterForRequest:(NSURLRequest *)request
+{
+    for(id<PDPrettyStringPrinting> prettyStringPrinter in [prettyStringPrinters reverseObjectEnumerator]) {
+        if ([prettyStringPrinter canPrettyStringPrintRequest:request]) {
+            return prettyStringPrinter;
+        }
+    }
+    return nil;
+}
+
++ (id<PDPrettyStringPrinting>)prettyStringPrinterForResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request
+{
+    for(id<PDPrettyStringPrinting> prettyStringPrinter in [prettyStringPrinters reverseObjectEnumerator]) {
+        if ([prettyStringPrinter canPrettyStringPrintResponse:response withRequest:request]) {
+            return prettyStringPrinter;
+        }
+    }
+    return nil;
 }
 
 #pragma mark Delegate Injection Convenience Methods

@@ -13,6 +13,7 @@
 #import <PonyDebugger/PDNetworkTypes.h>
 #import <PonyDebugger/PDNetworkDomain.h>
 
+@protocol PDPrettyStringPrinting;
 
 @interface PDNetworkDomainController : PDDomainController <PDNetworkCommandDelegate>
 
@@ -21,6 +22,9 @@
 + (PDNetworkDomainController *)defaultInstance;
 + (void)injectIntoAllNSURLConnectionDelegateClasses;
 + (void)injectIntoDelegateClass:(Class)cls;
+
++ (void)registerPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
++ (void)unregisterPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
 
 @end
 
