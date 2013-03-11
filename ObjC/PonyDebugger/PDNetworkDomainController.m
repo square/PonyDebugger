@@ -30,7 +30,7 @@
 
 @interface PDNetworkDomainController ()
 
-- (void)setResponse:(NSData *)response forRequestID:(NSString *)requestID isBinary:(BOOL)isBinary;
+- (void)setResponse:(NSData *)responseBody forRequestID:(NSString *)requestID response:(NSURLResponse *)response request:(NSURLRequest *)request;
 - (void)performBlock:(dispatch_block_t)block;
 
 @end
@@ -437,18 +437,27 @@ static NSArray *prettyStringPrinters = nil;
 
 #pragma mark - Private Methods
 
-- (void)setResponse:(NSData *)response forRequestID:(NSString *)requestID isBinary:(BOOL)isBinary;
+- (void)setResponse:(NSData *)responseBody forRequestID:(NSString *)requestID response:(NSURLResponse *)response request:(NSURLRequest *)request;
 {
-    NSString *encodedBody = isBinary ?
-                            response.PD_stringByBase64Encoding :
-                            [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
+    id<PDPrettyStringPrinting> prettyStringPrinter = [PDNetworkDomainController prettyStringPrinterForResponse:response withRequest:request];
+
+    NSString *encodedBody;
+    BOOL isBinary;
+    if (!prettyStringPrinter) {
+        encodedBody = responseBody.PD_stringByBase64Encoding;
+        isBinary = YES;
+    }
+    else {
+        encodedBody = [prettyStringPrinter prettyStringForData:responseBody forResponse:response request:request];
+        isBinary = NO;
+    }
 
     NSDictionary *responseDict = [NSDictionary dictionaryWithObjectsAndKeys:
         encodedBody, @"body",
         [NSNumber numberWithBool:isBinary], @"base64Encoded",
         nil];
 
-    [_responseCache setObject:responseDict forKey:requestID cost:[response length]];
+    [_responseCache setObject:responseDict forKey:requestID cost:[responseBody length]];
 }
 
 - (_PDRequestState *)requestStateForConnection:(NSURLConnection *)connection;
@@ -614,14 +623,13 @@ static NSArray *prettyStringPrinters = nil;
     [self performBlock:^{
         NSURLResponse *response = [self responseForConnection:connection];
         NSString *requestID = [self requestIDForConnection:connection];
-        
-        BOOL isBinary = ([response.MIMEType rangeOfString:@"json"].location == NSNotFound) && ([response.MIMEType rangeOfString:@"text"].location == NSNotFound) && ([response.MIMEType rangeOfString:@"xml"].location == NSNotFound);
-        
+
         NSData *accumulatedData = [self accumulatedDataForConnection:connection];
-        
+
         [self setResponse:accumulatedData
              forRequestID:requestID
-                 isBinary:isBinary];
+                 response:response
+                  request:[self requestForConnection:connection]];
         
         [self.domain loadingFinishedWithRequestId:requestID
                                         timestamp:[NSDate PD_timestamp]];
