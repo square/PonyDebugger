@@ -52,9 +52,6 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         defaultInstance = [[PDNetworkDomainController alloc] init];
-        // Always register the default to differentiate text vs binary data
-        id<PDPrettyStringPrinting> prettyStringPrinter = [[PDTextPrettyStringPrinter alloc] init];
-        [PDNetworkDomainController registerPrettyStringPrinter:prettyStringPrinter];
     });
     return defaultInstance;
 }
@@ -86,7 +83,9 @@ static NSArray *prettyStringPrinters = nil;
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        prettyStringPrinters = [[NSArray alloc] initWithObjects:prettyStringPrinter, nil];
+        // Always register the default to differentiate text vs binary data
+        id<PDPrettyStringPrinting> textPrettyStringPrinter = [[PDTextPrettyStringPrinter alloc] init];
+        prettyStringPrinters = [[NSArray alloc] initWithObjects:textPrettyStringPrinter, prettyStringPrinter, nil];
     });
 
     @synchronized(prettyStringPrinters) {
