@@ -85,7 +85,7 @@ static NSArray *prettyStringPrinters = nil;
     dispatch_once(&onceToken, ^{
         // Always register the default to differentiate text vs binary data
         id<PDPrettyStringPrinting> textPrettyStringPrinter = [[PDTextPrettyStringPrinter alloc] init];
-        prettyStringPrinters = [[NSArray alloc] initWithObjects:textPrettyStringPrinter, prettyStringPrinter, nil];
+        prettyStringPrinters = [[NSArray alloc] initWithObjects:textPrettyStringPrinter, nil];
     });
 
     @synchronized(prettyStringPrinters) {
@@ -109,6 +109,9 @@ static NSArray *prettyStringPrinters = nil;
 
 + (id<PDPrettyStringPrinting>)prettyStringPrinterForRequest:(NSURLRequest *)request
 {
+    if (!prettyStringPrinters) {
+        return nil;
+    }
     for(id<PDPrettyStringPrinting> prettyStringPrinter in [prettyStringPrinters reverseObjectEnumerator]) {
         if ([prettyStringPrinter canPrettyStringPrintRequest:request]) {
             return prettyStringPrinter;
@@ -119,6 +122,9 @@ static NSArray *prettyStringPrinters = nil;
 
 + (id<PDPrettyStringPrinting>)prettyStringPrinterForResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request
 {
+    if (!prettyStringPrinters) {
+        return nil;
+    }
     for(id<PDPrettyStringPrinting> prettyStringPrinter in [prettyStringPrinters reverseObjectEnumerator]) {
         if ([prettyStringPrinter canPrettyStringPrintResponse:response withRequest:request]) {
             return prettyStringPrinter;
