@@ -14,6 +14,8 @@
 #import "PDUser.h"
 #import "AFNetworking.h"
 
+#import <PonyDebugger/PonyDebugger.h>
+
 
 #pragma mark - Private Interface
 
@@ -99,12 +101,20 @@
 {
     [self.searchBar resignFirstResponder];
     [self _reloadFeedWithSearchTerm:searchBar.text];
+    
+#if ENABLE_PONYDEBUGGER
+    [[PDDebugger defaultInstance] clearRemoteMessages];
+#endif
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar;
 {
     self.searchBar.text = nil;
     [self.searchBar resignFirstResponder];
+    
+#if ENABLE_PONYDEBUGGER
+    [[PDDebugger defaultInstance] clearRemoteMessages];
+#endif
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText;
@@ -112,6 +122,10 @@
     if (!searchText.length) {
         [self.searchBar resignFirstResponder];
     }
+    
+#if ENABLE_PONYDEBUGGER
+    [[PDDebugger defaultInstance] sendRemoteMessage:searchText];
+#endif
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar;

@@ -58,6 +58,9 @@
     // Or to a specific ponyd bonjour service
     //[debugger autoConnectToBonjourServiceNamed:@"MY PONY"];
     
+    // Enable remote logging
+    [debugger enableRemoteLogging];
+    
 #endif
     
     PDViewController *controller = (PDViewController *)([((UINavigationController *)self.window.rootViewController).viewControllers objectAtIndex:0]);

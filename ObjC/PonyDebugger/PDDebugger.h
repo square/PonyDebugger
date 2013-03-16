@@ -48,6 +48,11 @@
 - (void)enableViewHierarchyDebugging;
 - (void)setDisplayedViewAttributeKeyPaths:(NSArray *)keyPaths;
 
+// Remote Logging
+- (void)enableRemoteLogging;
+- (void)sendRemoteMessage:(NSString *)text;
+- (void)clearRemoteMessages;
+
 @end
 
 @interface NSDate (PDDebugger)
