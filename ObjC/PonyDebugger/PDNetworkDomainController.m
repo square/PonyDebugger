@@ -79,7 +79,7 @@
 
 static NSArray *prettyStringPrinters = nil;
 
-+ (void)registerPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
++ (NSArray*)_currentPrettyStringPrinters;
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -87,9 +87,13 @@ static NSArray *prettyStringPrinters = nil;
         id<PDPrettyStringPrinting> textPrettyStringPrinter = [[PDTextPrettyStringPrinter alloc] init];
         prettyStringPrinters = [[NSArray alloc] initWithObjects:textPrettyStringPrinter, nil];
     });
+    return prettyStringPrinters;
+}
 
++ (void)registerPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
+{
     @synchronized(prettyStringPrinters) {
-        NSMutableArray *newPrinters = [prettyStringPrinters mutableCopy];
+        NSMutableArray *newPrinters = [[PDNetworkDomainController _currentPrettyStringPrinters] mutableCopy];
         [newPrinters addObject:prettyStringPrinter];
         prettyStringPrinters = newPrinters;
     }
@@ -97,11 +101,8 @@ static NSArray *prettyStringPrinters = nil;
 
 + (void)unregisterPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
 {
-    if (!prettyStringPrinters) {
-        return;
-    }
     @synchronized(prettyStringPrinters) {
-        NSMutableArray *newPrinters = [prettyStringPrinters mutableCopy];
+        NSMutableArray *newPrinters = [[PDNetworkDomainController _currentPrettyStringPrinters] mutableCopy];
         [newPrinters removeObjectIdenticalTo:prettyStringPrinter];
         prettyStringPrinters = newPrinters;
     }
@@ -109,10 +110,7 @@ static NSArray *prettyStringPrinters = nil;
 
 + (id<PDPrettyStringPrinting>)prettyStringPrinterForRequest:(NSURLRequest *)request
 {
-    if (!prettyStringPrinters) {
-        return nil;
-    }
-    for(id<PDPrettyStringPrinting> prettyStringPrinter in [prettyStringPrinters reverseObjectEnumerator]) {
+    for(id<PDPrettyStringPrinting> prettyStringPrinter in [[PDNetworkDomainController _currentPrettyStringPrinters] reverseObjectEnumerator]) {
         if ([prettyStringPrinter canPrettyStringPrintRequest:request]) {
             return prettyStringPrinter;
         }
@@ -122,10 +120,7 @@ static NSArray *prettyStringPrinters = nil;
 
 + (id<PDPrettyStringPrinting>)prettyStringPrinterForResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request
 {
-    if (!prettyStringPrinters) {
-        return nil;
-    }
-    for(id<PDPrettyStringPrinting> prettyStringPrinter in [prettyStringPrinters reverseObjectEnumerator]) {
+    for(id<PDPrettyStringPrinting> prettyStringPrinter in [[PDNetworkDomainController _currentPrettyStringPrinters] reverseObjectEnumerator]) {
         if ([prettyStringPrinter canPrettyStringPrintResponse:response withRequest:request]) {
             return prettyStringPrinter;
         }
