@@ -221,7 +221,7 @@ class Gateway(PonydCommand):
 
     def __call__(self):
         if not os.path.exists(self.devtools_path):
-            print "Error: devtools directory %s does not exist. Use ponydownloader to download a compatible version of Chrome Developer Tools." % self.devtools_path
+            print "Error: devtools directory %s does not exist. Use 'ponyd update-devtools' to download a compatible version of Chrome Developer Tools." % self.devtools_path
             return
 
         if self.verbose:
