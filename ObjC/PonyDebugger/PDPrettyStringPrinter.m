@@ -15,6 +15,8 @@
 
 @implementation PDTextPrettyStringPrinter
 
+#pragma - mark PDPrettyStringPrinting
+
 // Handle any non-binary, but don't make it pretty
 - (BOOL)canPrettyStringPrintContentType:(NSString *)contentType;
 {
@@ -57,6 +59,10 @@
     NSMutableSet *_redactedFields;
 }
 
+@synthesize redactedFields = _redactedFields;
+
+#pragma - mark Initialization
+
 - (id)init;
 {
     self = [super init];
@@ -74,6 +80,8 @@
     }
     return self;
 }
+
+#pragma - mark PDPrettyStringPrinting
 
 - (BOOL)canPrettyStringPrintContentType:(NSString *)contentType;
 {
@@ -127,6 +135,8 @@
 {
     return [self prettyStringForData:data];
 }
+
+#pragma - mark Accessors/Mutators
 
 - (void)addRedactedField:(NSString *)field;
 {

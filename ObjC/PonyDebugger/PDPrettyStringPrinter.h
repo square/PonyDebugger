@@ -28,6 +28,8 @@
 
 @interface PDJSONPrettyStringPrinter : NSObject <PDPrettyStringPrinting>
 
+@property (nonatomic, strong, readonly) NSSet *redactedFields;
+
 - (id)initWithRedactedFields:(NSArray *)redactedFields;
 - (void)addRedactedField:(NSString *)field;
 
