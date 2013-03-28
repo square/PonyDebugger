@@ -115,6 +115,8 @@
 		943D444E160A73810091CA77 /* PDDOMDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943D444C160A73810091CA77 /* PDDOMDomainController.m */; };
 		947CE06F163CA24E0035FB90 /* PDInspectorDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = 947CE06D163CA24E0035FB90 /* PDInspectorDomainController.h */; };
 		947CE070163CA24E0035FB90 /* PDInspectorDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 947CE06E163CA24E0035FB90 /* PDInspectorDomainController.m */; };
+		E8D8B39316E00C9600081F80 /* PDPrettyStringPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = E8D8B39116E00C9600081F80 /* PDPrettyStringPrinter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E8D8B39416E00C9600081F80 /* PDPrettyStringPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D8B39216E00C9600081F80 /* PDPrettyStringPrinter.m */; };
 		F683ADB014FC1B4D008EBBA7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */; };
 		F6EA51A716124E7D00A27364 /* NSData+PDB64Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = F6EA51A316124E7D00A27364 /* NSData+PDB64Additions.h */; };
 		F6EA51A816124E7D00A27364 /* NSData+PDB64Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EA51A416124E7D00A27364 /* NSData+PDB64Additions.m */; };
@@ -268,6 +270,8 @@
 		943D444C160A73810091CA77 /* PDDOMDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDOMDomainController.m; sourceTree = "<group>"; };
 		947CE06D163CA24E0035FB90 /* PDInspectorDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDInspectorDomainController.h; sourceTree = "<group>"; };
 		947CE06E163CA24E0035FB90 /* PDInspectorDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDInspectorDomainController.m; sourceTree = "<group>"; };
+		E8D8B39116E00C9600081F80 /* PDPrettyStringPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDPrettyStringPrinter.h; sourceTree = "<group>"; };
+		E8D8B39216E00C9600081F80 /* PDPrettyStringPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDPrettyStringPrinter.m; sourceTree = "<group>"; };
 		F60EBEA114FC87EE0095B011 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		F60EBEA714FC92450095B011 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		F60EBEAA14FC92630095B011 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
@@ -390,6 +394,8 @@
 				3DE228B815D5874C0035A508 /* PDDefinitions.m */,
 				3DE228BD15D5874C0035A508 /* PDDynamicDebuggerDomain.h */,
 				3DE228BE15D5874C0035A508 /* PDDynamicDebuggerDomain.m */,
+				E8D8B39116E00C9600081F80 /* PDPrettyStringPrinter.h */,
+				E8D8B39216E00C9600081F80 /* PDPrettyStringPrinter.m */,
 				3DE228C915D5874C0035A508 /* PonyDebugger-Prefix.pch */,
 				3DE228CA15D5874C0035A508 /* PonyDebugger.h */,
 			);
@@ -535,6 +541,7 @@
 				2516718215E61023002F2F95 /* PDNetworkDomain.h in Headers */,
 				2516718415E61023002F2F95 /* PDNetworkTypes.h in Headers */,
 				2516718615E61023002F2F95 /* PDPageDomain.h in Headers */,
+				E8D8B39316E00C9600081F80 /* PDPrettyStringPrinter.h in Headers */,
 				2516718815E61023002F2F95 /* PDPageTypes.h in Headers */,
 				2516718A15E61023002F2F95 /* PDProfilerDomain.h in Headers */,
 				2516718C15E61023002F2F95 /* PDProfilerTypes.h in Headers */,
@@ -693,6 +700,7 @@
 				F6EA51A816124E7D00A27364 /* NSData+PDB64Additions.m in Sources */,
 				943D444E160A73810091CA77 /* PDDOMDomainController.m in Sources */,
 				947CE070163CA24E0035FB90 /* PDInspectorDomainController.m in Sources */,
+				E8D8B39416E00C9600081F80 /* PDPrettyStringPrinter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
