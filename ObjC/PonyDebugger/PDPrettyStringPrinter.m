@@ -12,10 +12,11 @@
 #import "PDPrettyStringPrinter.h"
 #import "NSData+PDB64Additions.h"
 
+
 @implementation PDTextPrettyStringPrinter
 
 // Handle any non-binary, but don't make it pretty
-- (BOOL)canPrettyStringPrintContentType:(NSString *)contentType
+- (BOOL)canPrettyStringPrintContentType:(NSString *)contentType;
 {
     return
     ([contentType rangeOfString:@"json"].location != NSNotFound)
@@ -23,39 +24,40 @@
     || ([contentType rangeOfString:@"xml"].location != NSNotFound);
 }
 
-- (BOOL)canPrettyStringPrintRequest:(NSURLRequest *)request
+- (BOOL)canPrettyStringPrintRequest:(NSURLRequest *)request;
 {
     NSString *contentType = [request valueForHTTPHeaderField:@"Content-Type"];
     return [self canPrettyStringPrintContentType:contentType];
 }
 
-- (BOOL)canPrettyStringPrintResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request
+- (BOOL)canPrettyStringPrintResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request;
 {
     return [self canPrettyStringPrintContentType:response.MIMEType];
 }
 
-- (NSString*)prettyStringForData:(NSData *)data
+- (NSString*)prettyStringForData:(NSData *)data;
 {
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
-- (NSString *)prettyStringForData:(NSData *)data forRequest:(NSURLRequest *)request
+- (NSString *)prettyStringForData:(NSData *)data forRequest:(NSURLRequest *)request;
 {
     return [self prettyStringForData:data];
 }
 
-- (NSString *)prettyStringForData:(NSData *)data forResponse:(NSURLResponse *)response request:(NSURLRequest *)request
+- (NSString *)prettyStringForData:(NSData *)data forResponse:(NSURLResponse *)response request:(NSURLRequest *)request;
 {
     return [self prettyStringForData:data];
 }
 
 @end
 
+
 @implementation PDJSONPrettyStringPrinter {
     NSMutableSet *_redactedFields;
 }
 
-- (id)init
+- (id)init;
 {
     self = [super init];
     if (self) {
@@ -67,13 +69,13 @@
 - (id)initWithRedactedFields:(NSArray *)redactedFields;
 {
     self = [self init];
-    for (NSString* field in redactedFields) {
+    for (NSString *field in redactedFields) {
         [_redactedFields addObject:field];
     }
     return self;
 }
 
-- (BOOL)canPrettyStringPrintContentType:(NSString *)contentType
+- (BOOL)canPrettyStringPrintContentType:(NSString *)contentType;
 {
     if ([contentType rangeOfString:@"json"].location != NSNotFound) {
         return YES;
@@ -81,24 +83,26 @@
     return NO;
 }
 
-- (BOOL)canPrettyStringPrintRequest:(NSURLRequest *)request
+- (BOOL)canPrettyStringPrintRequest:(NSURLRequest *)request;
 {
     NSString *mimeType = [request valueForHTTPHeaderField:@"Content-Type"];
     return [self canPrettyStringPrintContentType:mimeType];
 }
 
-- (BOOL)canPrettyStringPrintResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request
+- (BOOL)canPrettyStringPrintResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request;
 {
     return [self canPrettyStringPrintContentType:response.MIMEType];
 }
 
 - (NSString *)prettyStringForData:(NSData *)data;
 {
-    NSData *prettyData = data;
     if (!data) {
         return nil;
     }
+
+    NSData *prettyData = data;
     NSMutableDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+
     if (jsonObject) {
         if ([jsonObject isKindOfClass:[NSDictionary class]]) {
             jsonObject = [jsonObject mutableCopy];
@@ -110,15 +114,16 @@
         }
         prettyData = [NSJSONSerialization dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:NULL];
     }
+
     return [[NSString alloc] initWithData:prettyData encoding:NSUTF8StringEncoding];
 }
 
-- (NSString *)prettyStringForData:(NSData *)data forRequest:(NSURLRequest *)request
+- (NSString *)prettyStringForData:(NSData *)data forRequest:(NSURLRequest *)request;
 {
     return [self prettyStringForData:data];
 }
 
-- (NSString *)prettyStringForData:(NSData *)data forResponse:(NSURLResponse *)response request:(NSURLRequest *)request
+- (NSString *)prettyStringForData:(NSData *)data forResponse:(NSURLResponse *)response request:(NSURLRequest *)request;
 {
     return [self prettyStringForData:data];
 }

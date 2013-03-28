@@ -13,6 +13,7 @@
 #import <PonyDebugger/PDNetworkTypes.h>
 #import <PonyDebugger/PDNetworkDomain.h>
 
+
 @protocol PDPrettyStringPrinting;
 
 @interface PDNetworkDomainController : PDDomainController <PDNetworkCommandDelegate>

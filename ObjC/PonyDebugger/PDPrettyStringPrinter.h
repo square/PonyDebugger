@@ -19,6 +19,7 @@
 
 - (NSString *)prettyStringForData:(NSData *)data forRequest:(NSURLRequest *)request;
 - (NSString *)prettyStringForData:(NSData *)data forResponse:(NSURLResponse *)response request:(NSURLRequest *)request;
+
 @end
 
 @interface PDTextPrettyStringPrinter : NSObject <PDPrettyStringPrinting>

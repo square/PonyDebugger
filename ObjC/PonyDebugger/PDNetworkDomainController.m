@@ -77,6 +77,7 @@
 
 #pragma mark Pretty String Printing registration and usage
 
+// This is replaced atomically to avoid having to lock when looking up the printers instead of being mutable.
 static NSArray *prettyStringPrinters = nil;
 
 + (NSArray*)_currentPrettyStringPrinters;
@@ -108,7 +109,7 @@ static NSArray *prettyStringPrinters = nil;
     }
 }
 
-+ (id<PDPrettyStringPrinting>)prettyStringPrinterForRequest:(NSURLRequest *)request
++ (id<PDPrettyStringPrinting>)prettyStringPrinterForRequest:(NSURLRequest *)request;
 {
     for(id<PDPrettyStringPrinting> prettyStringPrinter in [[PDNetworkDomainController _currentPrettyStringPrinters] reverseObjectEnumerator]) {
         if ([prettyStringPrinter canPrettyStringPrintRequest:request]) {
@@ -118,7 +119,7 @@ static NSArray *prettyStringPrinters = nil;
     return nil;
 }
 
-+ (id<PDPrettyStringPrinting>)prettyStringPrinterForResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request
++ (id<PDPrettyStringPrinting>)prettyStringPrinterForResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request;
 {
     for(id<PDPrettyStringPrinting> prettyStringPrinter in [[PDNetworkDomainController _currentPrettyStringPrinters] reverseObjectEnumerator]) {
         if ([prettyStringPrinter canPrettyStringPrintResponse:response withRequest:request]) {
@@ -446,8 +447,7 @@ static NSArray *prettyStringPrinters = nil;
     if (!prettyStringPrinter) {
         encodedBody = responseBody.PD_stringByBase64Encoding;
         isBinary = YES;
-    }
-    else {
+    } else {
         encodedBody = [prettyStringPrinter prettyStringForData:responseBody forResponse:response request:request];
         isBinary = NO;
     }
@@ -674,8 +674,7 @@ static NSArray *prettyStringPrinters = nil;
     id<PDPrettyStringPrinting> prettyStringPrinter = [PDNetworkDomainController prettyStringPrinterForRequest:request];
     if (prettyStringPrinter) {
         self.postData = [prettyStringPrinter prettyStringForData:body forRequest:request];
-    }
-    else {
+    } else {
         // If the data isn't UTF-8 it will just be nil;
         self.postData = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
     }
