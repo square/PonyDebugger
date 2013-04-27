@@ -510,8 +510,6 @@ static NSArray *prettyStringPrinters = nil;
 {
     NSMutableData *dataAccumulator = [self requestStateForConnection:connection].dataAccumulator;
     
-    NSAssert(dataAccumulator != nil, @"Data accumulator not initialized before adding to it.");
-    
     [dataAccumulator appendData:data];
 }
 
@@ -609,6 +607,8 @@ static NSArray *prettyStringPrinters = nil;
     data = [data copy];
     [self performBlock:^{
         [self addAccumulatedData:data forConnection:connection];
+
+        if ([self accumulatedDataForConnection:connection] == nil) return;
         
         NSNumber *length = [NSNumber numberWithInteger:data.length];
         NSString *requestID = [self requestIDForConnection:connection];
