@@ -54,6 +54,10 @@
 - (void)domain:(PDConsoleDomain *)domain clearMessagesWithCallback:(void (^)(id error))callback;
 {
     callback(nil);
+
+    // Clearing the console will release all references logged at the current time.
+    [[PDRuntimeDomainController defaultInstance] clearObjectReferencesByKey:self.loggedObjectKeys.allObjects];
+    [self.loggedObjectKeys removeAllObjects];
 }
 
 
