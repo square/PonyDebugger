@@ -84,7 +84,7 @@ PonyDebugger lets you remotely log text and object dumps via the `PDLog` and
 `PDLogObjects` function. This lets you reduce the amount of content being
 loggedin `NSLog`, while also allowing you dynamically introspect objects.
 
-![PonyDebugger Remote Loggin Screenshot](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/RemoteLogging.png)
+![PonyDebugger Remote Login Screenshot](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/RemoteLogging.png)
 
 Introspected objects can be expanded recursively by property. This means that
 you don't have to breakpoint and log in GDB or LLDB to introspect an object.
