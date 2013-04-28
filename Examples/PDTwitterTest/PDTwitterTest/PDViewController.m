@@ -275,7 +275,8 @@
     [self _reloadFeedWithSearchTerm:self.searchBar.text];
 
     // PDLog() takes the same string/argument formatting as NSLog().
-    PDLog(@"Reloading feed with search term: %@.", self.searchBar.text);
+    // PDLogD() formats it with debug formatting.
+    PDLogD(@"Reloading feed with search term: %@.", self.searchBar.text);
 }
 
 @end

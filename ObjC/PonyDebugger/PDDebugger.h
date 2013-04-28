@@ -16,11 +16,11 @@
 #pragma mark - Preprocessor
 
 // Remote logging definitions. Use preprocessor hackery to make this work nicely.
+#define PDLog(...)                  _PDLog(@"log", ##__VA_ARGS__)
 #define PDLogD(...)                 _PDLog(@"debug", ##__VA_ARGS__)
 #define PDLogW(...)                 _PDLog(@"warn", ##__VA_ARGS__)
 #define PDLogI(...)                 _PDLog(@"info", ##__VA_ARGS__)
 #define PDLogE(...)                 _PDLog(@"error", ##__VA_ARGS__)
-#define PDLog(...)                  _PDLog(@"log", ##__VA_ARGS__)
 
 #define PDLogObjects(...)           _PDLogObjects(@"log", ##__VA_ARGS__)
 

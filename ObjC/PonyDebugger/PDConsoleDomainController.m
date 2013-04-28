@@ -19,6 +19,10 @@
 
 
 @interface PDConsoleDomainController () <PDConsoleCommandDelegate>
+
+// Keep track of any keys coming in from the logging functions to release later.
+@property (nonatomic, strong) NSMutableSet *loggedObjectKeys;
+
 @end
 
 
@@ -67,18 +71,21 @@
         }
         [text appendFormat:@"%@ ", object];
         [parameters addObject:remoteObject];
+
+        if (remoteObject.objectId) {
+            [self.loggedObjectKeys addObject:remoteObject.objectId];
+        }
     }
 
     [text deleteCharactersInRange:NSMakeRange(text.length - 1, 1)];
 
     PDConsoleConsoleMessage *consoleMessage = [[PDConsoleConsoleMessage alloc] init];
-    
-    // debug, log, warn, info, error
-    if ( [severity isEqualToString:@"debug"] ) consoleMessage.level = @"debug";
-    else if ( [severity isEqualToString:@"warn"] ) consoleMessage.level = @"warn";
-    else if ( [severity isEqualToString:@"info"] ) consoleMessage.level = @"info";
-    else if ( [severity isEqualToString:@"error"] ) consoleMessage.level = @"error";
-    else consoleMessage.level = @"log";
+    NSArray *severityOptions = @[@"debug", @"log", @"warn", @"info", @"error"];
+    if ([severityOptions containsObject:severity]) {
+        consoleMessage.level = severity;
+    } else {
+        consoleMessage.level = @"log";
+    }
 
     consoleMessage.source = @"console-api";
     consoleMessage.stackTrace = [[NSArray alloc] init];
@@ -92,6 +99,10 @@
 - (void)clear;
 {
     [self.domain messagesCleared];
+
+    // Clearing the console will release all references logged at the current time.
+    [[PDRuntimeDomainController defaultInstance] clearObjectReferencesByKey:self.loggedObjectKeys.allObjects];
+    [self.loggedObjectKeys removeAllObjects];
 }
 
 @end

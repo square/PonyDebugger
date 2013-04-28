@@ -122,6 +122,9 @@
 
 #pragma mark - Public Methods
 
+/**
+ * Registers and returns a string associated with the object to retain.
+ */
 - (NSString *)registerAndGetKeyForObject:(id)object;
 {
     NSString *key = [PDRuntimeDomainController _generateUUID];
@@ -131,6 +134,17 @@
     return key;
 }
 
+/**
+ * Clears object references given the string returned by registerAndGetKeyForObject:
+ */
+- (void)clearObjectReferencesByKey:(NSArray *)objectKeys;
+{
+    [self.objectReferences removeObjectsForKeys:objectKeys];
+}
+
+/**
+ * Clears all object references.
+ */
 - (void)clearAllObjectReferences;
 {
     [self.objectReferences removeAllObjects];

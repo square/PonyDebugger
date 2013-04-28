@@ -20,6 +20,7 @@
 @property (nonatomic, strong) PDRuntimeDomain *domain;
 
 - (NSString *)registerAndGetKeyForObject:(id)object;
+- (void)clearObjectReferencesByKey:(NSArray *)objectKeys;
 - (void)clearAllObjectReferences;
 
 @end
