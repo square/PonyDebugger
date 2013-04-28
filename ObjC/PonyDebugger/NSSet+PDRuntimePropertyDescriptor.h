@@ -9,8 +9,6 @@
 //  which Square, Inc. licenses this file to you.
 //
 
-#import <Foundation/Foundation.h>
-
 @class PDRuntimeRemoteObject;
 @class PDRuntimePropertyDescriptor;
 

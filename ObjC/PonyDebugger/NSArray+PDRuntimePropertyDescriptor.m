@@ -12,20 +12,9 @@
 #import "NSArray+PDRuntimePropertyDescriptor.h"
 #import "NSObject+PDRuntimePropertyDescriptor.h"
 
+#import "PDContainerIndex.h"
 #import "PDRuntimeTypes.h"
 #import "PDRuntimeDomainController.h"
-
-
-#pragma mark - Private Classes
-
-@interface _PDArrayIndex : NSObject
-
-- (id)initWithName:(NSString *)name index:(NSInteger)index;
-
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, assign) NSInteger index;
-
-@end
 
 
 #pragma mark - Implementation
@@ -54,7 +43,7 @@
     for (NSInteger index = 0; index < self.count; ++index) {
         NSString *name = [NSString stringWithFormat:@"%d", index];
         
-        _PDArrayIndex *containerIndex = [[_PDArrayIndex alloc] initWithName:name index:index];
+        PDContainerIndex *containerIndex = [[PDContainerIndex alloc] initWithName:name index:index];
         [properties addObject:containerIndex];
     }
 
@@ -68,15 +57,15 @@
 {
     PDRuntimePropertyDescriptor *descriptor = [super PD_propertyDescriptorForPropertyObject:property];
     if (!descriptor) {
-        if ([property isKindOfClass:[_PDArrayIndex class]]) {
-            descriptor = [self PD_propertyDescriptorForArrayContainerIndex:(_PDArrayIndex *)property];
+        if ([property isKindOfClass:[PDContainerIndex class]]) {
+            descriptor = [self PD_propertyDescriptorForArrayContainerIndex:(PDContainerIndex *)property];
         }
     }
     
     return descriptor;
 }
 
-- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForArrayContainerIndex:(_PDArrayIndex *)containerIndex;
+- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForArrayContainerIndex:(PDContainerIndex *)containerIndex;
 {
     PDRuntimePropertyDescriptor *descriptor = [[PDRuntimePropertyDescriptor alloc] init];
     
@@ -103,28 +92,6 @@
     descriptor.wasThrown = [NSNumber numberWithBool:NO];
     
     return descriptor;
-}
-
-@end
-
-
-#pragma mark - _PDArrayIndex
-
-@implementation _PDArrayIndex
-
-@synthesize name = _name;
-@synthesize index = _index;
-
-- (id)initWithName:(NSString *)name index:(NSInteger)index;
-{
-    if (!(self = [super self])) {
-        return nil;
-    }
-    
-    self.name = name;
-    self.index = index;
-    
-    return self;
 }
 
 @end

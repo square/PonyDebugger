@@ -420,6 +420,11 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     [self _addController:[PDConsoleDomainController defaultInstance]];
 }
 
+- (void)clearConsole;
+{
+    [[PDConsoleDomainController defaultInstance] clear];
+}
+
 #pragma mark - Private Methods
 
 - (void)_resolveService:(NSNetService*)service;

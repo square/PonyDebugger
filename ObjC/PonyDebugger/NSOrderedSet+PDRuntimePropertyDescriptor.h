@@ -9,10 +9,14 @@
 //  which Square, Inc. licenses this file to you.
 //
 
-#import <Foundation/Foundation.h>
+@class PDRuntimeRemoteObject;
+@class PDRuntimePropertyDescriptor;
 
 @interface NSOrderedSet (PDRuntimePropertyDescriptor)
 
+- (id)PD_valueForKey:(NSString *)key;
 - (id)PD_objectAtIndex:(NSUInteger)index;
+- (NSArray *)PD_propertiesForPropertyDescriptors;
+- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForPropertyObject:(NSObject *)property;
 
 @end

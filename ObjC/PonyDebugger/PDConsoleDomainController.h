@@ -19,5 +19,6 @@
 + (PDConsoleDomainController *)defaultInstance;
 
 - (void)logWithArguments:(NSArray *)args severity:(NSString *)severity;
+- (void)clear;
 
 @end

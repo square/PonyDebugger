@@ -12,20 +12,9 @@
 #import "NSSet+PDRuntimePropertyDescriptor.h"
 #import "NSObject+PDRuntimePropertyDescriptor.h"
 
+#import "PDContainerIndex.h"
 #import "PDRuntimeTypes.h"
 #import "PDRuntimeDomainController.h"
-
-
-#pragma mark - Private Classes
-
-@interface _PDSetIndex : NSObject
-
-- (id)initWithName:(NSString *)name index:(NSInteger)index;
-
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, assign) NSInteger index;
-
-@end
 
 
 #pragma mark - Implementation
@@ -76,7 +65,7 @@
     for (NSInteger index = 0; index < self.count; ++index) {
         NSString *name = [NSString stringWithFormat:@"%d", index];
         
-        _PDSetIndex *containerIndex = [[_PDSetIndex alloc] initWithName:name index:index];
+        PDContainerIndex *containerIndex = [[PDContainerIndex alloc] initWithName:name index:index];
         [properties addObject:containerIndex];
     }
 
@@ -90,15 +79,15 @@
 {
     PDRuntimePropertyDescriptor *descriptor = [super PD_propertyDescriptorForPropertyObject:property];
     if (!descriptor) {
-        if ([property isKindOfClass:[_PDSetIndex class]]) {
-            descriptor = [self PD_propertyDescriptorForSetContainerIndex:(_PDSetIndex *)property];
+        if ([property isKindOfClass:[PDContainerIndex class]]) {
+            descriptor = [self PD_propertyDescriptorForSetContainerIndex:(PDContainerIndex *)property];
         }
     }
     
     return descriptor;
 }
 
-- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForSetContainerIndex:(_PDSetIndex *)containerIndex;
+- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForSetContainerIndex:(PDContainerIndex *)containerIndex;
 {
     PDRuntimePropertyDescriptor *descriptor = [[PDRuntimePropertyDescriptor alloc] init];
     
@@ -125,28 +114,6 @@
     descriptor.wasThrown = [NSNumber numberWithBool:NO];
     
     return descriptor;
-}
-
-@end
-
-
-#pragma mark - _PDSetIndex
-
-@implementation _PDSetIndex
-
-@synthesize name = _name;
-@synthesize index = _index;
-
-- (id)initWithName:(NSString *)name index:(NSInteger)index;
-{
-    if (!(self = [super self])) {
-        return nil;
-    }
-    
-    self.name = name;
-    self.index = index;
-    
-    return self;
 }
 
 @end

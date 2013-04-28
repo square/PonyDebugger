@@ -14,8 +14,6 @@
 #import <PonyDebugger/PDDefinitions.h>
 #import <PonyDebugger/PDRuntimeDomainController.h>
 #import <PonyDebugger/PDRuntimeTypes.h>
-#import <PonyDebugger/PDArrayContainer.h>
-#import <PonyDebugger/PDDictionaryContainer.h>
 
 
 #pragma mark - Definitions

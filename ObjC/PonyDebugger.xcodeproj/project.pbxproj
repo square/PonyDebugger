@@ -89,6 +89,8 @@
 		25E5BCE716BA41EA00152A45 /* NSDate+PDDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 25E5BCE516BA41EA00152A45 /* NSDate+PDDebugger.m */; };
 		25E5BCEB16BE3F1C00152A45 /* NSDictionary+PDRuntimePropertyDescriptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 25E5BCE916BE3F1B00152A45 /* NSDictionary+PDRuntimePropertyDescriptor.h */; };
 		25E5BCEC16BE3F1C00152A45 /* NSDictionary+PDRuntimePropertyDescriptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 25E5BCEA16BE3F1B00152A45 /* NSDictionary+PDRuntimePropertyDescriptor.m */; };
+		25F6AADA172DD5E100515EF7 /* PDContainerIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = 25F6AAD8172DD5E100515EF7 /* PDContainerIndex.h */; };
+		25F6AADB172DD5E100515EF7 /* PDContainerIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F6AAD9172DD5E100515EF7 /* PDContainerIndex.m */; };
 		3DE2290F15D5874C0035A508 /* NSArray+PD_JSONObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228A715D5874C0035A508 /* NSArray+PD_JSONObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3DE2291015D5874C0035A508 /* NSArray+PD_JSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE228A815D5874C0035A508 /* NSArray+PD_JSONObject.m */; };
 		3DE2291115D5874C0035A508 /* NSDate+PD_JSONObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228A915D5874C0035A508 /* NSDate+PD_JSONObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -251,6 +253,8 @@
 		25E5BCE516BA41EA00152A45 /* NSDate+PDDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+PDDebugger.m"; sourceTree = "<group>"; };
 		25E5BCE916BE3F1B00152A45 /* NSDictionary+PDRuntimePropertyDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+PDRuntimePropertyDescriptor.h"; sourceTree = "<group>"; };
 		25E5BCEA16BE3F1B00152A45 /* NSDictionary+PDRuntimePropertyDescriptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+PDRuntimePropertyDescriptor.m"; sourceTree = "<group>"; };
+		25F6AAD8172DD5E100515EF7 /* PDContainerIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDContainerIndex.h; sourceTree = "<group>"; };
+		25F6AAD9172DD5E100515EF7 /* PDContainerIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDContainerIndex.m; sourceTree = "<group>"; };
 		3DE228A715D5874C0035A508 /* NSArray+PD_JSONObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+PD_JSONObject.h"; sourceTree = "<group>"; };
 		3DE228A815D5874C0035A508 /* NSArray+PD_JSONObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+PD_JSONObject.m"; sourceTree = "<group>"; };
 		3DE228A915D5874C0035A508 /* NSDate+PD_JSONObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+PD_JSONObject.h"; sourceTree = "<group>"; };
@@ -404,6 +408,7 @@
 		25E5BCE816BA436900152A45 /* Runtime Property Descriptors */ = {
 			isa = PBXGroup;
 			children = (
+				25F6AA6F172DD51000515EF7 /* Helpers */,
 				3DE228AF15D5874C0035A508 /* NSObject+PDRuntimePropertyDescriptor.h */,
 				3DE228B015D5874C0035A508 /* NSObject+PDRuntimePropertyDescriptor.m */,
 				3DE228AD15D5874C0035A508 /* NSManagedObject+PDRuntimePropertyDescriptor.h */,
@@ -418,6 +423,15 @@
 				25E5BCEA16BE3F1B00152A45 /* NSDictionary+PDRuntimePropertyDescriptor.m */,
 			);
 			name = "Runtime Property Descriptors";
+			sourceTree = "<group>";
+		};
+		25F6AA6F172DD51000515EF7 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				25F6AAD8172DD5E100515EF7 /* PDContainerIndex.h */,
+				25F6AAD9172DD5E100515EF7 /* PDContainerIndex.m */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 		3DE228A615D5874C0035A508 /* PonyDebugger */ = {
@@ -599,6 +613,7 @@
 				2560D50F16BE4C06001BAE89 /* NSArray+PDRuntimePropertyDescriptor.h in Headers */,
 				2560D51616BE53EB001BAE89 /* NSSet+PDRuntimePropertyDescriptor.h in Headers */,
 				2560D51A16BE56BF001BAE89 /* NSOrderedSet+PDRuntimePropertyDescriptor.h in Headers */,
+				25F6AADA172DD5E100515EF7 /* PDContainerIndex.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -749,6 +764,7 @@
 				2560D51716BE53EB001BAE89 /* NSSet+PDRuntimePropertyDescriptor.m in Sources */,
 				2560D51B16BE56BF001BAE89 /* NSOrderedSet+PDRuntimePropertyDescriptor.m in Sources */,
 				E8D8B39416E00C9600081F80 /* PDPrettyStringPrinter.m in Sources */,
+				25F6AADB172DD5E100515EF7 /* PDContainerIndex.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

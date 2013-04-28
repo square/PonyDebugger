@@ -16,13 +16,16 @@
 #pragma mark - Preprocessor
 
 // Remote logging definitions. Use preprocessor hackery to make this work nicely.
-#define PDLogD(...) _PDLog(@"debug", ##__VA_ARGS__)
-#define PDLogW(...) _PDLog(@"warn", ##__VA_ARGS__)
-#define PDLogI(...) _PDLog(@"info", ##__VA_ARGS__)
-#define PDLogE(...) _PDLog(@"error", ##__VA_ARGS__)
-#define PDLog(...) _PDLog(@"log", ##__VA_ARGS__)
-#define _PDLog(sev, ...)          _PDLogObjectsImpl(sev, @[[NSString stringWithFormat:__VA_ARGS__]]);
-#define _PDLogObjects(sev, ...)   _PDLogObjectsImpl(sev, @[__VA_ARGS__]);
+#define PDLogD(...)                 _PDLog(@"debug", ##__VA_ARGS__)
+#define PDLogW(...)                 _PDLog(@"warn", ##__VA_ARGS__)
+#define PDLogI(...)                 _PDLog(@"info", ##__VA_ARGS__)
+#define PDLogE(...)                 _PDLog(@"error", ##__VA_ARGS__)
+#define PDLog(...)                  _PDLog(@"log", ##__VA_ARGS__)
+
+#define PDLogObjects(...)           _PDLogObjects(@"log", ##__VA_ARGS__)
+
+#define _PDLog(sev, ...)            _PDLogObjectsImpl(sev, @[[NSString stringWithFormat:__VA_ARGS__]]);
+#define _PDLogObjects(sev, ...)     _PDLogObjectsImpl(sev, @[__VA_ARGS__]);
 
 
 #pragma mark - Definitions
@@ -69,5 +72,6 @@ extern void _PDLogObjectsImpl(NSString *severity, NSArray *arguments);
 
 #pragma mark Remote Logging
 - (void)enableRemoteLogging;
+- (void)clearConsole;
 
 @end
