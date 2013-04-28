@@ -29,6 +29,7 @@
 
 @class SRWebSocket;
 @class PDDomainController;
+@protocol PDPrettyStringPrinting;
 
 extern void _PDLogObjectsImpl(NSString *severity, NSArray *arguments);
 
@@ -53,6 +54,8 @@ extern void _PDLogObjectsImpl(NSString *severity, NSArray *arguments);
 - (void)enableNetworkTrafficDebugging;
 - (void)forwardAllNetworkTraffic;
 - (void)forwardNetworkTrafficFromDelegateClass:(Class)cls;
++ (void)registerPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
++ (void)unregisterPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
 
 #pragma mark Core Data Debugging
 - (void)enableCoreDataDebugging;

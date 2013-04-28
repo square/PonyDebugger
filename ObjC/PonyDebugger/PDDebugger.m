@@ -15,6 +15,7 @@
 #import "PDDebugger.h"
 #import "PDDynamicDebuggerDomain.h"
 #import "PDNetworkDomain.h"
+#import "PDPrettyStringPrinter.h"
 #import "PDDomainController.h"
 
 #import "PDNetworkDomainController.h"
@@ -351,12 +352,23 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 
 - (void)forwardAllNetworkTraffic;
 {
+    [PDNetworkDomainController registerPrettyStringPrinter:[[PDJSONPrettyStringPrinter alloc] init]];
     [PDNetworkDomainController injectIntoAllNSURLConnectionDelegateClasses];
 }
 
 - (void)forwardNetworkTrafficFromDelegateClass:(Class)cls;
 {
     [PDNetworkDomainController injectIntoDelegateClass:cls];
+}
+
++ (void)registerPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
+{
+    [PDNetworkDomainController registerPrettyStringPrinter:prettyStringPrinter];
+}
+
++ (void)unregisterPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
+{
+    [PDNetworkDomainController unregisterPrettyStringPrinter:prettyStringPrinter];
 }
 
 #pragma mark Core Data Debugging

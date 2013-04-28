@@ -10,8 +10,10 @@
 //
 
 #import "PDNetworkDomainController.h"
+#import "PDPrettyStringPrinter.h"
 #import "NSData+PDB64Additions.h"
 #import "NSDate+PDDebugger.h"
+
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <dispatch/queue.h>
@@ -29,7 +31,7 @@
 
 @interface PDNetworkDomainController ()
 
-- (void)setResponse:(NSData *)response forRequestID:(NSString *)requestID isBinary:(BOOL)isBinary;
+- (void)setResponse:(NSData *)responseBody forRequestID:(NSString *)requestID response:(NSURLResponse *)response request:(NSURLRequest *)request;
 - (void)performBlock:(dispatch_block_t)block;
 
 @end
@@ -72,6 +74,60 @@
 + (Class)domainClass;
 {
     return [PDNetworkDomain class];
+}
+
+#pragma mark Pretty String Printing registration and usage
+
+// This is replaced atomically to avoid having to lock when looking up the printers instead of being mutable.
+static NSArray *prettyStringPrinters = nil;
+
++ (NSArray*)_currentPrettyStringPrinters;
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        // Always register the default to differentiate text vs binary data
+        id<PDPrettyStringPrinting> textPrettyStringPrinter = [[PDTextPrettyStringPrinter alloc] init];
+        prettyStringPrinters = [[NSArray alloc] initWithObjects:textPrettyStringPrinter, nil];
+    });
+    return prettyStringPrinters;
+}
+
++ (void)registerPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
+{
+    @synchronized(prettyStringPrinters) {
+        NSMutableArray *newPrinters = [[PDNetworkDomainController _currentPrettyStringPrinters] mutableCopy];
+        [newPrinters addObject:prettyStringPrinter];
+        prettyStringPrinters = newPrinters;
+    }
+}
+
++ (void)unregisterPrettyStringPrinter:(id<PDPrettyStringPrinting>)prettyStringPrinter;
+{
+    @synchronized(prettyStringPrinters) {
+        NSMutableArray *newPrinters = [[PDNetworkDomainController _currentPrettyStringPrinters] mutableCopy];
+        [newPrinters removeObjectIdenticalTo:prettyStringPrinter];
+        prettyStringPrinters = newPrinters;
+    }
+}
+
++ (id<PDPrettyStringPrinting>)prettyStringPrinterForRequest:(NSURLRequest *)request;
+{
+    for(id<PDPrettyStringPrinting> prettyStringPrinter in [[PDNetworkDomainController _currentPrettyStringPrinters] reverseObjectEnumerator]) {
+        if ([prettyStringPrinter canPrettyStringPrintRequest:request]) {
+            return prettyStringPrinter;
+        }
+    }
+    return nil;
+}
+
++ (id<PDPrettyStringPrinting>)prettyStringPrinterForResponse:(NSURLResponse *)response withRequest:(NSURLRequest *)request;
+{
+    for(id<PDPrettyStringPrinting> prettyStringPrinter in [[PDNetworkDomainController _currentPrettyStringPrinters] reverseObjectEnumerator]) {
+        if ([prettyStringPrinter canPrettyStringPrintResponse:response withRequest:request]) {
+            return prettyStringPrinter;
+        }
+    }
+    return nil;
 }
 
 #pragma mark Delegate Injection Convenience Methods
@@ -385,18 +441,26 @@
 
 #pragma mark - Private Methods
 
-- (void)setResponse:(NSData *)response forRequestID:(NSString *)requestID isBinary:(BOOL)isBinary;
+- (void)setResponse:(NSData *)responseBody forRequestID:(NSString *)requestID response:(NSURLResponse *)response request:(NSURLRequest *)request;
 {
-    NSString *encodedBody = isBinary ?
-                            response.PD_stringByBase64Encoding :
-                            [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
+    id<PDPrettyStringPrinting> prettyStringPrinter = [PDNetworkDomainController prettyStringPrinterForResponse:response withRequest:request];
+
+    NSString *encodedBody;
+    BOOL isBinary;
+    if (!prettyStringPrinter) {
+        encodedBody = responseBody.PD_stringByBase64Encoding;
+        isBinary = YES;
+    } else {
+        encodedBody = [prettyStringPrinter prettyStringForData:responseBody forResponse:response request:request];
+        isBinary = NO;
+    }
 
     NSDictionary *responseDict = [NSDictionary dictionaryWithObjectsAndKeys:
         encodedBody, @"body",
         [NSNumber numberWithBool:isBinary], @"base64Encoded",
         nil];
 
-    [_responseCache setObject:responseDict forKey:requestID cost:[response length]];
+    [_responseCache setObject:responseDict forKey:requestID cost:[responseBody length]];
 }
 
 - (_PDRequestState *)requestStateForConnection:(NSURLConnection *)connection;
@@ -446,8 +510,6 @@
 - (void)addAccumulatedData:(NSData *)data forConnection:(NSURLConnection *)connection;
 {
     NSMutableData *dataAccumulator = [self requestStateForConnection:connection].dataAccumulator;
-    
-    NSAssert(dataAccumulator != nil, @"Data accumulator not initialized before adding to it.");
     
     [dataAccumulator appendData:data];
 }
@@ -546,6 +608,8 @@
     data = [data copy];
     [self performBlock:^{
         [self addAccumulatedData:data forConnection:connection];
+
+        if ([self accumulatedDataForConnection:connection] == nil) return;
         
         NSNumber *length = [NSNumber numberWithInteger:data.length];
         NSString *requestID = [self requestIDForConnection:connection];
@@ -562,14 +626,13 @@
     [self performBlock:^{
         NSURLResponse *response = [self responseForConnection:connection];
         NSString *requestID = [self requestIDForConnection:connection];
-        
-        BOOL isBinary = ([response.MIMEType rangeOfString:@"json"].location == NSNotFound) && ([response.MIMEType rangeOfString:@"text"].location == NSNotFound) && ([response.MIMEType rangeOfString:@"xml"].location == NSNotFound);
-        
+
         NSData *accumulatedData = [self accumulatedDataForConnection:connection];
-        
+
         [self setResponse:accumulatedData
              forRequestID:requestID
-                 isBinary:isBinary];
+                 response:response
+                  request:[self requestForConnection:connection]];
         
         [self.domain loadingFinishedWithRequestId:requestID
                                         timestamp:[NSDate PD_timestamp]];
@@ -610,20 +673,15 @@
     
     NSData *body = request.HTTPBody;
     
-    NSString *contentType = [request valueForHTTPHeaderField:@"Content-Type"];
-    // Do some trivial redacting here.  In particular, redact password 
-    if (body && contentType && [contentType rangeOfString:@"json"].location != NSNotFound) {
-        NSMutableDictionary *obj = [NSJSONSerialization JSONObjectWithData:body options:0 error:NULL];
-        if ([obj isKindOfClass:[NSDictionary class]] && [obj objectForKey:@"password"]) {
-            obj = [obj mutableCopy];
-            [obj setObject:@"[REDACTED]" forKey:@"password"];
-            body = [NSJSONSerialization dataWithJSONObject:obj options:0 error:NULL];
-        }
+    // pretty print and redact sensitive fields
+    id<PDPrettyStringPrinting> prettyStringPrinter = [PDNetworkDomainController prettyStringPrinterForRequest:request];
+    if (prettyStringPrinter) {
+        self.postData = [prettyStringPrinter prettyStringForData:body forRequest:request];
+    } else {
+        // If the data isn't UTF-8 it will just be nil;
+        self.postData = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
     }
-     
-    // If the data isn't UTF-8 it will just be nil;
-    self.postData = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
-    
+
     return self;
 }
 
@@ -645,18 +703,20 @@
     }
     
     self.url = [response.URL absoluteString];
-    
-    // TODO: Pretty version of status codes.
+
+    // Set statusText if this was a HTTP Response
     self.statusText = @"";
-    
+
     self.mimeType = response.MIMEType;
     self.requestHeaders = request.allHTTPHeaderFields;
     
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-        self.status = [NSNumber numberWithInteger:((NSHTTPURLResponse *)response).statusCode];
-        self.headers = ((NSHTTPURLResponse *)response).allHeaderFields;
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        self.status = [NSNumber numberWithInteger:httpResponse.statusCode];
+        self.statusText = [NSHTTPURLResponse localizedStringForStatusCode:httpResponse.statusCode];
+        self.headers = httpResponse.allHeaderFields;
     }
-    
+
     return self;
 }
 
