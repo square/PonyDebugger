@@ -10,6 +10,7 @@
 //
 
 #import <CoreData/CoreData.h>
+#import <objc/runtime.h>
 
 extern NSString *const PDDebuggerErrorDomain;
 extern const NSInteger PDDebuggerUnimplementedDomainMethodErrorCode;
@@ -23,3 +24,5 @@ NSDictionary *PDRemoteObjectPropertyTypeDetailsForValue(NSValue *value);
 NSDictionary *PDRemoteObjectPropertyTypeDetailsForPropertyDescription(NSPropertyDescription *description);
 NSDictionary *PDRemoteObjectPropertyTypeDetailsForAttributeDescription(NSAttributeDescription *description);
 NSDictionary *PDRemoteObjectPropertyTypeDetailsForRelationshipDescription(NSRelationshipDescription *description);
+
+NSDictionary *PDExtractPropertyAttributes(objc_property_t property);

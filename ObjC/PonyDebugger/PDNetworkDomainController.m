@@ -11,8 +11,9 @@
 
 #import "PDNetworkDomainController.h"
 #import "PDPrettyStringPrinter.h"
-
 #import "NSData+PDB64Additions.h"
+#import "NSDate+PDDebugger.h"
+
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <dispatch/queue.h>
@@ -406,7 +407,7 @@ static NSArray *prettyStringPrinters = nil;
     return self;
 }
 
-- (void)dealloc
+- (void)dealloc;
 {
     if (_queue) {
         dispatch_release(_queue);

@@ -14,8 +14,6 @@
 #import "PDDefinitions.h"
 #import "PDRuntimeDomainController.h"
 #import "PDRuntimeTypes.h"
-#import "PDArrayContainer.h"
-#import "PDDictionaryContainer.h"
 #import "NSManagedObject+PDRuntimePropertyDescriptor.h"
 #import "NSObject+PDRuntimePropertyDescriptor.h"
 
@@ -24,8 +22,16 @@
 
 - (NSArray *)PD_propertiesForPropertyDescriptors;
 {
-    NSArray *properties = [super PD_propertiesForPropertyDescriptors];
+    NSMutableArray *properties = (NSMutableArray *)[super PD_propertiesForPropertyDescriptors];
     if (properties) {
+        // NSObject's implementation will catch the @property definitions, so replace those with the
+        // NSPropertyDescription instance.
+        for (NSPropertyDescription *propertyDescription in self.entity.properties) {
+            if ([properties containsObject:propertyDescription.name]) {
+                [properties removeObject:propertyDescription.name];
+            }
+        }
+
         return [properties arrayByAddingObjectsFromArray:self.entity.properties];
     }
     
@@ -61,13 +67,13 @@
         remoteValueObject.classNameString = relationshipProperty.destinationEntity.name;
         
         if ([relationshipProperty isToMany]) {
-            remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@<%@> <count: %d>", [value class], remoteValueObject.classNameString, [value count]];
+            remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@<%@> <count = %d>", [value class], remoteValueObject.classNameString, [value count]];
         } else {
             remoteValueObject.objectDescription = remoteValueObject.classNameString;
         }
     }
     
-    // Core data doesn't seem to do [NSNumber numberWithBool:] when initializing boolean NSNumbers, so do it manually.
+    // Core Data doesn't seem to do [NSNumber numberWithBool:] when initializing boolean NSNumbers, so do it manually.
     if ([remoteValueObject.type isEqualToString:@"boolean"]) {
         remoteValueObject.value = [NSNumber numberWithBool:[value boolValue]];
     }

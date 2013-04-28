@@ -11,12 +11,18 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import <objc/runtime.h>
 
 
 @class PDRuntimeRemoteObject;
 @class PDRuntimePropertyDescriptor;
 
+
 @interface NSObject (PDRuntimePropertyDescriptor)
+
++ (PDRuntimeRemoteObject *)PD_remoteObjectRepresentationForObject:(id)object;
+
+- (id)PD_valueForKey:(NSString *)key;
 
 - (NSArray *)PD_propertiesForPropertyDescriptors;
 - (NSArray *)PD_propertyDescriptors;
@@ -27,6 +33,6 @@
 - (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForPropertyObject:(NSObject *)property;
 
 - (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForSelector:(SEL)selector;
-- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForProperty:(NSString *)propertyName;
+- (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForPropertyName:(NSString *)propertyName property:(objc_property_t)property;
 
 @end
