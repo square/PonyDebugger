@@ -10,7 +10,6 @@
 //
 
 #import <Foundation/Foundation.h>
-
 #import "PDDefinitions.h"
 
 
@@ -22,7 +21,9 @@
 @end
 
 
-// Subclasses must implement the copying and mutable copying protocols
+/**
+ * Subclasses must implement the copying and mutable copying protocols
+ */
 @interface PDObject : NSObject <NSCopying>
 
 @property (nonatomic, copy, readonly) NSDictionary *store;
@@ -38,14 +39,3 @@
 @end
 
 
-NS_INLINE BOOL PDObjectValidateValueNotNil(id value, NSString *localizedDescription, NSError **error) {
-    if (!value) {
-        if (error) {
-            *error = [[NSError alloc] initWithDomain:PDDebuggerErrorDomain code:PDDebuggerRequiredAttributeMissingCode userInfo:[[NSDictionary alloc] initWithObjectsAndKeys:localizedDescription, NSLocalizedDescriptionKey, nil]];
-        }
-        
-        return NO;
-    }
-    
-    return YES;
-}

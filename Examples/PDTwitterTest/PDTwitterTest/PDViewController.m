@@ -9,6 +9,8 @@
 //  which Square, Inc. licenses this file to you.
 //
 
+#import <PonyDebugger/PonyDebugger.h>
+
 #import "PDViewController.h"
 #import "PDTweet.h"
 #import "PDUser.h"
@@ -24,7 +26,7 @@
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *refreshButton;
 
 - (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-- (void)_reloadFeed;
+- (void)_reloadFeedWithSearchTerm:(NSString *)searchTerm;
 
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
 
@@ -48,16 +50,11 @@
 {
     self = [super initWithCoder:coder];
     if (self) {
-        _client = [[AFHTTPClient alloc] initWithBaseURL:[[NSURL alloc] initWithString:@"https://api.twitter.com/1/"]];
+        _client = [[AFHTTPClient alloc] initWithBaseURL:[[NSURL alloc] initWithString:@"https://search.twitter.com/"]];
         [_client registerHTTPOperationClass:[AFJSONRequestOperation class]];
     }
     
     return self;
-}
-
-- (void)dealloc;
-{
-    self.managedObjectContext = nil;
 }
 
 #pragma mark - UIViewController
@@ -75,22 +72,19 @@
     _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     _resultsController.delegate = self;
     [_resultsController performFetch:nil];
-}
 
-- (void)viewDidUnload;
-{
-    [self setRefreshButton:nil];
-    [super viewDidUnload];
+    self.searchBar.text = @"@square";
+    [self _reloadFeedWithSearchTerm:self.searchBar.text];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 {
-    // Return YES for supported orientations
+    // Return YES for supported orientations.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-    } else {
-        return YES;
     }
+
+    return YES;
 }
 
 #pragma mark - UISearchBarDelegate
@@ -99,6 +93,10 @@
 {
     [self.searchBar resignFirstResponder];
     [self _reloadFeedWithSearchTerm:searchBar.text];
+
+    // PDLogObjects() is used to output objects that are inspectable. To output different data types,
+    // separate them out in different arguments.
+    PDLogObjects(@"Searched with bar:", searchBar, @"and search term:", searchBar.text);
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar;
@@ -217,58 +215,6 @@
     cell.textLabel.text = [NSString stringWithFormat:@"@%@ %@", tweet.user.screenName, tweet.text];
 }
 
-- (void)_reloadFeed;
-{
-    [_client getPath:@"statuses/public_timeline.json?count=30" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSArray *responseArray = responseObject;
-        
-        NSMutableSet *tweetIDs = [[NSMutableSet alloc] initWithCapacity:[responseArray count]];
-        for (NSDictionary *tweetDict in responseArray) {
-            [tweetIDs addObject:[tweetDict objectForKey:@"id"]];
-        }
-        
-        NSFetchRequest *existingRequest = [NSFetchRequest fetchRequestWithEntityName:@"Tweet"];
-        existingRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID in %@", tweetIDs];
-        
-        NSArray *existingTweets = [self.managedObjectContext executeFetchRequest:existingRequest error:nil];
-        
-        for (PDTweet *tweet in existingTweets) {
-            [tweetIDs removeObject:tweet.remoteID];
-        }
-        
-        NSEntityDescription *ent = [NSEntityDescription entityForName:@"Tweet" inManagedObjectContext:self.managedObjectContext];
-        for (NSDictionary *tweetDict in responseArray) {
-            NSNumber *remoteID = [tweetDict objectForKey:@"id"];
-            if ([tweetIDs containsObject:remoteID]) {
-                PDTweet *newTweet = [[PDTweet alloc] initWithEntity:ent insertIntoManagedObjectContext:self.managedObjectContext];
-                newTweet.remoteID = remoteID;
-                newTweet.text = [tweetDict valueForKeyPath:@"text"];
-                newTweet.retrievalDate = [NSDate date];
-                
-                NSNumber *userRemoteID = [tweetDict valueForKeyPath:@"user.id"];
-                NSFetchRequest *existingUserRequest = [NSFetchRequest fetchRequestWithEntityName:@"User"];
-                existingUserRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID == %@", userRemoteID];
-                
-                PDUser *user = [[self.managedObjectContext executeFetchRequest:existingUserRequest error:NULL] lastObject];
-                if (!user) {
-                    NSEntityDescription *userEntity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
-                    user = [[PDUser alloc] initWithEntity:userEntity insertIntoManagedObjectContext:self.managedObjectContext];
-                    user.remoteID = userRemoteID;
-                    user.name = [tweetDict valueForKeyPath:@"user.name"];
-                    user.screenName = [tweetDict valueForKeyPath:@"user.screen_name"];
-                    user.profilePictureURL = [tweetDict valueForKeyPath:@"user.profile_image_url"];
-                }
-                
-                newTweet.user = user;
-            }
-        }
-        
-        [self.managedObjectContext save:NULL];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-    }];
-}
-
 - (void)_reloadFeedWithSearchTerm:(NSString *)searchTerm;
 {
     NSString *path = [NSString stringWithFormat:@"search.json?q=%@", [searchTerm stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
@@ -288,7 +234,9 @@
         for (PDTweet *tweet in existingTweets) {
             [tweetIDs removeObject:tweet.remoteID];
         }
-        
+
+        PDLogObjects(@"Response array:", responseArray);
+
         NSEntityDescription *ent = [NSEntityDescription entityForName:@"Tweet" inManagedObjectContext:self.managedObjectContext];
         for (NSDictionary *tweetDict in responseArray) {
             NSNumber *remoteID = [tweetDict objectForKey:@"id"];
@@ -324,7 +272,11 @@
 
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
 {
-    [self _reloadFeed];
+    [self _reloadFeedWithSearchTerm:self.searchBar.text];
+
+    // PDLog() takes the same string/argument formatting as NSLog().
+    // PDLogD() formats it with debug formatting.
+    PDLogD(@"Reloading feed with search term: %@.", self.searchBar.text);
 }
 
 @end

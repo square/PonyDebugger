@@ -11,8 +11,13 @@
 
 #import "PDRuntimeDomainController.h"
 #import "PDRuntimeTypes.h"
+
 #import "NSObject+PDRuntimePropertyDescriptor.h"
 #import "NSManagedObject+PDRuntimePropertyDescriptor.h"
+#import "NSArray+PDRuntimePropertyDescriptor.h"
+#import "NSSet+PDRuntimePropertyDescriptor.h"
+#import "NSOrderedSet+PDRuntimePropertyDescriptor.h"
+#import "NSDictionary+PDRuntimePropertyDescriptor.h"
 
 
 @interface PDRuntimeDomainController () <PDRuntimeCommandDelegate>
@@ -117,6 +122,9 @@
 
 #pragma mark - Public Methods
 
+/**
+ * Registers and returns a string associated with the object to retain.
+ */
 - (NSString *)registerAndGetKeyForObject:(id)object;
 {
     NSString *key = [PDRuntimeDomainController _generateUUID];
@@ -126,6 +134,17 @@
     return key;
 }
 
+/**
+ * Clears object references given the string returned by registerAndGetKeyForObject:
+ */
+- (void)clearObjectReferencesByKey:(NSArray *)objectKeys;
+{
+    [self.objectReferences removeObjectsForKeys:objectKeys];
+}
+
+/**
+ * Clears all object references.
+ */
 - (void)clearAllObjectReferences;
 {
     [self.objectReferences removeAllObjects];
