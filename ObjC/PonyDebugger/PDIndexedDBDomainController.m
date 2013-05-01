@@ -190,7 +190,11 @@ static NSString *const PDManagedObjectContextNameUserInfoKey = @"PDManagedObject
 {
     NSMutableArray *paths = [[NSMutableArray alloc] init];
     for (NSPersistentStore *store in context.persistentStoreCoordinator.persistentStores) {
-        [paths addObject:[[context.persistentStoreCoordinator URLForPersistentStore:store].lastPathComponent stringByDeletingPathExtension]];
+        NSURL *url = [context.persistentStoreCoordinator URLForPersistentStore:store];
+        NSString *pathString = [url.lastPathComponent stringByDeletingPathExtension];
+        if (pathString) {
+            [paths addObject:pathString];
+        }
     }
     
     return [paths componentsJoinedByString:@":"];
