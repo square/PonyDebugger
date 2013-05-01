@@ -17,7 +17,7 @@ PonyDebugger is licensed under the Apache Licence, Version 2.0
 Changes
 -------
 
-### v0.3.0 - 2013-04-01
+### v0.3.0 - 2013-05-01
 
  - Remote Logging and Introspection (@wlue)
  - Request response pretty printing in Network Debugger (@davidapgar)
