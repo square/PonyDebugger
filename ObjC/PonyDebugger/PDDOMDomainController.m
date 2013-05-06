@@ -679,29 +679,12 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         elementNode.nodeName = @"object";
     }
     
-    if ([object respondsToSelector:@selector(text)]) {
-        NSString *text = [object text];
-        if ([text length] > 0) {
-            children = [children arrayByAddingObject:[self textNodeForString:[object text]]];
-        }
-    }
-    
     elementNode.children = children;
     elementNode.childNodeCount = @([elementNode.children count]);
     elementNode.nodeId = [self getAndIncrementNodeIdCount];
     elementNode.attributes = [self attributesArrayForObject:object];
     
     return elementNode;
-}
-
-- (PDDOMNode *)textNodeForString:(NSString *)string;
-{
-    PDDOMNode *textNode = [[PDDOMNode alloc] init];
-    textNode.nodeId = [self getAndIncrementNodeIdCount];
-    textNode.nodeType = @(kPDDOMNodeTypeText);
-    textNode.nodeValue = string;
-    
-    return textNode;
 }
 
 #pragma mark - Attribute Generation
