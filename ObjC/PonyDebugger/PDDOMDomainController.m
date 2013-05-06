@@ -198,6 +198,12 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 
 - (void)domain:(PDDOMDomain *)domain setAttributesAsTextWithNodeId:(NSNumber *)nodeId text:(NSString *)text name:(NSString *)name callback:(void (^)(id))callback;
 {
+    // The "class" attribute cannot be edited. Bail early
+    if ([name isEqualToString:@"class"]) {
+        callback(nil);
+        return;
+    }
+    
     id nodeObject = [self.objectsForNodeIds objectForKey:nodeId];
     const char *typeEncoding = [self typeEncodingForKeyPath:name onObject:nodeObject];
     
