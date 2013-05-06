@@ -221,6 +221,12 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         } else if (typeEncoding && !strcmp(typeEncoding, @encode(CGRect))) {
             CGRect rect = CGRectFromString(valueString);
             [nodeObject setValue:[NSValue valueWithCGRect:rect] forKeyPath:name];
+        } else if (typeEncoding && !strcmp(typeEncoding, @encode(id))) {
+            // Only support editing for string objects (due to the trivial mapping between the string and its description)
+            id currentValue = [nodeObject valueForKeyPath:name];
+            if ([currentValue isKindOfClass:[NSString class]]) {
+                [nodeObject setValue:valueString forKeyPath:name];
+            }
         } else {
             NSNumber *number = @([valueString doubleValue]);
             [nodeObject setValue:number forKeyPath:name];
