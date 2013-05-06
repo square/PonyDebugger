@@ -702,7 +702,23 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         return nil;
     }
     
-    NSMutableArray *attributes = [NSMutableArray arrayWithArray:@[ @"class", [[object class] description] ]];
+    NSString *className = [[object class] description];
+    
+    // Thanks to http://petersteinberger.com/blog/2012/pimping-recursivedescription/
+    SEL viewDelSEL = NSSelectorFromString([NSString stringWithFormat:@"%@wDelegate", @"_vie"]);
+    if ([object respondsToSelector:viewDelSEL]) {
+        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        UIViewController *vc = [object performSelector:viewDelSEL];
+#pragma clang diagnostic pop
+        
+        if (vc) {
+            className = [className stringByAppendingFormat:@" (%@)", [vc class]];
+        }
+    }
+    
+    NSMutableArray *attributes = [NSMutableArray arrayWithArray:@[ @"class", className ]];
     
     if ([object isKindOfClass:[UIView class]]) {
         // Get strings for all the key paths in viewKeyPathsToDisplay
