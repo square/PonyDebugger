@@ -713,7 +713,15 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         // Get strings for all the key paths in viewKeyPathsToDisplay
         for (NSString *keyPath in self.viewKeyPathsToDisplay) {
             
-            NSValue *value = [object valueForKeyPath:keyPath];
+            NSValue *value = nil;
+            
+            @try {
+                value = [object valueForKeyPath:keyPath];
+            } @catch (NSException *exception) {
+                // Continue if valueForKeyPath fails (ie KVC non-compliance)
+                continue;
+            }
+            
             NSString *stringValue = [self stringForValue:value atKeyPath:keyPath onObject:object];
             if (stringValue) {
                 [attributes addObjectsFromArray:@[ keyPath, stringValue ]];
