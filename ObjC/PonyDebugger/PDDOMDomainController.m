@@ -738,6 +738,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
     const char *typeEncoding = [self typeEncodingForKeyPath:keyPath onObject:object];
     
     if (typeEncoding) {
+        // Special structs
         if (!strcmp(typeEncoding,@encode(BOOL))) {
             stringValue = [(id)value boolValue] ? @"YES" : @"NO";
         } else if (!strcmp(typeEncoding,@encode(CGPoint))) {
@@ -749,8 +750,13 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         }
     }
     
+    // Boxed numeric primitives
     if (!stringValue && [value isKindOfClass:[NSNumber class]]) {
         stringValue = [(NSNumber *)value stringValue];
+        
+    // Object types
+    } else if (!stringValue && typeEncoding && !strcmp(typeEncoding, @encode(id))) {
+        stringValue = [value description];
     }
     
     return stringValue;
