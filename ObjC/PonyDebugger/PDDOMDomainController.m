@@ -760,6 +760,13 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         encoding = [methodSignature getArgumentTypeAtIndex:2];
     }
     
+    // If we didn't find a setter, look for the getter
+    // We could be more exhasutive here with KVC conventions, but these two will cover the majority of cases
+    if (!encoding) {
+        NSMethodSignature *getterSignature = [object methodSignatureForSelector:NSSelectorFromString(keyPath)];
+        encoding = [getterSignature methodReturnType];
+    }
+    
     return encoding;
 }
 
