@@ -49,7 +49,7 @@
     // Enable View Hierarchy debugging. This will swizzle UIView methods to monitor changes in the hierarchy
     // Choose a few UIView key paths to display as attributes of the dom nodes
     [debugger enableViewHierarchyDebugging];
-    [debugger setDisplayedViewAttributeKeyPaths:@[@"frame", @"hidden", @"alpha", @"opaque"]];
+    [debugger setDisplayedViewAttributeKeyPaths:@[@"frame", @"hidden", @"alpha", @"opaque", @"accessibilityLabel", @"text"]];
     
     // Connect to a specific host
     [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
