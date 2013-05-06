@@ -728,7 +728,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 {
     NSString *stringValue = nil;
     const char *typeEncoding = [self typeEncodingForKeyPath:keyPath onObject:object];
-    
+
     if (typeEncoding) {
         if (!strcmp(typeEncoding,@encode(BOOL))) {
             stringValue = [(id)value boolValue] ? @"YES" : @"NO";
@@ -738,13 +738,15 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
             stringValue = NSStringFromCGSize([value CGSizeValue]);
         } else if (!strcmp(typeEncoding,@encode(CGRect))) {
             stringValue = NSStringFromCGRect([value CGRectValue]);
+        } else if ([[NSString stringWithFormat:@"%s", typeEncoding] isEqualToString:@"@"]) {
+            stringValue = value;
         }
     }
-    
+
     if (!stringValue && [value isKindOfClass:[NSNumber class]]) {
         stringValue = [(NSNumber *)value stringValue];
     }
-    
+
     return stringValue;
 }
 
