@@ -198,6 +198,12 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 
 - (void)domain:(PDDOMDomain *)domain setAttributesAsTextWithNodeId:(NSNumber *)nodeId text:(NSString *)text name:(NSString *)name callback:(void (^)(id))callback;
 {
+    // The "class" attribute cannot be edited. Bail early
+    if ([name isEqualToString:@"class"]) {
+        callback(nil);
+        return;
+    }
+    
     id nodeObject = [self.objectsForNodeIds objectForKey:nodeId];
     const char *typeEncoding = [self typeEncodingForKeyPath:name onObject:nodeObject];
     
@@ -221,6 +227,12 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         } else if (typeEncoding && !strcmp(typeEncoding, @encode(CGRect))) {
             CGRect rect = CGRectFromString(valueString);
             [nodeObject setValue:[NSValue valueWithCGRect:rect] forKeyPath:name];
+        } else if (typeEncoding && !strcmp(typeEncoding, @encode(id))) {
+            // Only support editing for string objects (due to the trivial mapping between the string and its description)
+            id currentValue = [nodeObject valueForKeyPath:name];
+            if ([currentValue isKindOfClass:[NSString class]]) {
+                [nodeObject setValue:valueString forKeyPath:name];
+            }
         } else {
             NSNumber *number = @([valueString doubleValue]);
             [nodeObject setValue:number forKeyPath:name];
@@ -673,29 +685,12 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         elementNode.nodeName = @"object";
     }
     
-    if ([object respondsToSelector:@selector(text)]) {
-        NSString *text = [object text];
-        if ([text length] > 0) {
-            children = [children arrayByAddingObject:[self textNodeForString:[object text]]];
-        }
-    }
-    
     elementNode.children = children;
     elementNode.childNodeCount = @([elementNode.children count]);
     elementNode.nodeId = [self getAndIncrementNodeIdCount];
     elementNode.attributes = [self attributesArrayForObject:object];
     
     return elementNode;
-}
-
-- (PDDOMNode *)textNodeForString:(NSString *)string;
-{
-    PDDOMNode *textNode = [[PDDOMNode alloc] init];
-    textNode.nodeId = [self getAndIncrementNodeIdCount];
-    textNode.nodeType = @(kPDDOMNodeTypeText);
-    textNode.nodeValue = string;
-    
-    return textNode;
 }
 
 #pragma mark - Attribute Generation
@@ -707,13 +702,37 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         return nil;
     }
     
-    NSMutableArray *attributes = [NSMutableArray arrayWithArray:@[ @"class", [[object class] description] ]];
+    NSString *className = [[object class] description];
+    
+    // Thanks to http://petersteinberger.com/blog/2012/pimping-recursivedescription/
+    SEL viewDelSEL = NSSelectorFromString([NSString stringWithFormat:@"%@wDelegate", @"_vie"]);
+    if ([object respondsToSelector:viewDelSEL]) {
+        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        UIViewController *vc = [object performSelector:viewDelSEL];
+#pragma clang diagnostic pop
+        
+        if (vc) {
+            className = [className stringByAppendingFormat:@" (%@)", [vc class]];
+        }
+    }
+    
+    NSMutableArray *attributes = [NSMutableArray arrayWithArray:@[ @"class", className ]];
     
     if ([object isKindOfClass:[UIView class]]) {
         // Get strings for all the key paths in viewKeyPathsToDisplay
         for (NSString *keyPath in self.viewKeyPathsToDisplay) {
             
-            NSValue *value = [object valueForKeyPath:keyPath];
+            NSValue *value = nil;
+            
+            @try {
+                value = [object valueForKeyPath:keyPath];
+            } @catch (NSException *exception) {
+                // Continue if valueForKeyPath fails (ie KVC non-compliance)
+                continue;
+            }
+            
             NSString *stringValue = [self stringForValue:value atKeyPath:keyPath onObject:object];
             if (stringValue) {
                 [attributes addObjectsFromArray:@[ keyPath, stringValue ]];
@@ -730,6 +749,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
     const char *typeEncoding = [self typeEncodingForKeyPath:keyPath onObject:object];
     
     if (typeEncoding) {
+        // Special structs
         if (!strcmp(typeEncoding,@encode(BOOL))) {
             stringValue = [(id)value boolValue] ? @"YES" : @"NO";
         } else if (!strcmp(typeEncoding,@encode(CGPoint))) {
@@ -741,8 +761,13 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         }
     }
     
+    // Boxed numeric primitives
     if (!stringValue && [value isKindOfClass:[NSNumber class]]) {
         stringValue = [(NSNumber *)value stringValue];
+        
+    // Object types
+    } else if (!stringValue && typeEncoding && !strcmp(typeEncoding, @encode(id))) {
+        stringValue = [value description];
     }
     
     return stringValue;
@@ -758,6 +783,13 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
     if (methodSignature) {
         // We don't care about arg0 (self) or arg1 (_cmd)
         encoding = [methodSignature getArgumentTypeAtIndex:2];
+    }
+    
+    // If we didn't find a setter, look for the getter
+    // We could be more exhasutive here with KVC conventions, but these two will cover the majority of cases
+    if (!encoding) {
+        NSMethodSignature *getterSignature = [object methodSignatureForSelector:NSSelectorFromString(keyPath)];
+        encoding = [getterSignature methodReturnType];
     }
     
     return encoding;
