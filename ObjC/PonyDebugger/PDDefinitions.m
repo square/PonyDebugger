@@ -103,7 +103,7 @@ NSDictionary *PDRemoteObjectPropertyTypeDetailsForPropertyDescription(NSProperty
 
 NSDictionary *PDRemoteObjectPropertyTypeDetailsForAttributeDescription(NSAttributeDescription *description)
 {
-    NSString *type = nil;
+    NSString *type = @"undefined";
     NSString *subtype = nil;
     
     switch (description.attributeType) {
@@ -136,7 +136,7 @@ NSDictionary *PDRemoteObjectPropertyTypeDetailsForAttributeDescription(NSAttribu
         case NSUndefinedAttributeType:
         case NSBinaryDataAttributeType:
         case NSObjectIDAttributeType:
-            type = @"undefined";
+            // Undefined.
             break;
     }
     
@@ -181,6 +181,10 @@ NSDictionary *PDExtractPropertyAttributes(objc_property_t property)
 
     if (!customGetter) {
         customGetter = [NSString stringWithCString:property_getName(property) encoding:NSASCIIStringEncoding];
+    }
+
+    if (!returnEncodeString) {
+        return nil;
     }
 
     return @{
