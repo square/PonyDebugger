@@ -10,10 +10,13 @@
 //
 
 #import "PDDOMDomainController.h"
-#import <objc/runtime.h>
-#import <QuartzCore/QuartzCore.h>
 #import "PDInspectorDomainController.h"
 #import "PDRuntimeTypes.h"
+
+#import <objc/runtime.h>
+#import <QuartzCore/QuartzCore.h>
+
+#pragma mark - Definitions
 
 // Constants defined in the DOM Level 2 Core: http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-1950641247
 static const int kPDDOMNodeTypeElement = 1;
@@ -23,6 +26,8 @@ static const int kPDDOMNodeTypeComment = 8;
 static const int kPDDOMNodeTypeDocument = 9;
 
 static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
+
+#pragma mark - Private Interface
 
 @interface PDDOMDomainController ()
 
@@ -41,6 +46,8 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 @property (nonatomic, strong) UIView *inspectModeOverlay;
 
 @end
+
+#pragma mark - Implementation
 
 @implementation PDDOMDomainController
 
@@ -100,40 +107,40 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
     // Only do it once to avoid swapping back if this method is called again
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        
         Method original, swizzle;
         Class viewClass = [UIView class];
-        
+
+        // Using sel_registerName() because compiler complains about the swizzled selectors not being found.
         original = class_getInstanceMethod(viewClass, @selector(addSubview:));
-        swizzle = class_getInstanceMethod(viewClass, @selector(pd_swizzled_addSubview:));
+        swizzle = class_getInstanceMethod(viewClass, sel_registerName("pd_swizzled_addSubview:"));
         method_exchangeImplementations(original, swizzle);
         
         original = class_getInstanceMethod(viewClass, @selector(bringSubviewToFront:));
-        swizzle = class_getInstanceMethod(viewClass, @selector(pd_swizzled_bringSubviewToFront:));
+        swizzle = class_getInstanceMethod(viewClass, sel_registerName("pd_swizzled_bringSubviewToFront:"));
         method_exchangeImplementations(original, swizzle);
         
         original = class_getInstanceMethod(viewClass, @selector(sendSubviewToBack:));
-        swizzle = class_getInstanceMethod(viewClass, @selector(pd_swizzled_sendSubviewToBack:));
+        swizzle = class_getInstanceMethod(viewClass, sel_registerName("pd_swizzled_sendSubviewToBack:"));
         method_exchangeImplementations(original, swizzle);
         
         original = class_getInstanceMethod(viewClass, @selector(removeFromSuperview));
-        swizzle = class_getInstanceMethod(viewClass, @selector(pd_swizzled_removeFromSuperview));
+        swizzle = class_getInstanceMethod(viewClass, sel_registerName("pd_swizzled_removeFromSuperview"));
         method_exchangeImplementations(original, swizzle);
         
         original = class_getInstanceMethod(viewClass, @selector(insertSubview:atIndex:));
-        swizzle = class_getInstanceMethod(viewClass, @selector(pd_swizzled_insertSubview:atIndex:));
+        swizzle = class_getInstanceMethod(viewClass, sel_registerName("pd_swizzled_insertSubview:atIndex:"));
         method_exchangeImplementations(original, swizzle);
         
         original = class_getInstanceMethod(viewClass, @selector(insertSubview:aboveSubview:));
-        swizzle = class_getInstanceMethod(viewClass, @selector(pd_swizzled_insertSubview:aboveSubview:));
+        swizzle = class_getInstanceMethod(viewClass, sel_registerName("pd_swizzled_insertSubview:aboveSubview:"));
         method_exchangeImplementations(original, swizzle);
         
         original = class_getInstanceMethod(viewClass, @selector(insertSubview:belowSubview:));
-        swizzle = class_getInstanceMethod(viewClass, @selector(pd_swizzled_insertSubview:belowSubview:));
+        swizzle = class_getInstanceMethod(viewClass, sel_registerName("pd_swizzled_insertSubview:belowSubview:"));
         method_exchangeImplementations(original, swizzle);
         
         original = class_getInstanceMethod(viewClass, @selector(exchangeSubviewAtIndex:withSubviewAtIndex:));
-        swizzle = class_getInstanceMethod(viewClass, @selector(pd_swizzled_exchangeSubviewAtIndex:withSubviewAtIndex:));
+        swizzle = class_getInstanceMethod(viewClass, sel_registerName("pd_swizzled_exchangeSubviewAtIndex:withSubviewAtIndex:"));
         method_exchangeImplementations(original, swizzle);
     });
 }
