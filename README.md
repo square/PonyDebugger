@@ -137,6 +137,33 @@ requests and track your managed object contexts.
 Installing
 ----------
 
+#### CocoaPods
+
+[CocoaPods](http://cocoapods.org/) automates 3rd party dependencies in
+Objective-C.
+
+Install the ruby gem.
+
+    $ sudo gem install cocoapods
+    $ pod setup
+
+> Depending on your Ruby installation, you may not have to run as sudo to
+> install the cocoapods gem.
+
+Create a Podfile. You must be running on iOS 5 or above.
+
+    platform :ios, '5.0'
+    pod 'PonyDebugger', '~> 0.3.0'
+
+Install dependencies.
+
+    $ pod install
+
+When using CocoaPods, you must open the `.xcworkspace` file instead of the
+project file when building your project.
+
+#### Manual Installation
+
 - Extract a tarball or zipball of the repository into your project directory.
   If you prefer, you may also add the project as a submodule.  The iOS client
   uses [SocketRocket](https://github.com/square/SocketRocket) as a dependency,
