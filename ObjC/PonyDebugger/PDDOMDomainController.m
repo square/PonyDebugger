@@ -45,6 +45,8 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 
 @property (nonatomic, strong) UIView *inspectModeOverlay;
 
+@property (nonatomic, strong) NSNumberFormatter *numberFormatter;
+
 @end
 
 #pragma mark - Implementation
@@ -80,6 +82,8 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         
         [self.inspectModeOverlay addGestureRecognizer:inspectTapGR];
         [self.inspectModeOverlay addGestureRecognizer:inspectPanGR];
+        
+        self.numberFormatter = [[NSNumberFormatter alloc] init];
     }
     return self;
 }
@@ -241,7 +245,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
                 [nodeObject setValue:valueString forKeyPath:name];
             }
         } else {
-            NSNumber *number = @([valueString doubleValue]);
+            NSNumber *number = [self.numberFormatter numberFromString:valueString];
             [nodeObject setValue:number forKeyPath:name];
         }
     }
