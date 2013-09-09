@@ -133,6 +133,8 @@
 		9497D18F17DD683900DFA63D /* PDStringFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9497D18D17DD683900DFA63D /* PDStringFormatter.m */; };
 		9497D19217DD691F00DFA63D /* PDColorFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 9497D19017DD691F00DFA63D /* PDColorFormatter.h */; };
 		9497D19317DD691F00DFA63D /* PDColorFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9497D19117DD691F00DFA63D /* PDColorFormatter.m */; };
+		9497D19617DD7ACE00DFA63D /* PDFontFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 9497D19417DD7ACE00DFA63D /* PDFontFormatter.h */; };
+		9497D19717DD7ACE00DFA63D /* PDFontFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9497D19517DD7ACE00DFA63D /* PDFontFormatter.m */; };
 		E8D8B39316E00C9600081F80 /* PDPrettyStringPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = E8D8B39116E00C9600081F80 /* PDPrettyStringPrinter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E8D8B39416E00C9600081F80 /* PDPrettyStringPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D8B39216E00C9600081F80 /* PDPrettyStringPrinter.m */; };
 		F683ADB014FC1B4D008EBBA7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */; };
@@ -306,6 +308,8 @@
 		9497D18D17DD683900DFA63D /* PDStringFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDStringFormatter.m; sourceTree = "<group>"; };
 		9497D19017DD691F00DFA63D /* PDColorFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDColorFormatter.h; sourceTree = "<group>"; };
 		9497D19117DD691F00DFA63D /* PDColorFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDColorFormatter.m; sourceTree = "<group>"; };
+		9497D19417DD7ACE00DFA63D /* PDFontFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFontFormatter.h; sourceTree = "<group>"; };
+		9497D19517DD7ACE00DFA63D /* PDFontFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFontFormatter.m; sourceTree = "<group>"; };
 		E8D8B39116E00C9600081F80 /* PDPrettyStringPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDPrettyStringPrinter.h; sourceTree = "<group>"; };
 		E8D8B39216E00C9600081F80 /* PDPrettyStringPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDPrettyStringPrinter.m; sourceTree = "<group>"; };
 		F60EBEA114FC87EE0095B011 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -539,6 +543,8 @@
 				9497D18D17DD683900DFA63D /* PDStringFormatter.m */,
 				9497D19017DD691F00DFA63D /* PDColorFormatter.h */,
 				9497D19117DD691F00DFA63D /* PDColorFormatter.m */,
+				9497D19417DD7ACE00DFA63D /* PDFontFormatter.h */,
+				9497D19517DD7ACE00DFA63D /* PDFontFormatter.m */,
 			);
 			name = Formatters;
 			sourceTree = "<group>";
@@ -596,6 +602,7 @@
 				3DE2292715D5874C0035A508 /* PDIndexedDBDomainController.h in Headers */,
 				3DE2292915D5874C0035A508 /* PDNetworkDomainController.h in Headers */,
 				3DE2292B15D5874C0035A508 /* PDObject.h in Headers */,
+				9497D19617DD7ACE00DFA63D /* PDFontFormatter.h in Headers */,
 				9497D18A17DD676800DFA63D /* PDGenericObjectFormatter.h in Headers */,
 				3DE2292D15D5874C0035A508 /* PDPageDomainController.h in Headers */,
 				3DE2292F15D5874C0035A508 /* PDRuntimeDomainController.h in Headers */,
@@ -783,6 +790,7 @@
 				2516718515E61023002F2F95 /* PDNetworkTypes.m in Sources */,
 				2516718715E61023002F2F95 /* PDPageDomain.m in Sources */,
 				2516718915E61023002F2F95 /* PDPageTypes.m in Sources */,
+				9497D19717DD7ACE00DFA63D /* PDFontFormatter.m in Sources */,
 				2516718B15E61023002F2F95 /* PDProfilerDomain.m in Sources */,
 				2516718D15E61023002F2F95 /* PDProfilerTypes.m in Sources */,
 				2516718F15E61023002F2F95 /* PDRuntimeDomain.m in Sources */,
