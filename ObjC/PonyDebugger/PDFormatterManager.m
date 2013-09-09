@@ -41,6 +41,12 @@
         
         PDFontFormatter *fontFormatter = [[PDFontFormatter alloc] init];
         [formatterManager registerPonyFormatter:fontFormatter forObjectsOfKind:[UIFont class]];
+        
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        [formatterManager registerPonyFormatter:numberFormatter forObjectsOfKind:[NSNumber class]];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [formatterManager registerPonyFormatter:dateFormatter forObjectsOfKind:[NSDate class]];
     });
     return formatterManager;
 }
