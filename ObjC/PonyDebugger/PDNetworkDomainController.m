@@ -557,48 +557,52 @@ static NSArray *prettyStringPrinters = nil;
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
 {
     [self performBlock:^{
-
-        // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
-        // and behavior.
-        NSURLRequest *request = [self requestForConnection:connection];
-        if (!request) {
         
-            NSLog(@"PonyDebugger Warning: -[PDNetworkDomainController connection:willSendRequest:redirectResponse:] not called, request timestamp may be inaccurate. See Known Issues in the README for more information.");
+        if ([response respondsToSelector:@selector(copyWithZone:)]) {
+            
+            // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
+            // and behavior.
+            NSURLRequest *request = [self requestForConnection:connection];
+            if (!request && [connection respondsToSelector:@selector(currentRequest)]) {
+            
+                NSLog(@"PonyDebugger Warning: -[PDNetworkDomainController connection:willSendRequest:redirectResponse:] not called, request timestamp may be inaccurate. See Known Issues in the README for more information.");
 
-            request = connection.currentRequest;
-            [self setRequest:request forConnection:connection];
+                request = connection.currentRequest;
+                [self setRequest:request forConnection:connection];
 
-            PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
-            [self.domain requestWillBeSentWithRequestId:[self requestIDForConnection:connection]
-                                                frameId:@""
-                                               loaderId:@""
-                                            documentURL:[request.URL absoluteString]
-                                                request:networkRequest
-                                              timestamp:[NSDate PD_timestamp]
-                                              initiator:nil
-                                       redirectResponse:nil];
+                PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
+                [self.domain requestWillBeSentWithRequestId:[self requestIDForConnection:connection]
+                                                    frameId:@""
+                                                   loaderId:@""
+                                                documentURL:[request.URL absoluteString]
+                                                    request:networkRequest
+                                                  timestamp:[NSDate PD_timestamp]
+                                                  initiator:nil
+                                           redirectResponse:nil];
+            }
+        
+            [self setResponse:response forConnection:connection];
+            
+            NSMutableData *dataAccumulator = nil;
+            if (response.expectedContentLength < 0) {
+                dataAccumulator = [[NSMutableData alloc] init];
+            } else {
+                dataAccumulator = [[NSMutableData alloc] initWithCapacity:response.expectedContentLength];
+            }
+            
+            [self setAccumulatedData:dataAccumulator forConnection:connection];
+            
+            NSString *requestID = [self requestIDForConnection:connection];
+            PDNetworkResponse *networkResponse = [PDNetworkResponse networkResponseWithURLResponse:response request:[self requestForConnection:connection]];
+            
+            [self.domain responseReceivedWithRequestId:requestID
+                                               frameId:@""
+                                              loaderId:@""
+                                             timestamp:[NSDate PD_timestamp]
+                                                  type:response.PD_responseType
+                                              response:networkResponse];
         }
-
-        [self setResponse:response forConnection:connection];
         
-        NSMutableData *dataAccumulator = nil;
-        if (response.expectedContentLength < 0) {
-            dataAccumulator = [[NSMutableData alloc] init];
-        } else {
-            dataAccumulator = [[NSMutableData alloc] initWithCapacity:response.expectedContentLength];
-        }
-        
-        [self setAccumulatedData:dataAccumulator forConnection:connection];
-        
-        NSString *requestID = [self requestIDForConnection:connection];
-        PDNetworkResponse *networkResponse = [PDNetworkResponse networkResponseWithURLResponse:response request:[self requestForConnection:connection]];
-        
-        [self.domain responseReceivedWithRequestId:requestID
-                                           frameId:@""
-                                          loaderId:@""
-                                         timestamp:[NSDate PD_timestamp]
-                                              type:response.PD_responseType
-                                          response:networkResponse];
     }];
 }
 
