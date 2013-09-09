@@ -7,8 +7,10 @@
 //
 
 #import "PDFormatterManager.h"
+#import <UIKit/UIKit.h>
 #import "PDGenericObjectFormatter.h"
 #import "PDStringFormatter.h"
+#import "PDColorFormatter.h"
 
 @interface PDFormatterManager ()
 
@@ -31,6 +33,10 @@
         
         PDStringFormatter *stringFormatter = [[PDStringFormatter alloc] init];
         [formatterManager registerPonyFormatter:stringFormatter forObjectsOfKind:[NSString class]];
+        
+        PDColorFormatter *colorFormatter = [[PDColorFormatter alloc] init];
+        colorFormatter.style = PDColorFormatterStyleARGBHex;
+        [formatterManager registerPonyFormatter:colorFormatter forObjectsOfKind:[UIColor class]];
     });
     return formatterManager;
 }
