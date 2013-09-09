@@ -125,6 +125,12 @@
 		943D444E160A73810091CA77 /* PDDOMDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943D444C160A73810091CA77 /* PDDOMDomainController.m */; };
 		947CE06F163CA24E0035FB90 /* PDInspectorDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = 947CE06D163CA24E0035FB90 /* PDInspectorDomainController.h */; };
 		947CE070163CA24E0035FB90 /* PDInspectorDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 947CE06E163CA24E0035FB90 /* PDInspectorDomainController.m */; };
+		9497D17817DD363B00DFA63D /* PDFormatterManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9497D17617DD363B00DFA63D /* PDFormatterManager.h */; };
+		9497D17917DD363B00DFA63D /* PDFormatterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9497D17717DD363B00DFA63D /* PDFormatterManager.m */; };
+		9497D18A17DD676800DFA63D /* PDGenericObjectFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 9497D18817DD676800DFA63D /* PDGenericObjectFormatter.h */; };
+		9497D18B17DD676800DFA63D /* PDGenericObjectFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9497D18917DD676800DFA63D /* PDGenericObjectFormatter.m */; };
+		9497D18E17DD683900DFA63D /* PDStringFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 9497D18C17DD683900DFA63D /* PDStringFormatter.h */; };
+		9497D18F17DD683900DFA63D /* PDStringFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9497D18D17DD683900DFA63D /* PDStringFormatter.m */; };
 		E8D8B39316E00C9600081F80 /* PDPrettyStringPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = E8D8B39116E00C9600081F80 /* PDPrettyStringPrinter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E8D8B39416E00C9600081F80 /* PDPrettyStringPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D8B39216E00C9600081F80 /* PDPrettyStringPrinter.m */; };
 		F683ADB014FC1B4D008EBBA7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */; };
@@ -290,6 +296,12 @@
 		943D444C160A73810091CA77 /* PDDOMDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDOMDomainController.m; sourceTree = "<group>"; };
 		947CE06D163CA24E0035FB90 /* PDInspectorDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDInspectorDomainController.h; sourceTree = "<group>"; };
 		947CE06E163CA24E0035FB90 /* PDInspectorDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDInspectorDomainController.m; sourceTree = "<group>"; };
+		9497D17617DD363B00DFA63D /* PDFormatterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFormatterManager.h; sourceTree = "<group>"; };
+		9497D17717DD363B00DFA63D /* PDFormatterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFormatterManager.m; sourceTree = "<group>"; };
+		9497D18817DD676800DFA63D /* PDGenericObjectFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDGenericObjectFormatter.h; sourceTree = "<group>"; };
+		9497D18917DD676800DFA63D /* PDGenericObjectFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDGenericObjectFormatter.m; sourceTree = "<group>"; };
+		9497D18C17DD683900DFA63D /* PDStringFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDStringFormatter.h; sourceTree = "<group>"; };
+		9497D18D17DD683900DFA63D /* PDStringFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDStringFormatter.m; sourceTree = "<group>"; };
 		E8D8B39116E00C9600081F80 /* PDPrettyStringPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDPrettyStringPrinter.h; sourceTree = "<group>"; };
 		E8D8B39216E00C9600081F80 /* PDPrettyStringPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDPrettyStringPrinter.m; sourceTree = "<group>"; };
 		F60EBEA114FC87EE0095B011 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -440,6 +452,7 @@
 				3DE2293315D587540035A508 /* Domain Controllers */,
 				3DE2293415D5876F0035A508 /* PDObject */,
 				25E5BCE016BA41B900152A45 /* Categories */,
+				9497D18417DD669900DFA63D /* Formatters */,
 				3DE228B515D5874C0035A508 /* PDDebugger.h */,
 				3DE228B615D5874C0035A508 /* PDDebugger.m */,
 				3DE228B715D5874C0035A508 /* PDDefinitions.h */,
@@ -448,6 +461,8 @@
 				3DE228BE15D5874C0035A508 /* PDDynamicDebuggerDomain.m */,
 				E8D8B39116E00C9600081F80 /* PDPrettyStringPrinter.h */,
 				E8D8B39216E00C9600081F80 /* PDPrettyStringPrinter.m */,
+				9497D17617DD363B00DFA63D /* PDFormatterManager.h */,
+				9497D17717DD363B00DFA63D /* PDFormatterManager.m */,
 				3DE228C915D5874C0035A508 /* PonyDebugger-Prefix.pch */,
 				3DE228CA15D5874C0035A508 /* PonyDebugger.h */,
 			);
@@ -511,6 +526,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		9497D18417DD669900DFA63D /* Formatters */ = {
+			isa = PBXGroup;
+			children = (
+				9497D18817DD676800DFA63D /* PDGenericObjectFormatter.h */,
+				9497D18917DD676800DFA63D /* PDGenericObjectFormatter.m */,
+				9497D18C17DD683900DFA63D /* PDStringFormatter.h */,
+				9497D18D17DD683900DFA63D /* PDStringFormatter.m */,
+			);
+			name = Formatters;
+			sourceTree = "<group>";
+		};
 		F683ADA114FC1B4C008EBBA7 = {
 			isa = PBXGroup;
 			children = (
@@ -564,6 +590,7 @@
 				3DE2292715D5874C0035A508 /* PDIndexedDBDomainController.h in Headers */,
 				3DE2292915D5874C0035A508 /* PDNetworkDomainController.h in Headers */,
 				3DE2292B15D5874C0035A508 /* PDObject.h in Headers */,
+				9497D18A17DD676800DFA63D /* PDGenericObjectFormatter.h in Headers */,
 				3DE2292D15D5874C0035A508 /* PDPageDomainController.h in Headers */,
 				3DE2292F15D5874C0035A508 /* PDRuntimeDomainController.h in Headers */,
 				3DE2293115D5874C0035A508 /* PonyDebugger-Prefix.pch in Headers */,
@@ -579,6 +606,7 @@
 				2516716615E61023002F2F95 /* PDDebuggerDomain.h in Headers */,
 				2516716815E61023002F2F95 /* PDDebuggerTypes.h in Headers */,
 				2516716A15E61023002F2F95 /* PDDOMDebuggerDomain.h in Headers */,
+				9497D18E17DD683900DFA63D /* PDStringFormatter.h in Headers */,
 				2516716C15E61023002F2F95 /* PDDOMDomain.h in Headers */,
 				2516716E15E61023002F2F95 /* PDDOMStorageDomain.h in Headers */,
 				2516717015E61023002F2F95 /* PDDOMStorageTypes.h in Headers */,
@@ -594,6 +622,7 @@
 				2516718415E61023002F2F95 /* PDNetworkTypes.h in Headers */,
 				2516718615E61023002F2F95 /* PDPageDomain.h in Headers */,
 				E8D8B39316E00C9600081F80 /* PDPrettyStringPrinter.h in Headers */,
+				9497D17817DD363B00DFA63D /* PDFormatterManager.h in Headers */,
 				2516718815E61023002F2F95 /* PDPageTypes.h in Headers */,
 				2516718A15E61023002F2F95 /* PDProfilerDomain.h in Headers */,
 				2516718C15E61023002F2F95 /* PDProfilerTypes.h in Headers */,
@@ -724,9 +753,11 @@
 				2516715B15E61023002F2F95 /* PDConsoleDomain.m in Sources */,
 				2516715D15E61023002F2F95 /* PDConsoleTypes.m in Sources */,
 				2516715F15E61023002F2F95 /* PDCSSDomain.m in Sources */,
+				9497D18B17DD676800DFA63D /* PDGenericObjectFormatter.m in Sources */,
 				2516716115E61023002F2F95 /* PDCSSTypes.m in Sources */,
 				2516716315E61023002F2F95 /* PDDatabaseDomain.m in Sources */,
 				2516716515E61023002F2F95 /* PDDatabaseTypes.m in Sources */,
+				9497D18F17DD683900DFA63D /* PDStringFormatter.m in Sources */,
 				2516716715E61023002F2F95 /* PDDebuggerDomain.m in Sources */,
 				2516716915E61023002F2F95 /* PDDebuggerTypes.m in Sources */,
 				2516716B15E61023002F2F95 /* PDDOMDebuggerDomain.m in Sources */,
@@ -753,6 +784,7 @@
 				2516719515E61023002F2F95 /* PDTimelineTypes.m in Sources */,
 				2516719715E61023002F2F95 /* PDWebGLDomain.m in Sources */,
 				2516719915E61023002F2F95 /* PDWebGLTypes.m in Sources */,
+				9497D17917DD363B00DFA63D /* PDFormatterManager.m in Sources */,
 				2516719B15E61023002F2F95 /* PDWorkerDomain.m in Sources */,
 				F6EA51A816124E7D00A27364 /* NSData+PDB64Additions.m in Sources */,
 				943D444E160A73810091CA77 /* PDDOMDomainController.m in Sources */,
