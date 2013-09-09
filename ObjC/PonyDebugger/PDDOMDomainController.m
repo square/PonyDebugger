@@ -860,11 +860,23 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 
 - (void)pd_swizzled_exchangeSubviewAtIndex:(NSInteger)index1 withSubviewAtIndex:(NSInteger)index2;
 {
-    [[PDDOMDomainController defaultInstance] removeView:[[self subviews] objectAtIndex:index1]];
-    [[PDDOMDomainController defaultInstance] removeView:[[self subviews] objectAtIndex:index2]];
+    // Guard against calls with out-of-bounds indices.
+    // exchangeSubviewAtIndex:withSubviewAtIndex: doesn't crash in this case, so neither should we.
+    if (index1 >= 0 && index1 < [[self subviews] count]) {
+        [[PDDOMDomainController defaultInstance] removeView:[[self subviews] objectAtIndex:index1]];
+    }
+    if (index2 >= 0 && index2 < [[self subviews] count]) {
+        [[PDDOMDomainController defaultInstance] removeView:[[self subviews] objectAtIndex:index2]];
+    }
+    
     [self pd_swizzled_exchangeSubviewAtIndex:index1 withSubviewAtIndex:index2];
-    [[PDDOMDomainController defaultInstance] addView:[[self subviews] objectAtIndex:index1]];
-    [[PDDOMDomainController defaultInstance] addView:[[self subviews] objectAtIndex:index2]];
+    
+    if (index1 >= 0 && index1 < [[self subviews] count]) {
+        [[PDDOMDomainController defaultInstance] addView:[[self subviews] objectAtIndex:index1]];
+    }
+    if (index2 >= 0 && index2 < [[self subviews] count]) {
+        [[PDDOMDomainController defaultInstance] addView:[[self subviews] objectAtIndex:index2]];
+    }
 }
 
 @end
