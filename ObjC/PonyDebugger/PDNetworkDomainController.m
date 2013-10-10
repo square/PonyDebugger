@@ -68,7 +68,7 @@
         CFRelease(uuid);
     });
     
-    return [[NSString alloc] initWithFormat:@"%@-%d", seed, ++sequenceNumber];
+    return [[NSString alloc] initWithFormat:@"%@-%ld", seed, (long)++sequenceNumber];
 }
 
 + (Class)domainClass;
@@ -217,7 +217,7 @@ static NSArray *prettyStringPrinters = nil;
     const int numSelectors = sizeof(selectors) / sizeof(SEL);
 
     Class *classes = NULL;
-    NSInteger numClasses = objc_getClassList(NULL, 0);
+    int numClasses = objc_getClassList(NULL, 0);
     
     if (numClasses > 0) {
         classes = (__unsafe_unretained Class *)malloc(sizeof(Class) * numClasses);
@@ -405,13 +405,6 @@ static NSArray *prettyStringPrinters = nil;
     _queue = dispatch_queue_create("com.squareup.ponydebugger.PDNetworkDomainController", DISPATCH_QUEUE_SERIAL);
     
     return self;
-}
-
-- (void)dealloc;
-{
-    if (_queue) {
-        dispatch_release(_queue);
-    }
 }
 
 #pragma mark - PDNetworkCommandDelegate
