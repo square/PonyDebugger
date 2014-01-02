@@ -108,6 +108,7 @@
     if (dotPosition != NSNotFound) {
         NSString *class = [expression substringToIndex:dotPosition];
         NSString *keypath = [expression substringFromIndex:dotPosition + 1];
+        keypath = [keypath stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 
         Class klass = NSClassFromString(class);
         @try {
