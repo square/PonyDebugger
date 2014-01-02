@@ -17,6 +17,15 @@ PonyDebugger is licensed under the Apache Licence, Version 2.0
 Changes
 -------
 
+### v0.3.1 - 2014-01-02
+
+ - Fix only building active arch in debug. (@kyleve)
+ - Fix view hierarchy debugging with complex key paths. (@ryanolsonk)
+ - Fix crash in swizzled exchangeSubviewAtIndex:withSubviewAtIndex:
+   (@ryanolsonk)
+ - Fix for crash when having a library that looks like a NSURLConnectionDelegate
+   (@peterwilli)
+
 ### v0.3.0 - 2013-05-01
 
  - Remote Logging and Introspection (@wlue)
@@ -153,7 +162,7 @@ Install the ruby gem.
 Create a Podfile. You must be running on iOS 5 or above.
 
     platform :ios, '5.0'
-    pod 'PonyDebugger', '~> 0.3.0'
+    pod 'PonyDebugger', '~> 0.3.1'
 
 If you would like to use the latest version of PonyDebugger, point to the Github
 repository directly.
