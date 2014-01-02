@@ -44,7 +44,7 @@
     return nil;
 }
 
-- (NSArray *)PD_propertiesForPropertyDescriptors;
+- (NSArray *)PD_propertiesForPropertyDescriptorsWithOwnProperties:(BOOL)ownProperties;
 {
     NSMutableArray *properties = [[NSMutableArray alloc] initWithCapacity:self.count];
     

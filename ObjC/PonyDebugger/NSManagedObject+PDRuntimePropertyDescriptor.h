@@ -18,7 +18,7 @@
 
 @interface NSManagedObject (PDRuntimePropertyDescriptor)
 
-- (NSArray *)PD_propertiesForPropertyDescriptors;
+- (NSArray *)PD_propertiesForPropertyDescriptorsWithOwnProperties:(BOOL)ownProperties;
 - (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForPropertyObject:(NSObject *)property;
 
 - (PDRuntimeRemoteObject *)PD_propertyDescriptorValueForPropertyDescription:(NSPropertyDescription *)property;

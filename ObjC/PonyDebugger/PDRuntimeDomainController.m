@@ -102,7 +102,7 @@
         return;
     }
     
-    NSArray *properties = [object PD_propertyDescriptors];
+    NSArray *properties = [object PD_propertyDescriptorsWithOwnProperties:[ownProperties boolValue]];
     callback(properties, nil);
 }
 

@@ -17,7 +17,7 @@
 @interface NSArray (PDRuntimePropertyDescriptor)
 
 - (id)PD_valueForKey:(NSString *)key;
-- (NSArray *)PD_propertiesForPropertyDescriptors;
+- (NSArray *)PD_propertiesForPropertyDescriptorsWithOwnProperties:(BOOL)ownProperties;
 - (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForPropertyObject:(NSObject *)property;
 
 @end
