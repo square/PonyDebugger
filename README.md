@@ -95,6 +95,19 @@ loggedin `NSLog`, while also allowing you dynamically introspect objects.
 Introspected objects can be expanded recursively by property. This means that
 you don't have to breakpoint and log in GDB or LLDB to introspect an object.
 
+### Remote Object Lookup
+
+PonyDebugger lets you lookup objects in the console using keypaths.   Type
+in a class name and a static method that returns an object, and the result is
+viewable in the console.  The following example will return the key window
+root view controller:
+
+```
+UIApplication.sharedApplication.keyWindow.rootViewController
+```
+
+
+
 Quick Start
 -----------
 Prerequisite: Xcode's Command Line Tools must be installed from the "Downloads"
