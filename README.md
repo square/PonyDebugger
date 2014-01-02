@@ -155,6 +155,11 @@ Create a Podfile. You must be running on iOS 5 or above.
     platform :ios, '5.0'
     pod 'PonyDebugger', '~> 0.3.0'
 
+If you would like to use the latest version of PonyDebugger, point to the Github
+repository directly.
+
+    pod 'PonyDebugger', :git => 'https://github.com/square/PonyDebugger.git'
+
 Install dependencies.
 
     $ pod install
