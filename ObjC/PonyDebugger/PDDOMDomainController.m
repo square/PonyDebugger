@@ -12,6 +12,7 @@
 #import "PDDOMDomainController.h"
 #import "PDInspectorDomainController.h"
 #import "PDRuntimeTypes.h"
+#import "PDFormatterManager.h"
 
 #import <objc/runtime.h>
 #import <QuartzCore/QuartzCore.h>
@@ -44,6 +45,8 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 @property (nonatomic, assign) CGPoint originalPinchLocation;
 
 @property (nonatomic, strong) UIView *inspectModeOverlay;
+
+@property (nonatomic, strong) NSNumberFormatter *numberFormatter;
 
 @end
 
@@ -80,6 +83,8 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         
         [self.inspectModeOverlay addGestureRecognizer:inspectTapGR];
         [self.inspectModeOverlay addGestureRecognizer:inspectPanGR];
+        
+        self.numberFormatter = [[NSNumberFormatter alloc] init];
     }
     return self;
 }
@@ -235,13 +240,15 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
             CGRect rect = CGRectFromString(valueString);
             [nodeObject setValue:[NSValue valueWithCGRect:rect] forKeyPath:name];
         } else if (typeEncoding && !strcmp(typeEncoding, @encode(id))) {
-            // Only support editing for string objects (due to the trivial mapping between the string and its description)
+            // Object types - only set the value if the formatter can provide a valid object from the string
             id currentValue = [nodeObject valueForKeyPath:name];
-            if ([currentValue isKindOfClass:[NSString class]]) {
-                [nodeObject setValue:valueString forKeyPath:name];
+            NSFormatter *formatter = [[PDFormatterManager defaultInstance] formatterForClass:[currentValue class]];
+            id newValue = nil;
+            if ([formatter getObjectValue:&newValue forString:valueString errorDescription:NULL]) {
+                [nodeObject setValue:newValue forKey:name];
             }
         } else {
-            NSNumber *number = @([valueString doubleValue]);
+            NSNumber *number = [self.numberFormatter numberFromString:valueString];
             [nodeObject setValue:number forKeyPath:name];
         }
     }
@@ -773,8 +780,9 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
         stringValue = [(NSNumber *)value stringValue];
         
     // Object types
-    } else if (!stringValue && typeEncoding && !strcmp(typeEncoding, @encode(id))) {
-        stringValue = [value description];
+    } else if (!stringValue && value && typeEncoding && !strcmp(typeEncoding, @encode(id))) {
+        NSFormatter *formatter = [[PDFormatterManager defaultInstance] formatterForClass:[value class]];
+        stringValue = [formatter stringForObjectValue:value];
     }
     
     return stringValue;
