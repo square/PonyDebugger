@@ -783,10 +783,33 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 - (const char *)typeEncodingForKeyPath:(NSString *)keyPath onObject:(id)object;
 {
     const char *encoding = NULL;
+    NSString *lastKeyPathComponent = nil;
+    id targetObject = nil;
+    
+    // Separate the key path components
+    NSArray *keyPathComponents = [keyPath componentsSeparatedByString:@"."];
+    
+    if ([keyPathComponents count] > 1) {
+        // Drill down to find the targetObject.key piece that we're interested in.
+        NSMutableArray *mutableComponents = [keyPathComponents mutableCopy];
+        lastKeyPathComponent = [mutableComponents lastObject];
+        [mutableComponents removeLastObject];
+        
+        NSString *targetKeyPath = [mutableComponents componentsJoinedByString:@"."];
+        @try {
+            targetObject = [object valueForKeyPath:targetKeyPath];
+        } @catch (NSException *exception) {
+            // Silently fail for KVC non-compliance
+        }
+    } else {
+        // This is the simple case with no dots. Use the full key and original target object
+        lastKeyPathComponent = keyPath;
+        targetObject = object;
+    }
     
     // Look for a matching set* method to infer the type
-    NSString *selectorString = [NSString stringWithFormat:@"set%@:", [keyPath stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[keyPath substringToIndex:1] uppercaseString]]];
-    NSMethodSignature *methodSignature = [object methodSignatureForSelector:NSSelectorFromString(selectorString)];
+    NSString *selectorString = [NSString stringWithFormat:@"set%@:", [lastKeyPathComponent stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[lastKeyPathComponent substringToIndex:1] uppercaseString]]];
+    NSMethodSignature *methodSignature = [targetObject methodSignatureForSelector:NSSelectorFromString(selectorString)];
     if (methodSignature) {
         // We don't care about arg0 (self) or arg1 (_cmd)
         encoding = [methodSignature getArgumentTypeAtIndex:2];
@@ -795,7 +818,7 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
     // If we didn't find a setter, look for the getter
     // We could be more exhasutive here with KVC conventions, but these two will cover the majority of cases
     if (!encoding) {
-        NSMethodSignature *getterSignature = [object methodSignatureForSelector:NSSelectorFromString(keyPath)];
+        NSMethodSignature *getterSignature = [targetObject methodSignatureForSelector:NSSelectorFromString(lastKeyPathComponent)];
         encoding = [getterSignature methodReturnType];
     }
     
