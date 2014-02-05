@@ -47,7 +47,7 @@ NSDictionary *PDExtractPropertyAttributes(objc_property_t property);
                 remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:propertyValue];
             } else if ([remoteValueObject.subtype isEqualToString:@"array"]) {
                 remoteValueObject.objectId = [[PDRuntimeDomainController defaultInstance] registerAndGetKeyForObject:propertyValue];
-                remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ <count = %d>", [propertyValue class], [propertyValue count]];
+                remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@ <count = %lu>", [propertyValue class], (unsigned long)[propertyValue count]];
             } else if ([remoteValueObject.subtype isEqualToString:@"date"]) {
                 NSDate *date = propertyValue;
                 remoteValueObject.value = [date description];

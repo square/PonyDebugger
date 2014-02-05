@@ -254,7 +254,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 {
     NSAssert([service isEqual:_currentService], @"Resolved incorrect service!");
 
-    [self connectToURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://%@:%d/device", [service hostName], [service port]]]];
+    [self connectToURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://%@:%ld/device", [service hostName], (long)[service port]]]];
 }
 
 #pragma mark - Public Methods

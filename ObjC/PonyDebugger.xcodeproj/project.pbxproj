@@ -846,9 +846,12 @@
 		F683ADBA14FC1B4D008EBBA7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				DSTROOT = /tmp/PonyDebugger.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PonyDebugger/PonyDebugger-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[arch=arm64]" = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -857,9 +860,12 @@
 		F683ADBB14FC1B4D008EBBA7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				DSTROOT = /tmp/PonyDebugger.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PonyDebugger/PonyDebugger-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[arch=arm64]" = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
