@@ -68,7 +68,7 @@
         CFRelease(uuid);
     });
     
-    return [[NSString alloc] initWithFormat:@"%@-%d", seed, ++sequenceNumber];
+    return [[NSString alloc] initWithFormat:@"%@-%ld", seed, (long)(++sequenceNumber)];
 }
 
 + (Class)domainClass;
@@ -217,7 +217,7 @@ static NSArray *prettyStringPrinters = nil;
     const int numSelectors = sizeof(selectors) / sizeof(SEL);
 
     Class *classes = NULL;
-    NSInteger numClasses = objc_getClassList(NULL, 0);
+    int numClasses = objc_getClassList(NULL, 0);
     
     if (numClasses > 0) {
         classes = (__unsafe_unretained Class *)malloc(sizeof(Class) * numClasses);
@@ -587,7 +587,7 @@ static NSArray *prettyStringPrinters = nil;
             if (response.expectedContentLength < 0) {
                 dataAccumulator = [[NSMutableData alloc] init];
             } else {
-                dataAccumulator = [[NSMutableData alloc] initWithCapacity:response.expectedContentLength];
+                dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
             }
             
             [self setAccumulatedData:dataAccumulator forConnection:connection];
