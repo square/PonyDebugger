@@ -49,7 +49,7 @@
     NSMutableArray *properties = [[NSMutableArray alloc] initWithCapacity:self.count];
     
     for (NSInteger index = 0; index < self.count; ++index) {
-        NSString *name = [NSString stringWithFormat:@"%d", index];
+        NSString *name = [NSString stringWithFormat:@"%ld", (long)index];
         
         PDContainerIndex *containerIndex = [[PDContainerIndex alloc] initWithName:name index:index];
         [properties addObject:containerIndex];

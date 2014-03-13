@@ -67,7 +67,7 @@
         remoteValueObject.classNameString = relationshipProperty.destinationEntity.name;
         
         if ([relationshipProperty isToMany]) {
-            remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@<%@> <count = %d>", [value class], remoteValueObject.classNameString, [value count]];
+            remoteValueObject.objectDescription = [NSString stringWithFormat:@"%@<%@> <count = %@>", [value class], remoteValueObject.classNameString, @([value count])];
         } else {
             remoteValueObject.objectDescription = remoteValueObject.classNameString;
         }
