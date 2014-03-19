@@ -281,7 +281,7 @@ static NSArray *prettyStringPrinters = nil;
     };
     
     NSURLConnectionWillSendRequestBlock implementationBlock = ^NSURLRequest *(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response) {
-        NSURLRequest *returnValue = objc_msgSend(slf, swizzledSelector, connection, request, response);
+        NSURLRequest *returnValue = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, connection, request, response);
         undefinedBlock(slf, connection, request, response);
         return returnValue;
     };
@@ -311,7 +311,7 @@ static NSArray *prettyStringPrinters = nil;
     
     NSURLConnectionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response) {
         undefinedBlock(slf, connection, response);
-        objc_msgSend(slf, swizzledSelector, connection, response);
+        ((void(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, connection, response);
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -337,7 +337,7 @@ static NSArray *prettyStringPrinters = nil;
     
     NSURLConnectionDidReceiveDataBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSData *data) {
         undefinedBlock(slf, connection, data);
-        objc_msgSend(slf, swizzledSelector, connection, data);
+        ((void(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, connection, data);
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -363,7 +363,7 @@ static NSArray *prettyStringPrinters = nil;
     
     NSURLConnectionDidFinishLoadingBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection) {
         undefinedBlock(slf, connection);
-        objc_msgSend(slf, swizzledSelector, connection);
+        ((void(*)(id, SEL, id))objc_msgSend)(slf, swizzledSelector, connection);
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -385,7 +385,7 @@ static NSArray *prettyStringPrinters = nil;
     
     NSURLConnectionDidFailWithErrorBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSError *error) {
         undefinedBlock(slf, connection, error);
-        objc_msgSend(slf, swizzledSelector, connection, error);
+        ((void(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, connection, error);
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
