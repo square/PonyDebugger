@@ -11,7 +11,6 @@
 
 #import "PDNetworkDomainController.h"
 #import "PDPrettyStringPrinter.h"
-#import "NSData+PDB64Additions.h"
 #import "NSDate+PDDebugger.h"
 
 #import <objc/runtime.h>
@@ -448,7 +447,7 @@ static NSArray *prettyStringPrinters = nil;
     NSString *encodedBody;
     BOOL isBinary;
     if (!prettyStringPrinter) {
-        encodedBody = responseBody.PD_stringByBase64Encoding;
+        encodedBody = responseBody.base64Encoding;
         isBinary = YES;
     } else {
         encodedBody = [prettyStringPrinter prettyStringForData:responseBody forResponse:response request:request];

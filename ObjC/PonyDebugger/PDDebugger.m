@@ -25,7 +25,6 @@
 #import "PDDOMDomainController.h"
 #import "PDInspectorDomainController.h"
 #import "PDConsoleDomainController.h"
-#import "NSData+PDB64Additions.h"
 
 
 static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
@@ -125,7 +124,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     if (appIconFile) {
         UIImage *appIcon = [UIImage imageNamed:appIconFile];
         if (appIcon) {
-            NSString *base64IconString = UIImagePNGRepresentation(appIcon).PD_stringByBase64Encoding;
+            NSString *base64IconString = [UIImagePNGRepresentation(appIcon) base64Encoding];
             [parameters setObject:base64IconString forKey:@"app_icon_base64"];
         }
     }
