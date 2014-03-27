@@ -10,7 +10,6 @@
 //
 
 #import "PDPrettyStringPrinter.h"
-#import "NSData+PDB64Additions.h"
 
 
 @implementation PDTextPrettyStringPrinter
