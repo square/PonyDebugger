@@ -7,7 +7,7 @@ def extend_parser(optparse_parser):
 
 def after_install(options, home_dir):
     subprocess.check_call([join(home_dir, 'bin', 'pip'),
-                     'install', '-U', '-e', 'git+https://github.com/square/PonyDebugger.git#egg=ponydebugger'])
+                     'install', '--allow-external', 'pybonjour', '--allow-unverified', 'pybonjour', '-U', '-e', 'git+https://github.com/square/PonyDebugger.git#egg=ponydebugger'])
 
     ponyd_path = join(home_dir, 'bin', 'ponyd')
 
