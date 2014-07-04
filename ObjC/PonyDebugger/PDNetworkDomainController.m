@@ -211,6 +211,7 @@ static NSArray *prettyStringPrinters = nil;
     const SEL selectors[] = {
         @selector(connectionDidFinishLoading:),
         @selector(connection:didReceiveResponse:),
+        @selector(URLSession:dataTask:didReceiveResponse:completionHandler:),
         @selector(URLSession:task:didCompleteWithError:)
     };
     
@@ -416,7 +417,7 @@ static NSArray *prettyStringPrinters = nil;
     };
 
     NSURLSessionWillPerformHTTPRedirectionBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
-        NSURLRequest *returnValue = ((id(*)(id, SEL, id, id, id, id, void(^)()))objc_msgSend)(slf, swizzledSelector, session, task, response, newRequest, completionHandler);
+        ((id(*)(id, SEL, id, id, id, id, void(^)()))objc_msgSend)(slf, swizzledSelector, session, task, response, newRequest, completionHandler);
         undefinedBlock(slf, session, task, response, newRequest, completionHandler);
     };
 
@@ -856,10 +857,7 @@ static NSArray *prettyStringPrinters = nil;
 {
     if ([response respondsToSelector:@selector(copyWithZone:)]) {
 
-        //TODO: Understand the inconsistency mentioned here
-
-        // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
-        // and behavior.
+        // If the request wasn't generated yet, then willSendRequest was not called. 
         NSURLRequest *request = [self requestForTask:dataTask];
         if (!request && [dataTask respondsToSelector:@selector(currentRequest)]) {
 

@@ -52,7 +52,7 @@
     self = [super initWithCoder:coder];
     if (self) {
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        _sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+        _sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
     }
     
     return self;
@@ -220,9 +220,9 @@
 {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager GET:@"http://graph.facebook.com/viteinfinite" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", responseObject);
+//        NSLog(@"%@", responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
+//        NSLog(@"Error: %@", error);
     }];
 }
 
@@ -285,6 +285,21 @@
 //            [self.managedObjectContext save:NULL];
         }
     }];
+    
+    [_sessionManager setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
+        NSLog(@"%@", request.URL.absoluteString);
+        return request;
+    }];
+    
+    [_sessionManager setTaskDidCompleteBlock:^(NSURLSession *session, NSURLSessionTask *task, NSError *error) {
+        NSLog(@"%@", task.currentRequest.URL.absoluteString);
+    }];
+    
+    [_sessionManager setDataTaskDidReceiveResponseBlock:^NSURLSessionResponseDisposition(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response) {
+        NSLog(@"%@", dataTask.currentRequest.URL.absoluteString);
+        return NSURLSessionResponseAllow;
+    }];
+    
     [dataTask resume];
 }
 
