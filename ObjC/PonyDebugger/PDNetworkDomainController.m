@@ -403,11 +403,7 @@ static NSArray *prettyStringPrinters = nil;
     typedef void (^NSURLSessionTaskDidCompleteWithErrorBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error);
 
     NSURLSessionTaskDidCompleteWithErrorBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error) {
-        if (error) {
-            [[PDNetworkDomainController defaultInstance] sessionTask:task didFailWithError:error];
-        } else {
-            [[PDNetworkDomainController defaultInstance] sessionTaskDidFinishLoading:task];
-        }
+        [[PDNetworkDomainController defaultInstance] URLSession:session task:task didCompleteWithError:error];
     };
 
     NSURLSessionTaskDidCompleteWithErrorBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error) {
@@ -580,14 +576,37 @@ static NSArray *prettyStringPrinters = nil;
     return [self requestStateForTask:task].requestID;
 }
 
+- (void)setResponse:(NSURLResponse *)response forTask:(NSURLSessionTask *)task;
+{
+    [self requestStateForTask:task].response = response;
+}
+
 - (NSURLResponse *)responseForTask:(NSURLSessionTask *)task
 {
     return [self requestStateForTask:task].response;
 }
 
+- (void)setRequest:(NSURLRequest *)request forTask:(NSURLSessionTask *)task;
+{
+    [self requestStateForTask:task].request = request;
+}
+
 - (NSURLRequest *)requestForTask:(NSURLSessionTask *)task;
 {
     return [self requestStateForTask:task].request;
+}
+
+- (void)setAccumulatedData:(NSMutableData *)data forTask:(NSURLSessionTask *)task;
+{
+    _PDRequestState *requestState = [self requestStateForTask:task];
+    requestState.dataAccumulator = data;
+}
+
+- (void)addAccumulatedData:(NSData *)data forTask:(NSURLSessionTask *)task;
+{
+    NSMutableData *dataAccumulator = [self requestStateForTask:task].dataAccumulator;
+
+    [dataAccumulator appendData:data];
 }
 
 - (NSData *)accumulatedDataForTask:(NSURLSessionTask *)task;
@@ -728,7 +747,99 @@ static NSArray *prettyStringPrinters = nil;
     }];
 }
 
-- (void)sessionTaskDidFinishLoading:(NSURLSessionTask *)task;
+@end
+
+
+@implementation PDNetworkDomainController (NSURLSessionTaskHelpers)
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler
+{
+    [self performBlock:^{
+        [self setRequest:request forTask:task];
+        PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
+        PDNetworkResponse *networkRedirectResponse = response ? [[PDNetworkResponse alloc] initWithURLResponse:response request:request] : nil;
+
+        [self.domain requestWillBeSentWithRequestId:[self requestIDForTask:task]
+                                            frameId:@""
+                                           loaderId:@""
+                                        documentURL:[request.URL absoluteString]
+                                            request:networkRequest
+                                          timestamp:[NSDate PD_timestamp]
+                                          initiator:nil
+                                   redirectResponse:networkRedirectResponse];
+    }];
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler;
+{
+    if ([response respondsToSelector:@selector(copyWithZone:)]) {
+
+        //TODO: Understand the inconsistency mentioned here
+
+        // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
+        // and behavior.
+        NSURLRequest *request = [self requestForTask:dataTask];
+        if (!request && [dataTask respondsToSelector:@selector(currentRequest)]) {
+
+            NSLog(@"PonyDebugger Warning: -[PDNetworkDomainController session:task:willPerformHTTPRedirection:] not called, request timestamp may be inaccurate. See Known Issues in the README for more information.");
+
+            request = dataTask.currentRequest;
+            [self setRequest:request forTask:dataTask];
+
+            PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
+            [self.domain requestWillBeSentWithRequestId:[self requestIDForTask:dataTask]
+                                                frameId:@""
+                                               loaderId:@""
+                                            documentURL:[request.URL absoluteString]
+                                                request:networkRequest
+                                              timestamp:[NSDate PD_timestamp]
+                                              initiator:nil
+                                       redirectResponse:nil];
+        }
+
+        [self setResponse:response forTask:dataTask];
+
+        NSMutableData *dataAccumulator = nil;
+        if (response.expectedContentLength < 0) {
+            dataAccumulator = [[NSMutableData alloc] init];
+        } else {
+            dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
+        }
+
+        [self setAccumulatedData:dataAccumulator forTask:dataTask];
+
+        NSString *requestID = [self requestIDForTask:dataTask];
+        PDNetworkResponse *networkResponse = [PDNetworkResponse networkResponseWithURLResponse:response request:[self requestForTask:dataTask]];
+
+        [self.domain responseReceivedWithRequestId:requestID
+                                           frameId:@""
+                                          loaderId:@""
+                                         timestamp:[NSDate PD_timestamp]
+                                              type:response.PD_responseType
+                                          response:networkResponse];
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
+{
+    // Just to be safe since we're doing this async
+    data = [data copy];
+    [self performBlock:^{
+        [self addAccumulatedData:data forTask:dataTask];
+
+        if ([self accumulatedDataForTask:dataTask] == nil) return;
+
+        NSNumber *length = [NSNumber numberWithInteger:data.length];
+        NSString *requestID = [self requestIDForTask:dataTask];
+
+        [self.domain dataReceivedWithRequestId:requestID
+                                     timestamp:[NSDate PD_timestamp]
+                                    dataLength:length
+                             encodedDataLength:length];
+    }];
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error;
 {
     [self performBlock:^{
         NSURLResponse *response = [self responseForTask:task];
@@ -736,10 +847,17 @@ static NSArray *prettyStringPrinters = nil;
 
         NSData *accumulatedData = [self accumulatedDataForTask:task];
 
-        [self setResponse:accumulatedData
-             forRequestID:requestID
-                 response:response
-                  request:[self requestForTask:task]];
+        if (error) {
+            [self.domain loadingFailedWithRequestId:[self requestIDForTask:task]
+                                          timestamp:[NSDate PD_timestamp]
+                                          errorText:[error localizedDescription]
+                                           canceled:[NSNumber numberWithBool:NO]];
+        } else {
+            [self setResponse:accumulatedData
+                 forRequestID:requestID
+                     response:response
+                      request:[self requestForTask:task]];
+        }
 
         [self.domain loadingFinishedWithRequestId:requestID
                                         timestamp:[NSDate PD_timestamp]];
@@ -748,20 +866,7 @@ static NSArray *prettyStringPrinters = nil;
     }];
 }
 
-- (void)sessionTask:(NSURLSessionTask *)task didFailWithError:(NSError *)error;
-{
-    [self performBlock:^{
-        //TODO: Implement this
-        /*
-        [self.domain loadingFailedWithRequestId:[self requestIDForConnection:connection]
-                                      timestamp:[NSDate PD_timestamp]
-                                      errorText:[error localizedDescription]
-                                       canceled:[NSNumber numberWithBool:NO]];
-
-        [self connectionFinished:connection];
-        */
-    }];
-}
+//TODO: Implement Download delegate methods
 
 @end
 
