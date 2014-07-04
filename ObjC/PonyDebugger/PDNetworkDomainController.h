@@ -40,6 +40,9 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection;
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
 
+- (void)sessionTaskDidFinishLoading:(NSURLSessionTask *)task;
+- (void)sessionTask:(NSURLSessionTask *)task didFailWithError:(NSError *)error;
+
 @end
 
 

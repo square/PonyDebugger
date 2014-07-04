@@ -227,8 +227,7 @@
 }
 
 - (void)_reloadFeedWithSearchTerm:(NSString *)searchTerm;
-{
-    
+{    
     NSString *resource = [NSString stringWithFormat:@"http://graph.facebook.com/gattobonaventura"];
     NSURL *URL = [NSURL URLWithString:resource];
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];

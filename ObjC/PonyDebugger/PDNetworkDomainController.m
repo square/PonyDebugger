@@ -210,7 +210,8 @@ static NSArray *prettyStringPrinters = nil;
     // Swizzle any classes that implement one of these selectors.
     const SEL selectors[] = {
         @selector(connectionDidFinishLoading:),
-        @selector(connection:didReceiveResponse:)
+        @selector(connection:didReceiveResponse:),
+        @selector(URLSession:task:didCompleteWithError:)
     };
     
     const int numSelectors = sizeof(selectors) / sizeof(SEL);
@@ -255,6 +256,7 @@ static NSArray *prettyStringPrinters = nil;
     [self injectDidReceiveResponseIntoDelegateClass:cls];
     [self injectDidFinishLoadingIntoDelegateClass:cls];
     [self injectDidFailWithErrorIntoDelegateClass:cls];
+    [self injectDidCompleteWithErrorIntoDelegateClass:cls];
 }
 
 + (void)injectWillSendRequestIntoDelegateClass:(Class)cls;
@@ -387,6 +389,32 @@ static NSArray *prettyStringPrinters = nil;
         ((void(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, connection, error);
     };
     
+    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
+}
+
++ (void)injectDidCompleteWithErrorIntoDelegateClass:(Class)cls;
+{
+    SEL selector = @selector(URLSession:task:didCompleteWithError:);
+    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+    
+    Protocol *protocol = @protocol(NSURLSessionTaskDelegate);
+    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
+    
+    typedef void (^NSURLSessionTaskDidCompleteWithErrorBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error);
+
+    NSURLSessionTaskDidCompleteWithErrorBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error) {
+        if (error) {
+            [[PDNetworkDomainController defaultInstance] sessionTask:task didFailWithError:error];
+        } else {
+            [[PDNetworkDomainController defaultInstance] sessionTaskDidFinishLoading:task];
+        }
+    };
+
+    NSURLSessionTaskDidCompleteWithErrorBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error) {
+        undefinedBlock(slf, session, task, error);
+        ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, task, error);
+    };
+
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
 }
 
@@ -654,7 +682,44 @@ static NSArray *prettyStringPrinters = nil;
         
         [self connectionFinished:connection];
     }];
+}
 
+- (void)sessionTaskDidFinishLoading:(NSURLSessionTask *)task;
+{
+    [self performBlock:^{
+        //TODO: Implement this
+        /*
+        NSURLResponse *response = [self responseForConnection:connection];
+        NSString *requestID = [self requestIDForConnection:connection];
+
+        NSData *accumulatedData = [self accumulatedDataForConnection:connection];
+
+        [self setResponse:accumulatedData
+             forRequestID:requestID
+                 response:response
+                  request:[self requestForConnection:connection]];
+
+        [self.domain loadingFinishedWithRequestId:requestID
+                                        timestamp:[NSDate PD_timestamp]];
+
+        [self connectionFinished:connection];
+        */
+    }];
+}
+
+- (void)sessionTask:(NSURLSessionTask *)task didFailWithError:(NSError *)error;
+{
+    [self performBlock:^{
+        //TODO: Implement this
+        /*
+        [self.domain loadingFailedWithRequestId:[self requestIDForConnection:connection]
+                                      timestamp:[NSDate PD_timestamp]
+                                      errorText:[error localizedDescription]
+                                       canceled:[NSNumber numberWithBool:NO]];
+
+        [self connectionFinished:connection];
+        */
+    }];
 }
 
 @end
