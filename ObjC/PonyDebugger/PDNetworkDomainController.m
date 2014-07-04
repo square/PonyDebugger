@@ -490,6 +490,13 @@ static NSArray *prettyStringPrinters = nil;
     [_responseCache setObject:responseDict forKey:requestID cost:[responseBody length]];
 }
 
+- (void)performBlock:(dispatch_block_t)block;
+{
+    dispatch_async(_queue, block);
+}
+
+#pragma mark - Private Methods (Connections)
+
 - (_PDRequestState *)requestStateForConnection:(NSURLConnection *)connection;
 {
     NSValue *key = [NSValue valueWithNonretainedObject:connection];
@@ -553,9 +560,46 @@ static NSArray *prettyStringPrinters = nil;
     [_connectionStates removeObjectForKey:key];
 }
 
-- (void)performBlock:(dispatch_block_t)block;
+#pragma mark - Private Methods (Tasks)
+
+- (_PDRequestState *)requestStateForTask:(NSURLSessionTask *)task;
 {
-    dispatch_async(_queue, block);
+    NSValue *key = [NSValue valueWithNonretainedObject:task];
+    _PDRequestState *state = [_connectionStates objectForKey:key];
+    if (!state) {
+        state = [[_PDRequestState alloc] init];
+        state.requestID = [[self class] nextRequestID];
+        [_connectionStates setObject:state forKey:key];
+    }
+
+    return state;
+}
+
+- (NSString *)requestIDForTask:(NSURLSessionTask *)task;
+{
+    return [self requestStateForTask:task].requestID;
+}
+
+- (NSURLResponse *)responseForTask:(NSURLSessionTask *)task
+{
+    return [self requestStateForTask:task].response;
+}
+
+- (NSURLRequest *)requestForTask:(NSURLSessionTask *)task;
+{
+    return [self requestStateForTask:task].request;
+}
+
+- (NSData *)accumulatedDataForTask:(NSURLSessionTask *)task;
+{
+    return [self requestStateForTask:task].dataAccumulator;
+}
+
+// This removes storing the accumulated request/response from the dictionary so we can release task
+- (void)taskFinished:(NSURLSessionTask *)task;
+{
+    NSValue *key = [NSValue valueWithNonretainedObject:task];
+    [_connectionStates removeObjectForKey:key];
 }
 
 @end
@@ -687,23 +731,20 @@ static NSArray *prettyStringPrinters = nil;
 - (void)sessionTaskDidFinishLoading:(NSURLSessionTask *)task;
 {
     [self performBlock:^{
-        //TODO: Implement this
-        /*
-        NSURLResponse *response = [self responseForConnection:connection];
-        NSString *requestID = [self requestIDForConnection:connection];
+        NSURLResponse *response = [self responseForTask:task];
+        NSString *requestID = [self requestIDForTask:task];
 
-        NSData *accumulatedData = [self accumulatedDataForConnection:connection];
+        NSData *accumulatedData = [self accumulatedDataForTask:task];
 
         [self setResponse:accumulatedData
              forRequestID:requestID
                  response:response
-                  request:[self requestForConnection:connection]];
+                  request:[self requestForTask:task]];
 
         [self.domain loadingFinishedWithRequestId:requestID
                                         timestamp:[NSDate PD_timestamp]];
 
-        [self connectionFinished:connection];
-        */
+        [self taskFinished:task];
     }];
 }
 
