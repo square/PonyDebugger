@@ -477,7 +477,7 @@
 				);
 				HEADER_SEARCH_PATHS = "\"$(CONFIGURATION_BUILD_DIR)/usr/local/include\"";
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/PDTwitterTest-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = "-ObjC";
 				OTHER_LDFLAGS = (
@@ -498,7 +498,7 @@
 				GCC_PREFIX_HEADER = "PDTwitterTest/PDTwitterTest-Prefix.pch";
 				HEADER_SEARCH_PATHS = "\"$(CONFIGURATION_BUILD_DIR)/usr/local/include\"";
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/PDTwitterTest-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
