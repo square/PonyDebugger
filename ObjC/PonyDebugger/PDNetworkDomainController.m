@@ -251,12 +251,18 @@ static NSArray *prettyStringPrinters = nil;
 
 + (void)injectIntoDelegateClass:(Class)cls;
 {
+    // Connections
     [self injectWillSendRequestIntoDelegateClass:cls];
     [self injectDidReceiveDataIntoDelegateClass:cls];
     [self injectDidReceiveResponseIntoDelegateClass:cls];
     [self injectDidFinishLoadingIntoDelegateClass:cls];
     [self injectDidFailWithErrorIntoDelegateClass:cls];
-    [self injectDidCompleteWithErrorIntoDelegateClass:cls];
+    
+    // Sessions
+    [self injectTaskWillPerformHTTPRedirectionIntoDelegateClass:cls];
+    [self injectTaskDidReceiveDataIntoDelegateClass:cls];
+    [self injectTaskDidReceiveResponseIntoDelegateClass:cls];
+    [self injectTaskDidCompleteWithErrorIntoDelegateClass:cls];
 }
 
 + (void)injectWillSendRequestIntoDelegateClass:(Class)cls;
@@ -392,7 +398,83 @@ static NSArray *prettyStringPrinters = nil;
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
 }
 
-+ (void)injectDidCompleteWithErrorIntoDelegateClass:(Class)cls;
++ (void)injectTaskWillPerformHTTPRedirectionIntoDelegateClass:(Class)cls
+{
+    SEL selector = @selector(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:);
+    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+
+    Protocol *protocol = @protocol(NSURLSessionTaskDelegate);
+
+    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
+    
+    typedef void (^NSURLSessionWillPerformHTTPRedirectionBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *));
+    
+    NSURLSessionWillPerformHTTPRedirectionBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
+        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
+            [[PDNetworkDomainController defaultInstance] URLSession:session task:task willPerformHTTPRedirection:response newRequest:newRequest completionHandler:completionHandler];
+        }];
+    };
+
+    NSURLSessionWillPerformHTTPRedirectionBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
+        NSURLRequest *returnValue = ((id(*)(id, SEL, id, id, id, id, void(^)()))objc_msgSend)(slf, swizzledSelector, session, task, response, newRequest, completionHandler);
+        undefinedBlock(slf, session, task, response, newRequest, completionHandler);
+    };
+
+    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
+
+}
+
++ (void)injectTaskDidReceiveDataIntoDelegateClass:(Class)cls
+{
+    SEL selector = @selector(URLSession:dataTask:didReceiveData:);
+    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+    
+    Protocol *protocol = @protocol(NSURLSessionDataDelegate);
+    
+    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
+    
+    typedef void (^NSURLSessionDidReceiveDataBlock)(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data);
+    
+    NSURLSessionDidReceiveDataBlock undefinedBlock = ^(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data) {
+        [[PDNetworkDomainController defaultInstance] URLSession:session dataTask:dataTask didReceiveData:data];
+    };
+    
+    NSURLSessionDidReceiveDataBlock implementationBlock = ^(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data) {
+        undefinedBlock(slf, session, dataTask, data);
+        ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, dataTask, data);
+    };
+    
+    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
+
+}
+
++ (void)injectTaskDidReceiveResponseIntoDelegateClass:(Class)cls
+{
+    SEL selector = @selector(URLSession:dataTask:didReceiveResponse:completionHandler:);
+    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+    
+    Protocol *protocol = @protocol(NSURLConnectionDataDelegate);
+    
+    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
+    
+    typedef void (^NSURLSessionDidReceiveResponseBlock)(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition));
+    
+    NSURLSessionDidReceiveResponseBlock undefinedBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
+        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
+            [[PDNetworkDomainController defaultInstance] URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
+        }];
+    };
+    
+    NSURLSessionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
+        undefinedBlock(slf, session, dataTask, response, completionHandler);
+        ((void(*)(id, SEL, id, id, id, void(^)()))objc_msgSend)(slf, swizzledSelector, session, dataTask, response, completionHandler);
+    };
+    
+    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
+
+}
+
++ (void)injectTaskDidCompleteWithErrorIntoDelegateClass:(Class)cls;
 {
     SEL selector = @selector(URLSession:task:didCompleteWithError:);
     SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
