@@ -39,7 +39,6 @@
 @implementation PDViewController {
     NSFetchedResultsController *_resultsController;
     AFURLSessionManager *_sessionManager;
-    NSURLSessionDataTask *_dataTask;
 }
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -217,13 +216,24 @@
     cell.textLabel.text = [NSString stringWithFormat:@"@%@ %@", tweet.user.screenName, tweet.text];
 }
 
+- (void)_sendDummyRequest
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager GET:@"http://graph.facebook.com/viteinfinite" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+}
+
 - (void)_reloadFeedWithSearchTerm:(NSString *)searchTerm;
 {
-    NSString *resource = [NSString stringWithFormat:@"https://search.twitter.com/search.json?q=%@", [searchTerm stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    
+    NSString *resource = [NSString stringWithFormat:@"http://graph.facebook.com/gattobonaventura"];
     NSURL *URL = [NSURL URLWithString:resource];
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
     
-    _dataTask = [_sessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+    NSURLSessionDataTask *dataTask = [_sessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
         if (error) {
             NSLog(@"Error: %@", error);
             [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
@@ -244,43 +254,45 @@
                 [tweetIDs removeObject:tweet.remoteID];
             }
             
-            PDLogObjects(@"Response array:", responseArray);
-            
-            NSEntityDescription *ent = [NSEntityDescription entityForName:@"Tweet" inManagedObjectContext:self.managedObjectContext];
-            for (NSDictionary *tweetDict in responseArray) {
-                NSNumber *remoteID = [tweetDict objectForKey:@"id"];
-                if ([tweetIDs containsObject:remoteID]) {
-                    PDTweet *newTweet = [[PDTweet alloc] initWithEntity:ent insertIntoManagedObjectContext:self.managedObjectContext];
-                    newTweet.remoteID = remoteID;
-                    newTweet.text = [tweetDict valueForKeyPath:@"text"];
-                    newTweet.retrievalDate = [NSDate date];
-                    
-                    NSNumber *userRemoteID = [tweetDict valueForKeyPath:@"from_user_id"];
-                    NSFetchRequest *existingUserRequest = [NSFetchRequest fetchRequestWithEntityName:@"User"];
-                    existingUserRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID == %@", userRemoteID];
-                    
-                    PDUser *user = [[self.managedObjectContext executeFetchRequest:existingUserRequest error:NULL] lastObject];
-                    if (!user) {
-                        NSEntityDescription *userEntity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
-                        user = [[PDUser alloc] initWithEntity:userEntity insertIntoManagedObjectContext:self.managedObjectContext];
-                        user.remoteID = userRemoteID;
-                        user.name = [tweetDict valueForKeyPath:@"from_user_name"];
-                        user.screenName = [tweetDict valueForKeyPath:@"from_user"];
-                        user.profilePictureURL = [tweetDict valueForKeyPath:@"profile_image_url"];
-                    }
-                    
-                    newTweet.user = user;
-                }
-            }
-            
-            [self.managedObjectContext save:NULL];
+//            PDLogObjects(@"Response array:", responseArray);
+//            
+//            NSEntityDescription *ent = [NSEntityDescription entityForName:@"Tweet" inManagedObjectContext:self.managedObjectContext];
+//            for (NSDictionary *tweetDict in responseArray) {
+//                NSNumber *remoteID = [tweetDict objectForKey:@"id"];
+//                if ([tweetIDs containsObject:remoteID]) {
+//                    PDTweet *newTweet = [[PDTweet alloc] initWithEntity:ent insertIntoManagedObjectContext:self.managedObjectContext];
+//                    newTweet.remoteID = remoteID;
+//                    newTweet.text = [tweetDict valueForKeyPath:@"text"];
+//                    newTweet.retrievalDate = [NSDate date];
+//                    
+//                    NSNumber *userRemoteID = [tweetDict valueForKeyPath:@"from_user_id"];
+//                    NSFetchRequest *existingUserRequest = [NSFetchRequest fetchRequestWithEntityName:@"User"];
+//                    existingUserRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID == %@", userRemoteID];
+//                    
+//                    PDUser *user = [[self.managedObjectContext executeFetchRequest:existingUserRequest error:NULL] lastObject];
+//                    if (!user) {
+//                        NSEntityDescription *userEntity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.managedObjectContext];
+//                        user = [[PDUser alloc] initWithEntity:userEntity insertIntoManagedObjectContext:self.managedObjectContext];
+//                        user.remoteID = userRemoteID;
+//                        user.name = [tweetDict valueForKeyPath:@"from_user_name"];
+//                        user.screenName = [tweetDict valueForKeyPath:@"from_user"];
+//                        user.profilePictureURL = [tweetDict valueForKeyPath:@"profile_image_url"];
+//                    }
+//                    
+//                    newTweet.user = user;
+//                }
+//            }
+//            
+//            [self.managedObjectContext save:NULL];
         }
     }];
+    [dataTask resume];
 }
 
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
 {
     [self _reloadFeedWithSearchTerm:self.searchBar.text];
+    [self _sendDummyRequest];
 
     // PDLog() takes the same string/argument formatting as NSLog().
     // PDLogD() formats it with debug formatting.
