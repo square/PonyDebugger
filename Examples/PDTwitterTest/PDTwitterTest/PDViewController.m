@@ -71,7 +71,7 @@
     _resultsController.delegate = self;
     [_resultsController performFetch:nil];
     
-    self.searchBar.text = @"ponydebugger";
+    self.searchBar.text = @"square";
     [self _reloadReposWithSearchTerm:self.searchBar.text];
 }
 
@@ -209,13 +209,18 @@
 - (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 {
     PDRepo *repo = [_resultsController objectAtIndexPath:indexPath];
-    [cell.imageView setImageWithURL:[NSURL URLWithString:repo.owner.avatarURL] placeholderImage:nil];
+    __weak UITableViewCell *weakCell = cell;
+    [cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:repo.owner.avatarURL]] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        weakCell.imageView.image = image;
+        [weakCell setNeedsLayout];
+    } failure:nil];
     cell.textLabel.text = [NSString stringWithFormat:@"%@ by %@", repo.name, repo.owner.login];
 }
 
 - (void)_reloadReposWithSearchTerm:(NSString *)searchTerm;
 {
-    [_requestOperationManager GET:@"users/square/repos" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseArray) {
+    NSString *path = [NSString stringWithFormat:@"users/%@/repos", [searchTerm stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    [_requestOperationManager GET:path parameters:nil success:^(AFHTTPRequestOperation *operation, id responseArray) {
 
         NSMutableSet *repoIDs = [[NSMutableSet alloc] initWithCapacity:[responseArray count]];
         for (NSDictionary *tweetDict in responseArray) {

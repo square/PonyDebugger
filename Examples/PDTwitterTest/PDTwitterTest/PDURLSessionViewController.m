@@ -106,7 +106,11 @@
 - (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 {
     NSDictionary *repo = self.allRepos[indexPath.row];
-    [cell.imageView setImageWithURL:[NSURL URLWithString:[repo valueForKeyPath:@"owner.avatar_url"]] placeholderImage:nil];
+    __weak UITableViewCell *weakCell = cell;
+    [cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[repo valueForKeyPath:@"owner.avatar_url"]]] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        weakCell.imageView.image = image;
+        [weakCell setNeedsLayout];
+    } failure:nil];
     cell.textLabel.text = [NSString stringWithFormat:@"%@ by %@", [repo valueForKeyPath:@"name"], [repo valueForKeyPath:@"owner.login"]];
 }
 

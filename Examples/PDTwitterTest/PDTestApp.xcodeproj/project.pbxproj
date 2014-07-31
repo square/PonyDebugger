@@ -45,6 +45,7 @@
 		429198AC19669AD80013E834 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 429198A419669AD80013E834 /* UIWebView+AFNetworking.m */; };
 		429198AE19669B180013E834 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429198AD19669B180013E834 /* SystemConfiguration.framework */; };
 		429198B019669B540013E834 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429198AF19669B540013E834 /* MobileCoreServices.framework */; };
+		4296F4F3198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4296F4F1198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld */; };
 		429E6CD0198A8BC500EFF372 /* PDURLSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 429E6CCF198A8BC500EFF372 /* PDURLSessionViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -131,6 +132,7 @@
 		429198A419669AD80013E834 /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
 		429198AD19669B180013E834 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		429198AF19669B540013E834 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		4296F4F2198AAAEF00B9CE43 /* PDTestApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PDTestApp.xcdatamodel; sourceTree = "<group>"; };
 		429E6CCE198A8BC500EFF372 /* PDURLSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDURLSessionViewController.h; sourceTree = "<group>"; };
 		429E6CCF198A8BC500EFF372 /* PDURLSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDURLSessionViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -232,6 +234,7 @@
 				3DE229AF15D58A950035A508 /* InfoPlist.strings */,
 				3DE229B015D58A950035A508 /* MainStoryboard.storyboard */,
 				3DE229B215D58A950035A508 /* PDTwitterTest.xcdatamodeld */,
+				4296F4F1198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 				3DE229B915D58A950035A508 /* PDViewController.m in Sources */,
 				429198A819669AD80013E834 /* UIButton+AFNetworking.m in Sources */,
 				429198A919669AD80013E834 /* UIImageView+AFNetworking.m in Sources */,
+				4296F4F3198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld in Sources */,
 				3DE229BD15D58A950035A508 /* PDTwitterTest.xcdatamodeld in Sources */,
 				3D7507B315E466C600E4DDAC /* PDOwner.m in Sources */,
 				429198A719669AD80013E834 /* UIAlertView+AFNetworking.m in Sources */,
@@ -537,6 +541,16 @@
 			);
 			currentVersion = 3DE229B315D58A950035A508 /* PDTwitterTest.xcdatamodel */;
 			path = PDTwitterTest.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		4296F4F1198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				4296F4F2198AAAEF00B9CE43 /* PDTestApp.xcdatamodel */,
+			);
+			currentVersion = 4296F4F2198AAAEF00B9CE43 /* PDTestApp.xcdatamodel */;
+			path = PDTestApp.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
