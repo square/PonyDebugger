@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'PDTwitterTest' target in the 'PDTwitterTest' project
+// Prefix header for all source files of the 'PDTestApp' target in the 'PDTestApp' project
 //
 
 #import <Availability.h>

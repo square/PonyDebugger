@@ -20,7 +20,6 @@
 		3DE2296D15D589C20035A508 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DE2296C15D589C20035A508 /* CoreGraphics.framework */; };
 		3DE229BA15D58A950035A508 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3DE229AF15D58A950035A508 /* InfoPlist.strings */; };
 		3DE229BB15D58A950035A508 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DE229B015D58A950035A508 /* MainStoryboard.storyboard */; };
-		3DE229BD15D58A950035A508 /* PDTwitterTest.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3DE229B215D58A950035A508 /* PDTwitterTest.xcdatamodeld */; };
 		4291988A19669ACF0013E834 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4291987819669ACF0013E834 /* AFHTTPRequestOperation.m */; };
 		4291988B19669ACF0013E834 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4291987A19669ACF0013E834 /* AFHTTPRequestOperationManager.m */; };
 		4291988C19669ACF0013E834 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4291987C19669ACF0013E834 /* AFHTTPSessionManager.m */; };
@@ -83,7 +82,6 @@
 		3DE2298915D589C20035A508 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		3DE229AF15D58A950035A508 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		3DE229B015D58A950035A508 /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = "<group>"; };
-		3DE229B315D58A950035A508 /* PDTwitterTest.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PDTwitterTest.xcdatamodel; sourceTree = "<group>"; };
 		4291987719669ACF0013E834 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		4291987819669ACF0013E834 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		4291987919669ACF0013E834 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -233,7 +231,6 @@
 				3DCEE23C15E6D55200294627 /* Icon.png */,
 				3DE229AF15D58A950035A508 /* InfoPlist.strings */,
 				3DE229B015D58A950035A508 /* MainStoryboard.storyboard */,
-				3DE229B215D58A950035A508 /* PDTwitterTest.xcdatamodeld */,
 				4296F4F1198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld */,
 			);
 			path = Resources;
@@ -390,7 +387,6 @@
 				42C0B3A6198AB0CB00E68DE7 /* PDURLSessionViewController.m in Sources */,
 				429198A919669AD80013E834 /* UIImageView+AFNetworking.m in Sources */,
 				4296F4F3198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld in Sources */,
-				3DE229BD15D58A950035A508 /* PDTwitterTest.xcdatamodeld in Sources */,
 				429198A719669AD80013E834 /* UIAlertView+AFNetworking.m in Sources */,
 				429198AC19669AD80013E834 /* UIWebView+AFNetworking.m in Sources */,
 				429198A619669AD80013E834 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
@@ -534,16 +530,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		3DE229B215D58A950035A508 /* PDTwitterTest.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				3DE229B315D58A950035A508 /* PDTwitterTest.xcdatamodel */,
-			);
-			currentVersion = 3DE229B315D58A950035A508 /* PDTwitterTest.xcdatamodel */;
-			path = PDTwitterTest.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
 		4296F4F1198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

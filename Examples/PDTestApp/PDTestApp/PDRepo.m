@@ -1,6 +1,6 @@
 //
 //  PDRepo.m
-//  PDTwitterTest
+//  PDTestApp
 //
 //  Created by Mike Lewis on 11/9/11.
 //

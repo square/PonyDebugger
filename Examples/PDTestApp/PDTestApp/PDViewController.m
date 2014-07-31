@@ -1,6 +1,6 @@
 //
 //  PDViewController.m
-//  PDTwitterTest
+//  PDTestApp
 //
 //  Created by Mike Lewis on 11/9/11.
 //
@@ -223,8 +223,8 @@
     [_requestOperationManager GET:path parameters:nil success:^(AFHTTPRequestOperation *operation, id responseArray) {
 
         NSMutableSet *repoIDs = [[NSMutableSet alloc] initWithCapacity:[responseArray count]];
-        for (NSDictionary *tweetDict in responseArray) {
-            [repoIDs addObject:[tweetDict objectForKey:@"id"]];
+        for (NSDictionary *repoDict in responseArray) {
+            [repoIDs addObject:[repoDict objectForKey:@"id"]];
         }
 
         NSFetchRequest *existingRequest = [NSFetchRequest fetchRequestWithEntityName:@"Repo"];
@@ -232,8 +232,8 @@
 
         NSArray *existingRepos = [self.managedObjectContext executeFetchRequest:existingRequest error:nil];
 
-        for (PDRepo *tweet in existingRepos) {
-            [repoIDs removeObject:tweet.remoteID];
+        for (PDRepo *repo in existingRepos) {
+            [repoIDs removeObject:repo.remoteID];
         }
 
         PDLogObjects(@"Response array:", responseArray);
