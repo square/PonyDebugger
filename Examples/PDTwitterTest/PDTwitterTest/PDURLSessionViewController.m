@@ -1,26 +1,20 @@
 //
-//  PDViewController.m
+//  PDURLSessionViewController.m
 //  PDTwitterTest
 //
-//  Created by Mike Lewis on 11/9/11.
-//
-//  Licensed to Square, Inc. under one or more contributor license agreements.
-//  See the LICENSE file distributed with this work for the terms under
-//  which Square, Inc. licenses this file to you.
+//  Created by Simone Civetta on 31/07/14.
+//  Copyright (c) 2014 Square, Inc. All rights reserved.
 //
 
 #import <PonyDebugger/PonyDebugger.h>
 
-#import "PDViewController.h"
+#import "PDURLSessionViewController.h"
 #import "PDRepo.h"
 #import "PDOwner.h"
 #import "AFNetworking.h"
 #import "UIImageView+AFNetworking.h"
 
-
-#pragma mark - Private Interface
-
-@interface PDViewController () <NSFetchedResultsControllerDelegate, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate>
+@interface PDURLSessionViewController ()
 
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UISearchBar *searchBar;
@@ -33,25 +27,17 @@
 
 @end
 
-
-#pragma mark - Implementation
-
-@implementation PDViewController {
+@implementation PDURLSessionViewController {
     NSFetchedResultsController *_resultsController;
-    AFHTTPRequestOperationManager *_requestOperationManager;
+    AFURLSessionManager *_sessionManager;
 }
-
-@synthesize managedObjectContext = _managedObjectContext;
-@synthesize refreshButton = _refreshButton;
-@synthesize searchBar = _searchBar;
-
-#pragma mark - Initialization
 
 - (id)initWithCoder:(NSCoder *)coder;
 {
     self = [super initWithCoder:coder];
     if (self) {
-        _requestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://api.github.com/"]];
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        _sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
     }
     
     return self;
@@ -63,17 +49,7 @@
 {
     [super viewDidLoad];
     
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Repo"];
-    fetchRequest.sortDescriptors = [NSArray arrayWithObjects:
-                                    [NSSortDescriptor sortDescriptorWithKey:@"lastUpdated" ascending:NO],
-                                    [NSSortDescriptor sortDescriptorWithKey:@"remoteID" ascending:NO],
-                                    nil];
-    
-    _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-    _resultsController.delegate = self;
-    [_resultsController performFetch:nil];
-    
-    self.searchBar.text = @"@square";
+    self.searchBar.text = @"ponydebugger";
     [self _reloadFeedWithSearchTerm:self.searchBar.text];
 }
 
@@ -212,59 +188,34 @@
 {
     PDRepo *repo = [_resultsController objectAtIndexPath:indexPath];
     [cell.imageView setImageWithURL:[NSURL URLWithString:repo.owner.avatarURL] placeholderImage:nil];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ by %@", repo.name, repo.owner.login];
+    cell.textLabel.text = [NSString stringWithFormat:@"@%@ %@", repo.owner.login, repo.name];
 }
 
 - (void)_reloadFeedWithSearchTerm:(NSString *)searchTerm;
 {
-    [_requestOperationManager GET:@"users/square/repos" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseArray) {
-
-        NSMutableSet *repoIDs = [[NSMutableSet alloc] initWithCapacity:[responseArray count]];
-        for (NSDictionary *tweetDict in responseArray) {
-            [repoIDs addObject:[tweetDict objectForKey:@"id"]];
-        }
-
-        NSFetchRequest *existingRequest = [NSFetchRequest fetchRequestWithEntityName:@"Repo"];
-        existingRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID in %@", repoIDs];
-
-        NSArray *existingRepos = [self.managedObjectContext executeFetchRequest:existingRequest error:nil];
-
-        for (PDRepo *tweet in existingRepos) {
-            [repoIDs removeObject:tweet.remoteID];
-        }
-
-        PDLogObjects(@"Response array:", responseArray);
-
-        NSEntityDescription *ent = [NSEntityDescription entityForName:@"Repo" inManagedObjectContext:self.managedObjectContext];
-        for (NSDictionary *repoDict in responseArray) {
-            NSNumber *remoteID = [repoDict objectForKey:@"id"];
-            if ([repoIDs containsObject:remoteID]) {
-                PDRepo *repo = [[PDRepo alloc] initWithEntity:ent insertIntoManagedObjectContext:self.managedObjectContext];
-                repo.remoteID = remoteID;
-                repo.name = [repoDict valueForKeyPath:@"name"];
-                repo.lastUpdated = [NSDate date];
-
-                NSNumber *ownerRemoteID = [repoDict valueForKeyPath:@"owner.id"];
-                NSFetchRequest *existingUserRequest = [NSFetchRequest fetchRequestWithEntityName:@"Owner"];
-                existingUserRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID == %@", ownerRemoteID];
-
-                PDOwner *owner = [[self.managedObjectContext executeFetchRequest:existingUserRequest error:NULL] lastObject];
-                if (!owner) {
-                    NSEntityDescription *userEntity = [NSEntityDescription entityForName:@"Owner" inManagedObjectContext:self.managedObjectContext];
-                    owner = [[PDOwner alloc] initWithEntity:userEntity insertIntoManagedObjectContext:self.managedObjectContext];
-                    owner.remoteID = ownerRemoteID;
-                    owner.login = [repoDict valueForKeyPath:@"owner.login"];
-                    owner.avatarURL = [repoDict valueForKeyPath:@"owner.avatar_url"];
-                }
-
-                repo.owner = owner;
+    NSString *resource = [NSString stringWithFormat:@"https://api.github.com/users/square/repos"];
+    NSURL *URL = [NSURL URLWithString:resource];
+    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    
+    NSURLSessionDataTask *dataTask = [_sessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+            [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        } else {
+            NSArray *responseArray = [responseObject objectForKey:@"results"];
+            
+            NSMutableSet *tweetIDs = [[NSMutableSet alloc] initWithCapacity:[responseArray count]];
+            for (NSDictionary *tweetDict in responseArray) {
+                [tweetIDs addObject:[tweetDict objectForKey:@"id"]];
             }
-        }
+            
+            NSFetchRequest *existingRequest = [NSFetchRequest fetchRequestWithEntityName:@"Tweet"];
+            existingRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID in %@", tweetIDs];
 
-        [self.managedObjectContext save:NULL];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        }
     }];
+    
+    [dataTask resume];
 }
 
 - (IBAction)_refresh:(UIBarButtonItem *)sender;

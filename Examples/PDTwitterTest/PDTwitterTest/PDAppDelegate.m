@@ -63,7 +63,8 @@
     
 #endif
     
-    PDViewController *controller = (PDViewController *)([((UINavigationController *)self.window.rootViewController).viewControllers objectAtIndex:0]);
+    UINavigationController *firstTabController = (UINavigationController *)(((UITabBarController *)self.window.rootViewController).viewControllers[0]);
+    PDViewController *controller = firstTabController.viewControllers[0];
     controller.managedObjectContext = self.managedObjectContext;
     
     return YES;
