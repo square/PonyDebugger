@@ -1,6 +1,6 @@
 //
 //  PDAppDelegate.m
-//  PDTwitterTest
+//  PDTestApp
 //
 //  Created by Mike Lewis on 2/27/12.
 //
@@ -44,7 +44,7 @@
     
     // Enable Core Data debugging, and broadcast the main managed object context.
     [debugger enableCoreDataDebugging];
-    [debugger addManagedObjectContext:self.managedObjectContext withName:@"Twitter Test MOC"];
+    [debugger addManagedObjectContext:self.managedObjectContext withName:@"PonyDebugger Test App MOC"];
     
     // Enable View Hierarchy debugging. This will swizzle UIView methods to monitor changes in the hierarchy
     // Choose a few UIView key paths to display as attributes of the dom nodes
@@ -63,7 +63,8 @@
     
 #endif
     
-    PDViewController *controller = (PDViewController *)([((UINavigationController *)self.window.rootViewController).viewControllers objectAtIndex:0]);
+    UINavigationController *firstTabController = (UINavigationController *)(((UITabBarController *)self.window.rootViewController).viewControllers[0]);
+    PDViewController *controller = firstTabController.viewControllers[0];
     controller.managedObjectContext = self.managedObjectContext;
     
     return YES;
@@ -99,7 +100,7 @@
         return _managedObjectModel;
     }
     
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"PDTwitterTest" withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"PDTestApp" withExtension:@"momd"];
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return _managedObjectModel;
 }
@@ -110,7 +111,7 @@
         return _persistentStoreCoordinator;
     }
     
-    NSURL *storeURL = [[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject] URLByAppendingPathComponent:@"PDTwitterTest.sqlite"];
+    NSURL *storeURL = [[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject] URLByAppendingPathComponent:@"PDTestApp.sqlite"];
     
     NSError *error = nil;
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];

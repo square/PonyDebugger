@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Owner" representedClassName="PDOwner" syncable="YES">
+        <attribute name="avatarURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="login" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="remoteID" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="repos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Repo" inverseName="owner" inverseEntity="Repo" syncable="YES"/>
+    </entity>
+    <entity name="Repo" representedClassName="PDRepo" syncable="YES">
+        <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="remoteID" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="owner" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Owner" inverseName="repos" inverseEntity="Owner" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Owner" positionX="-63" positionY="-18" width="128" height="105"/>
+        <element name="Repo" positionX="358" positionY="-42" width="128" height="105"/>
+    </elements>
+</model>

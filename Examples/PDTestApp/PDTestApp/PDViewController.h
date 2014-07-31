@@ -1,6 +1,6 @@
 //
 //  PDViewController.h
-//  PDTwitterTest
+//  PDTestApp
 //
 //  Created by Mike Lewis on 2/27/12.
 //

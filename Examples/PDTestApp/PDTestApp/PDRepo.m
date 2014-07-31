@@ -1,6 +1,6 @@
 //
-//  PDTweet.m
-//  PDTwitterTest
+//  PDRepo.m
+//  PDTestApp
 //
 //  Created by Mike Lewis on 11/9/11.
 //
@@ -9,15 +9,15 @@
 //  which Square, Inc. licenses this file to you.
 //
 
-#import "PDTweet.h"
-#import "PDUser.h"
+#import "PDRepo.h"
+#import "PDOwner.h"
 
 
-@implementation PDTweet
+@implementation PDRepo
 
 @dynamic remoteID;
-@dynamic text;
-@dynamic retrievalDate;
-@dynamic user;
+@dynamic name;
+@dynamic lastUpdated;
+@dynamic owner;
 
 @end
