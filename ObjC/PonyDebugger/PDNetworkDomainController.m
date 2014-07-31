@@ -264,6 +264,7 @@ static NSArray *prettyStringPrinters = nil;
     [self injectTaskDidReceiveDataIntoDelegateClass:cls];
     [self injectTaskDidReceiveResponseIntoDelegateClass:cls];
     [self injectTaskDidCompleteWithErrorIntoDelegateClass:cls];
+    [self injectRespondsToSelectorIntoDelegateClass:cls];
 }
 
 + (void)injectWillSendRequestIntoDelegateClass:(Class)cls;
@@ -454,7 +455,7 @@ static NSArray *prettyStringPrinters = nil;
     SEL selector = @selector(URLSession:dataTask:didReceiveResponse:completionHandler:);
     SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
     
-    Protocol *protocol = @protocol(NSURLConnectionDataDelegate);
+    Protocol *protocol = @protocol(NSURLSessionDataDelegate);
     
     struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
     
@@ -495,6 +496,36 @@ static NSArray *prettyStringPrinters = nil;
     };
 
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
+}
+
+// Used for overriding AFNetworking behavior
++ (void)injectRespondsToSelectorIntoDelegateClass:(Class)cls
+{
+    SEL selector = @selector(respondsToSelector:);
+    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+
+    //Protocol *protocol = @protocol(NSURLSessionTaskDelegate);
+    Method method = class_getInstanceMethod(cls, selector);
+    struct objc_method_description methodDescription = *method_getDescription(method);
+
+    typedef void (^NSURLSessionTaskDidCompleteWithErrorBlock)(id slf, SEL sel);
+
+    BOOL (^undefinedBlock)(id <NSURLSessionTaskDelegate>, SEL) = ^(id slf, SEL sel) {
+        if (sel == @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)) {
+            return YES;
+        }
+        return [[slf class] instancesRespondToSelector:sel];
+    };
+
+    BOOL (^implementationBlock)(id <NSURLSessionTaskDelegate>, SEL) = ^(id <NSURLSessionTaskDelegate> slf, SEL sel) {
+        if (sel == @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)) {
+            return undefinedBlock(slf, sel);
+        }
+        return ((BOOL(*)(id, SEL, SEL))objc_msgSend)(slf, swizzledSelector, sel);
+    };
+
+    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
+
 }
 
 #pragma mark - Initialization

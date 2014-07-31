@@ -286,19 +286,19 @@
         }
     }];
     
-    [_sessionManager setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
-        NSLog(@"%@", request.URL.absoluteString);
-        return request;
-    }];
+//    [_sessionManager setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
+//        NSLog(@"%@", request.URL.absoluteString);
+//        return request;
+//    }];
     
-    [_sessionManager setTaskDidCompleteBlock:^(NSURLSession *session, NSURLSessionTask *task, NSError *error) {
-        NSLog(@"%@", task.currentRequest.URL.absoluteString);
-    }];
+//    [_sessionManager setTaskDidCompleteBlock:^(NSURLSession *session, NSURLSessionTask *task, NSError *error) {
+//        NSLog(@"%@", task.currentRequest.URL.absoluteString);
+//    }];
     
-    [_sessionManager setDataTaskDidReceiveResponseBlock:^NSURLSessionResponseDisposition(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response) {
-        NSLog(@"%@", dataTask.currentRequest.URL.absoluteString);
-        return NSURLSessionResponseAllow;
-    }];
+//    [_sessionManager setDataTaskDidReceiveResponseBlock:^NSURLSessionResponseDisposition(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response) {
+//        NSLog(@"%@", dataTask.currentRequest.URL.absoluteString);
+//        return NSURLSessionResponseAllow;
+//    }];
     
     [dataTask resume];
 }
