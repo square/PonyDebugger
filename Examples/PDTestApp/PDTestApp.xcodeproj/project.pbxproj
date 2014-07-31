@@ -13,16 +13,11 @@
 		3D069C9615D58FA70025D563 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D069C9515D58FA70025D563 /* Security.framework */; };
 		3D069C9815D58FDD0025D563 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D069C9715D58FDD0025D563 /* libicucore.dylib */; };
 		3D0AE5CC15D5909B00B349FE /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0AE5CB15D5909B00B349FE /* CoreFoundation.framework */; };
-		3D7507B315E466C600E4DDAC /* PDOwner.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D7507B215E466C600E4DDAC /* PDOwner.m */; };
 		3DCEE23D15E6D55200294627 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DCEE23C15E6D55200294627 /* Icon.png */; };
 		3DCEE23F15E6D55900294627 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DCEE23E15E6D55900294627 /* Icon@2x.png */; };
 		3DE2296915D589C20035A508 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DE2296815D589C20035A508 /* UIKit.framework */; };
 		3DE2296B15D589C20035A508 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DE2296A15D589C20035A508 /* Foundation.framework */; };
 		3DE2296D15D589C20035A508 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DE2296C15D589C20035A508 /* CoreGraphics.framework */; };
-		3DE229B615D58A950035A508 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE229A615D58A950035A508 /* main.m */; };
-		3DE229B715D58A950035A508 /* PDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE229A815D58A950035A508 /* PDAppDelegate.m */; };
-		3DE229B815D58A950035A508 /* PDRepo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE229AA15D58A950035A508 /* PDRepo.m */; };
-		3DE229B915D58A950035A508 /* PDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE229AD15D58A950035A508 /* PDViewController.m */; };
 		3DE229BA15D58A950035A508 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3DE229AF15D58A950035A508 /* InfoPlist.strings */; };
 		3DE229BB15D58A950035A508 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DE229B015D58A950035A508 /* MainStoryboard.storyboard */; };
 		3DE229BD15D58A950035A508 /* PDTwitterTest.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3DE229B215D58A950035A508 /* PDTwitterTest.xcdatamodeld */; };
@@ -46,7 +41,12 @@
 		429198AE19669B180013E834 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429198AD19669B180013E834 /* SystemConfiguration.framework */; };
 		429198B019669B540013E834 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429198AF19669B540013E834 /* MobileCoreServices.framework */; };
 		4296F4F3198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4296F4F1198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld */; };
-		429E6CD0198A8BC500EFF372 /* PDURLSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 429E6CCF198A8BC500EFF372 /* PDURLSessionViewController.m */; };
+		42C0B3A3198AB0CB00E68DE7 /* PDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B39A198AB0CB00E68DE7 /* PDAppDelegate.m */; };
+		42C0B3A4198AB0CB00E68DE7 /* PDOwner.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B39C198AB0CB00E68DE7 /* PDOwner.m */; };
+		42C0B3A5198AB0CB00E68DE7 /* PDRepo.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B39E198AB0CB00E68DE7 /* PDRepo.m */; };
+		42C0B3A6198AB0CB00E68DE7 /* PDURLSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3A0198AB0CB00E68DE7 /* PDURLSessionViewController.m */; };
+		42C0B3A7198AB0CB00E68DE7 /* PDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3A2198AB0CB00E68DE7 /* PDViewController.m */; };
+		42C0B3AA198AB0D700E68DE7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3A8198AB0D700E68DE7 /* main.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,8 +74,6 @@
 		3D069C9515D58FA70025D563 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		3D069C9715D58FDD0025D563 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		3D0AE5CB15D5909B00B349FE /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		3D7507B115E466C600E4DDAC /* PDOwner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDOwner.h; sourceTree = "<group>"; };
-		3D7507B215E466C600E4DDAC /* PDOwner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDOwner.m; sourceTree = "<group>"; };
 		3DCEE23C15E6D55200294627 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
 		3DCEE23E15E6D55900294627 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
 		3DE2296415D589C20035A508 /* PDTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -83,14 +81,6 @@
 		3DE2296A15D589C20035A508 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		3DE2296C15D589C20035A508 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		3DE2298915D589C20035A508 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		3DE229A615D58A950035A508 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../PDTwitterTest/main.m; sourceTree = "<group>"; };
-		3DE229A715D58A950035A508 /* PDAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDAppDelegate.h; sourceTree = "<group>"; };
-		3DE229A815D58A950035A508 /* PDAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDAppDelegate.m; sourceTree = "<group>"; };
-		3DE229A915D58A950035A508 /* PDRepo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDRepo.h; sourceTree = "<group>"; };
-		3DE229AA15D58A950035A508 /* PDRepo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDRepo.m; sourceTree = "<group>"; };
-		3DE229AB15D58A950035A508 /* PDTestApp-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PDTestApp-Prefix.pch"; path = "../PDTwitterTest/PDTestApp-Prefix.pch"; sourceTree = "<group>"; };
-		3DE229AC15D58A950035A508 /* PDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDViewController.h; sourceTree = "<group>"; };
-		3DE229AD15D58A950035A508 /* PDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDViewController.m; sourceTree = "<group>"; };
 		3DE229AF15D58A950035A508 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		3DE229B015D58A950035A508 /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = "<group>"; };
 		3DE229B315D58A950035A508 /* PDTwitterTest.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PDTwitterTest.xcdatamodel; sourceTree = "<group>"; };
@@ -133,8 +123,18 @@
 		429198AD19669B180013E834 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		429198AF19669B540013E834 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		4296F4F2198AAAEF00B9CE43 /* PDTestApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PDTestApp.xcdatamodel; sourceTree = "<group>"; };
-		429E6CCE198A8BC500EFF372 /* PDURLSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDURLSessionViewController.h; sourceTree = "<group>"; };
-		429E6CCF198A8BC500EFF372 /* PDURLSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDURLSessionViewController.m; sourceTree = "<group>"; };
+		42C0B399198AB0CB00E68DE7 /* PDAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDAppDelegate.h; path = PDTestApp/PDAppDelegate.h; sourceTree = SOURCE_ROOT; };
+		42C0B39A198AB0CB00E68DE7 /* PDAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDAppDelegate.m; path = PDTestApp/PDAppDelegate.m; sourceTree = SOURCE_ROOT; };
+		42C0B39B198AB0CB00E68DE7 /* PDOwner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDOwner.h; path = PDTestApp/PDOwner.h; sourceTree = SOURCE_ROOT; };
+		42C0B39C198AB0CB00E68DE7 /* PDOwner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDOwner.m; path = PDTestApp/PDOwner.m; sourceTree = SOURCE_ROOT; };
+		42C0B39D198AB0CB00E68DE7 /* PDRepo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDRepo.h; path = PDTestApp/PDRepo.h; sourceTree = SOURCE_ROOT; };
+		42C0B39E198AB0CB00E68DE7 /* PDRepo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDRepo.m; path = PDTestApp/PDRepo.m; sourceTree = SOURCE_ROOT; };
+		42C0B39F198AB0CB00E68DE7 /* PDURLSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDURLSessionViewController.h; path = PDTestApp/PDURLSessionViewController.h; sourceTree = SOURCE_ROOT; };
+		42C0B3A0198AB0CB00E68DE7 /* PDURLSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDURLSessionViewController.m; path = PDTestApp/PDURLSessionViewController.m; sourceTree = SOURCE_ROOT; };
+		42C0B3A1198AB0CB00E68DE7 /* PDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDViewController.h; path = PDTestApp/PDViewController.h; sourceTree = SOURCE_ROOT; };
+		42C0B3A2198AB0CB00E68DE7 /* PDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDViewController.m; path = PDTestApp/PDViewController.m; sourceTree = SOURCE_ROOT; };
+		42C0B3A8198AB0D700E68DE7 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = PDTestApp/main.m; sourceTree = SOURCE_ROOT; };
+		42C0B3A9198AB0D700E68DE7 /* PDTestApp-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PDTestApp-Prefix.pch"; path = "PDTestApp/PDTestApp-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,16 +208,16 @@
 		3DE229A515D58A950035A508 /* PDTestApp */ = {
 			isa = PBXGroup;
 			children = (
-				3DE229A715D58A950035A508 /* PDAppDelegate.h */,
-				3DE229A815D58A950035A508 /* PDAppDelegate.m */,
-				3DE229A915D58A950035A508 /* PDRepo.h */,
-				3DE229AA15D58A950035A508 /* PDRepo.m */,
-				3D7507B115E466C600E4DDAC /* PDOwner.h */,
-				3D7507B215E466C600E4DDAC /* PDOwner.m */,
-				3DE229AC15D58A950035A508 /* PDViewController.h */,
-				3DE229AD15D58A950035A508 /* PDViewController.m */,
-				429E6CCE198A8BC500EFF372 /* PDURLSessionViewController.h */,
-				429E6CCF198A8BC500EFF372 /* PDURLSessionViewController.m */,
+				42C0B399198AB0CB00E68DE7 /* PDAppDelegate.h */,
+				42C0B39A198AB0CB00E68DE7 /* PDAppDelegate.m */,
+				42C0B39B198AB0CB00E68DE7 /* PDOwner.h */,
+				42C0B39C198AB0CB00E68DE7 /* PDOwner.m */,
+				42C0B39D198AB0CB00E68DE7 /* PDRepo.h */,
+				42C0B39E198AB0CB00E68DE7 /* PDRepo.m */,
+				42C0B39F198AB0CB00E68DE7 /* PDURLSessionViewController.h */,
+				42C0B3A0198AB0CB00E68DE7 /* PDURLSessionViewController.m */,
+				42C0B3A1198AB0CB00E68DE7 /* PDViewController.h */,
+				42C0B3A2198AB0CB00E68DE7 /* PDViewController.m */,
 			);
 			name = PDTestApp;
 			path = PDTwitterTest;
@@ -226,11 +226,11 @@
 		3DE229AE15D58A950035A508 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				42C0B3A8198AB0D700E68DE7 /* main.m */,
+				42C0B3A9198AB0D700E68DE7 /* PDTestApp-Prefix.pch */,
 				25660E6616B79BF0003A6145 /* Default-568h@2x.png */,
 				3DCEE23E15E6D55900294627 /* Icon@2x.png */,
 				3DCEE23C15E6D55200294627 /* Icon.png */,
-				3DE229A615D58A950035A508 /* main.m */,
-				3DE229AB15D58A950035A508 /* PDTestApp-Prefix.pch */,
 				3DE229AF15D58A950035A508 /* InfoPlist.strings */,
 				3DE229B015D58A950035A508 /* MainStoryboard.storyboard */,
 				3DE229B215D58A950035A508 /* PDTwitterTest.xcdatamodeld */,
@@ -375,29 +375,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42C0B3AA198AB0D700E68DE7 /* main.m in Sources */,
 				4291989219669ACF0013E834 /* AFURLSessionManager.m in Sources */,
-				429E6CD0198A8BC500EFF372 /* PDURLSessionViewController.m in Sources */,
-				3DE229B615D58A950035A508 /* main.m in Sources */,
-				3DE229B715D58A950035A508 /* PDAppDelegate.m in Sources */,
+				42C0B3A7198AB0CB00E68DE7 /* PDViewController.m in Sources */,
 				4291988D19669ACF0013E834 /* AFNetworkReachabilityManager.m in Sources */,
 				429198A519669AD80013E834 /* AFNetworkActivityIndicatorManager.m in Sources */,
-				3DE229B815D58A950035A508 /* PDRepo.m in Sources */,
 				4291988F19669ACF0013E834 /* AFURLConnectionOperation.m in Sources */,
 				429198AA19669AD80013E834 /* UIProgressView+AFNetworking.m in Sources */,
 				4291988C19669ACF0013E834 /* AFHTTPSessionManager.m in Sources */,
+				42C0B3A4198AB0CB00E68DE7 /* PDOwner.m in Sources */,
 				4291989019669ACF0013E834 /* AFURLRequestSerialization.m in Sources */,
-				3DE229B915D58A950035A508 /* PDViewController.m in Sources */,
+				42C0B3A3198AB0CB00E68DE7 /* PDAppDelegate.m in Sources */,
 				429198A819669AD80013E834 /* UIButton+AFNetworking.m in Sources */,
+				42C0B3A6198AB0CB00E68DE7 /* PDURLSessionViewController.m in Sources */,
 				429198A919669AD80013E834 /* UIImageView+AFNetworking.m in Sources */,
 				4296F4F3198AAAEF00B9CE43 /* PDTestApp.xcdatamodeld in Sources */,
 				3DE229BD15D58A950035A508 /* PDTwitterTest.xcdatamodeld in Sources */,
-				3D7507B315E466C600E4DDAC /* PDOwner.m in Sources */,
 				429198A719669AD80013E834 /* UIAlertView+AFNetworking.m in Sources */,
 				429198AC19669AD80013E834 /* UIWebView+AFNetworking.m in Sources */,
 				429198A619669AD80013E834 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				4291988B19669ACF0013E834 /* AFHTTPRequestOperationManager.m in Sources */,
 				429198AB19669AD80013E834 /* UIRefreshControl+AFNetworking.m in Sources */,
 				4291988E19669ACF0013E834 /* AFSecurityPolicy.m in Sources */,
+				42C0B3A5198AB0CB00E68DE7 /* PDRepo.m in Sources */,
 				4291989119669ACF0013E834 /* AFURLResponseSerialization.m in Sources */,
 				4291988A19669ACF0013E834 /* AFHTTPRequestOperation.m in Sources */,
 			);
@@ -472,7 +472,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PDTwitterTest/PDTestApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "PDTestApp/PDTestApp-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"ENABLE_PONYDEBUGGER=1",
 					"DEBUG=1",
@@ -498,7 +498,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PDTwitterTest/PDTestApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "PDTestApp/PDTestApp-Prefix.pch";
 				HEADER_SEARCH_PATHS = "\"$(CONFIGURATION_BUILD_DIR)/usr/local/include\"";
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/PDTestApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
