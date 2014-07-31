@@ -27,8 +27,6 @@
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *refreshButton;
 
 - (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-- (void)_reloadFeedWithSearchTerm:(NSString *)searchTerm;
-
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
 
 @end
@@ -73,8 +71,8 @@
     _resultsController.delegate = self;
     [_resultsController performFetch:nil];
     
-    self.searchBar.text = @"@square";
-    [self _reloadFeedWithSearchTerm:self.searchBar.text];
+    self.searchBar.text = @"ponydebugger";
+    [self _reloadReposWithSearchTerm:self.searchBar.text];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
@@ -92,7 +90,7 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar;
 {
     [self.searchBar resignFirstResponder];
-    [self _reloadFeedWithSearchTerm:searchBar.text];
+    [self _reloadReposWithSearchTerm:searchBar.text];
     
     // PDLogObjects() is used to output objects that are inspectable. To output different data types,
     // separate them out in different arguments.
@@ -163,15 +161,15 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    UITableViewCell *tweetCell = [tableView dequeueReusableCellWithIdentifier:@"PDTweetCell"];
-    if (!tweetCell) {
-        tweetCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"PDTweetCell"];
-        tweetCell.textLabel.font = [UIFont systemFontOfSize:12.0f];
-        tweetCell.textLabel.numberOfLines = 0;
-        tweetCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    UITableViewCell *repoCell = [tableView dequeueReusableCellWithIdentifier:@"PDRepoCell"];
+    if (!repoCell) {
+        repoCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"PDRepoCell"];
+        repoCell.textLabel.font = [UIFont systemFontOfSize:12.0f];
+        repoCell.textLabel.numberOfLines = 0;
+        repoCell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
-    return tweetCell;
+    return repoCell;
 }
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
@@ -215,7 +213,7 @@
     cell.textLabel.text = [NSString stringWithFormat:@"%@ by %@", repo.name, repo.owner.login];
 }
 
-- (void)_reloadFeedWithSearchTerm:(NSString *)searchTerm;
+- (void)_reloadReposWithSearchTerm:(NSString *)searchTerm;
 {
     [_requestOperationManager GET:@"users/square/repos" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseArray) {
 
@@ -269,11 +267,11 @@
 
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
 {
-    [self _reloadFeedWithSearchTerm:self.searchBar.text];
+    [self _reloadReposWithSearchTerm:self.searchBar.text];
     
     // PDLog() takes the same string/argument formatting as NSLog().
     // PDLogD() formats it with debug formatting.
-    PDLogD(@"Reloading feed with search term: %@.", self.searchBar.text);
+    PDLogD(@"Reloading repos with search term: %@.", self.searchBar.text);
 }
 
 @end
