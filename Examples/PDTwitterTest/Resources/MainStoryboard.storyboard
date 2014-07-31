@@ -43,11 +43,13 @@
             </objects>
             <point key="canvasLocation" x="67" y="837"/>
         </scene>
-        <!--Navigation Controller - Item-->
+        <!--Navigation Controller - NSURLSession-->
         <scene sceneID="1So-uB-9vD">
             <objects>
                 <navigationController definesPresentationContext="YES" id="3TH-cB-Axv" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="faJ-7R-p3V"/>
+                    <tabBarItem key="tabBarItem" title="NSURLSession" id="faJ-7R-p3V">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="0.0"/>
+                    </tabBarItem>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="xMd-Pu-2df">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -125,11 +127,11 @@
             </objects>
             <point key="canvasLocation" x="25" y="99"/>
         </scene>
-        <!--Navigation Controller - Default-->
+        <!--Navigation Controller-->
         <scene sceneID="DYm-TS-FpY">
             <objects>
                 <navigationController definesPresentationContext="YES" id="lo6-V9-hqJ" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Default" id="vZY-Fs-GbD"/>
+                    <tabBarItem key="tabBarItem" systemItem="search" id="vZY-Fs-GbD"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="RJL-PE-5D6">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
