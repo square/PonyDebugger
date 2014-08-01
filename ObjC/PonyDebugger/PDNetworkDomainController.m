@@ -12,6 +12,7 @@
 #import "PDNetworkDomainController.h"
 #import "PDPrettyStringPrinter.h"
 #import "NSDate+PDDebugger.h"
+#import "NSData+PDDebugger.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -212,7 +213,8 @@ static NSArray *prettyStringPrinters = nil;
         @selector(connectionDidFinishLoading:),
         @selector(connection:didReceiveResponse:),
         @selector(URLSession:dataTask:didReceiveResponse:completionHandler:),
-        @selector(URLSession:task:didCompleteWithError:)
+        @selector(URLSession:task:didCompleteWithError:),
+        @selector(URLSession:downloadTask:didFinishDownloadingToURL:)
     };
     
     const int numSelectors = sizeof(selectors) / sizeof(SEL);
@@ -265,6 +267,10 @@ static NSArray *prettyStringPrinters = nil;
     [self injectTaskDidReceiveResponseIntoDelegateClass:cls];
     [self injectTaskDidCompleteWithErrorIntoDelegateClass:cls];
     [self injectRespondsToSelectorIntoDelegateClass:cls];
+
+    // Download tasks
+    [self injectDownloadTaskDidWriteDataIntoDelegateClass:cls];
+    [self injectDownloadTaskDidFinishDownloadingIntoDelegateClass:cls];
 }
 
 + (void)injectWillSendRequestIntoDelegateClass:(Class)cls;
@@ -511,10 +517,7 @@ static NSArray *prettyStringPrinters = nil;
     typedef void (^NSURLSessionTaskDidCompleteWithErrorBlock)(id slf, SEL sel);
 
     BOOL (^undefinedBlock)(id <NSURLSessionTaskDelegate>, SEL) = ^(id slf, SEL sel) {
-        if (sel == @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)) {
-            return YES;
-        }
-        return [[slf class] instancesRespondToSelector:sel];
+        return YES;
     };
 
     BOOL (^implementationBlock)(id <NSURLSessionTaskDelegate>, SEL) = ^(id <NSURLSessionTaskDelegate> slf, SEL sel) {
@@ -522,6 +525,51 @@ static NSArray *prettyStringPrinters = nil;
             return undefinedBlock(slf, sel);
         }
         return ((BOOL(*)(id, SEL, SEL))objc_msgSend)(slf, swizzledSelector, sel);
+    };
+
+    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
+}
+
+
++ (void)injectDownloadTaskDidFinishDownloadingIntoDelegateClass:(Class)cls
+{
+    SEL selector = @selector(URLSession:downloadTask:didFinishDownloadingToURL:);
+    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+
+    Protocol *protocol = @protocol(NSURLSessionDownloadDelegate);
+    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
+
+    typedef void (^NSURLSessionDownloadTaskDidFinishDownloadingBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location);
+
+    NSURLSessionDownloadTaskDidFinishDownloadingBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
+        [[PDNetworkDomainController defaultInstance] URLSession:session task:task didFinishDownloadingToURL:location];
+    };
+
+    NSURLSessionDownloadTaskDidFinishDownloadingBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
+        undefinedBlock(slf, session, task, location);
+        ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, task, location);
+    };
+
+    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
+}
+
++ (void)injectDownloadTaskDidWriteDataIntoDelegateClass:(Class)cls
+{
+    SEL selector = @selector(URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:);
+    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+
+    Protocol *protocol = @protocol(NSURLSessionDownloadDelegate);
+    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
+
+    typedef void (^NSURLSessionDownloadTaskDidWriteDataBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite);
+
+    NSURLSessionDownloadTaskDidWriteDataBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
+        [[PDNetworkDomainController defaultInstance] URLSession:session downloadTask:task didWriteData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
+    };
+
+    NSURLSessionDownloadTaskDidWriteDataBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
+        undefinedBlock(slf, session, task, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
+        ((void(*)(id, SEL, id, id, int64_t, int64_t, int64_t))objc_msgSend)(slf, swizzledSelector, session, task, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
     };
 
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -888,7 +936,7 @@ static NSArray *prettyStringPrinters = nil;
 {
     if ([response respondsToSelector:@selector(copyWithZone:)]) {
 
-        // If the request wasn't generated yet, then willSendRequest was not called. 
+        // willSendRequest does not exist in NSURLSession. Here's a workaround.
         NSURLRequest *request = [self requestForTask:dataTask];
         if (!request && [dataTask respondsToSelector:@selector(currentRequest)]) {
 
@@ -977,7 +1025,76 @@ static NSArray *prettyStringPrinters = nil;
     }];
 }
 
-//TODO: Implement Download delegate methods
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+{
+    [self performBlock:^{
+        // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
+        // and behavior.
+        NSURLRequest *request = [self requestForTask:downloadTask];
+        if (!request && [downloadTask respondsToSelector:@selector(currentRequest)]) {
+
+            request = downloadTask.currentRequest;
+            [self setRequest:request forTask:downloadTask];
+            NSString *requestID = [self requestIDForTask:downloadTask];
+
+            PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
+            [self.domain requestWillBeSentWithRequestId:requestID
+                                                frameId:@""
+                                               loaderId:@""
+                                            documentURL:[request.URL absoluteString]
+                                                request:networkRequest
+                                              timestamp:[NSDate PD_timestamp]
+                                              initiator:nil
+                                       redirectResponse:nil];
+
+            [self setResponse:downloadTask.response forTask:downloadTask];
+
+            NSMutableData *dataAccumulator = nil;
+            dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger) totalBytesExpectedToWrite];
+            [self setAccumulatedData:dataAccumulator forTask:downloadTask];
+            
+            PDNetworkResponse *networkResponse = [PDNetworkResponse networkResponseWithURLResponse:downloadTask.response request:request];
+            
+            [self.domain responseReceivedWithRequestId:requestID
+                                               frameId:@""
+                                              loaderId:@""
+                                             timestamp:[NSDate PD_timestamp]
+                                                  type:downloadTask.response.PD_responseType
+                                              response:networkResponse];
+        }
+
+        [self addAccumulatedData:[NSData emptyDataOfLength:(NSUInteger) bytesWritten] forTask:downloadTask];
+
+        NSNumber *length = [NSNumber numberWithInteger:(NSInteger) bytesWritten];
+        NSString *requestID = [self requestIDForTask:downloadTask];
+
+        [self.domain dataReceivedWithRequestId:requestID
+                                     timestamp:[NSDate PD_timestamp]
+                                    dataLength:length
+                             encodedDataLength:length];
+    }];
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location;
+{
+    [self performBlock:^{
+        NSURLResponse *response = [self responseForTask:downloadTask];
+        NSString *requestID = [self requestIDForTask:downloadTask];
+
+        NSData *accumulatedData = [self accumulatedDataForTask:downloadTask];
+
+        // TODO: error management
+        [self setResponse:accumulatedData
+             forRequestID:requestID
+                 response:response
+                  request:[self requestForTask:downloadTask]];
+
+        [self.domain loadingFinishedWithRequestId:requestID
+                                        timestamp:[NSDate PD_timestamp]];
+
+        [self taskFinished:downloadTask];
+    }];
+}
 
 @end
 

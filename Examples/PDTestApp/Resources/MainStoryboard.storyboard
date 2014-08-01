@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Nbi-RN-Flh">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
+        <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
@@ -18,6 +18,7 @@
                     <connections>
                         <segue destination="lo6-V9-hqJ" kind="relationship" relationship="viewControllers" id="PzY-Bn-CQh"/>
                         <segue destination="3TH-cB-Axv" kind="relationship" relationship="viewControllers" id="xmg-yZ-vzp"/>
+                        <segue destination="SVk-eM-cGF" kind="relationship" relationship="viewControllers" id="dHh-qn-LTz"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S7B-FI-Bs5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -42,6 +43,58 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lJF-jy-klK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="67" y="837"/>
+        </scene>
+        <!--Session Download View Controller-->
+        <scene sceneID="esL-RB-PZp">
+            <objects>
+                <viewController id="SVk-eM-cGF" customClass="PDURLSessionDownloadViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ncD-GN-XQi"/>
+                        <viewControllerLayoutGuide type="bottom" id="CKe-Kg-4FT"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="HB6-6f-dfW">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OnA-r7-zjF">
+                                <rect key="frame" x="108" y="225" width="105" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="105" id="90y-fg-SfM"/>
+                                    <constraint firstAttribute="height" constant="30" id="xXv-XD-KA3"/>
+                                </constraints>
+                                <state key="normal" title="Download">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="downloadFile:" destination="SVk-eM-cGF" eventType="touchUpInside" id="U9S-da-KG3"/>
+                                </connections>
+                            </button>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0e2-aJ-S9h">
+                                <rect key="frame" x="0.0" y="20" width="320" height="2"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="2" id="hFi-d5-v7B"/>
+                                </constraints>
+                            </progressView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="0e2-aJ-S9h" firstAttribute="top" secondItem="ncD-GN-XQi" secondAttribute="bottom" id="8zG-NA-PGX"/>
+                            <constraint firstItem="0e2-aJ-S9h" firstAttribute="leading" secondItem="HB6-6f-dfW" secondAttribute="leading" id="CH1-fi-bwY"/>
+                            <constraint firstAttribute="centerX" secondItem="OnA-r7-zjF" secondAttribute="centerX" id="PbK-57-sKf"/>
+                            <constraint firstAttribute="centerY" secondItem="OnA-r7-zjF" secondAttribute="centerY" id="vl3-iF-gNR"/>
+                            <constraint firstAttribute="trailing" secondItem="0e2-aJ-S9h" secondAttribute="trailing" id="zPN-TV-fx5"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" systemItem="downloads" id="bCq-m5-dEH"/>
+                    <connections>
+                        <outlet property="progressView" destination="0e2-aJ-S9h" id="iQF-WM-Z2Z"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hpw-P6-b6j" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-338" y="1554"/>
         </scene>
         <!--Navigation Controller - NSURLSession-->
         <scene sceneID="1So-uB-9vD">
@@ -110,15 +163,8 @@
                             <constraint firstItem="VI5-1I-98E" firstAttribute="leading" secondItem="Uhl-RM-2gM" secondAttribute="leading" id="oFb-jU-LP3"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Repos" id="Zil-kA-2jv">
-                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="f0c-xP-FOY">
-                            <connections>
-                                <action selector="_refresh:" destination="5uV-oe-jMI" id="2dK-1Y-gQU"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Repos" id="Zil-kA-2jv"/>
                     <connections>
-                        <outlet property="refreshButton" destination="f0c-xP-FOY" id="KAw-9p-ecg"/>
                         <outlet property="searchBar" destination="fZa-zw-UAV" id="tQE-7f-UB3"/>
                         <outlet property="tableView" destination="VI5-1I-98E" id="Tbz-2b-eTr"/>
                     </connections>
