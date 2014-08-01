@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Nbi-RN-Flh">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
+        <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
@@ -163,15 +163,8 @@
                             <constraint firstItem="VI5-1I-98E" firstAttribute="leading" secondItem="Uhl-RM-2gM" secondAttribute="leading" id="oFb-jU-LP3"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Repos" id="Zil-kA-2jv">
-                        <barButtonItem key="leftBarButtonItem" systemItem="refresh" id="f0c-xP-FOY">
-                            <connections>
-                                <action selector="_refresh:" destination="5uV-oe-jMI" id="2dK-1Y-gQU"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Repos" id="Zil-kA-2jv"/>
                     <connections>
-                        <outlet property="refreshButton" destination="f0c-xP-FOY" id="KAw-9p-ecg"/>
                         <outlet property="searchBar" destination="fZa-zw-UAV" id="tQE-7f-UB3"/>
                         <outlet property="tableView" destination="VI5-1I-98E" id="Tbz-2b-eTr"/>
                     </connections>

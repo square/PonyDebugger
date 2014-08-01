@@ -24,7 +24,7 @@
 
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UISearchBar *searchBar;
-@property (nonatomic, weak) IBOutlet UIBarButtonItem *refreshButton;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 - (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
@@ -40,7 +40,6 @@
 }
 
 @synthesize managedObjectContext = _managedObjectContext;
-@synthesize refreshButton = _refreshButton;
 @synthesize searchBar = _searchBar;
 
 #pragma mark - Initialization
@@ -70,6 +69,10 @@
     _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     _resultsController.delegate = self;
     [_resultsController performFetch:nil];
+    
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.tableView addSubview:self.refreshControl];
+    [self.refreshControl addTarget:self action:@selector(_refresh:) forControlEvents:UIControlEventValueChanged];
     
     self.searchBar.text = @"square";
     [self _reloadReposWithSearchTerm:self.searchBar.text];
@@ -265,7 +268,9 @@
         }
 
         [self.managedObjectContext save:NULL];
+        [self.refreshControl endRefreshing];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        [self.refreshControl endRefreshing];
         [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
     }];
 }
