@@ -46,6 +46,7 @@
 		42C0B3A6198AB0CB00E68DE7 /* PDURLSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3A0198AB0CB00E68DE7 /* PDURLSessionViewController.m */; };
 		42C0B3A7198AB0CB00E68DE7 /* PDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3A2198AB0CB00E68DE7 /* PDViewController.m */; };
 		42C0B3AA198AB0D700E68DE7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3A8198AB0D700E68DE7 /* main.m */; };
+		42C0B3B4198B88F100E68DE7 /* PDURLSessionDownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3B3198B88F100E68DE7 /* PDURLSessionDownloadViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,6 +134,8 @@
 		42C0B3A2198AB0CB00E68DE7 /* PDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDViewController.m; path = PDTestApp/PDViewController.m; sourceTree = SOURCE_ROOT; };
 		42C0B3A8198AB0D700E68DE7 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = PDTestApp/main.m; sourceTree = SOURCE_ROOT; };
 		42C0B3A9198AB0D700E68DE7 /* PDTestApp-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PDTestApp-Prefix.pch"; path = "PDTestApp/PDTestApp-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		42C0B3B2198B88F100E68DE7 /* PDURLSessionDownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDURLSessionDownloadViewController.h; path = PDTestApp/PDURLSessionDownloadViewController.h; sourceTree = SOURCE_ROOT; };
+		42C0B3B3198B88F100E68DE7 /* PDURLSessionDownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDURLSessionDownloadViewController.m; path = PDTestApp/PDURLSessionDownloadViewController.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -216,6 +219,8 @@
 				42C0B3A0198AB0CB00E68DE7 /* PDURLSessionViewController.m */,
 				42C0B3A1198AB0CB00E68DE7 /* PDViewController.h */,
 				42C0B3A2198AB0CB00E68DE7 /* PDViewController.m */,
+				42C0B3B2198B88F100E68DE7 /* PDURLSessionDownloadViewController.h */,
+				42C0B3B3198B88F100E68DE7 /* PDURLSessionDownloadViewController.m */,
 			);
 			name = PDTestApp;
 			path = PDTwitterTest;
@@ -375,6 +380,7 @@
 				42C0B3AA198AB0D700E68DE7 /* main.m in Sources */,
 				4291989219669ACF0013E834 /* AFURLSessionManager.m in Sources */,
 				42C0B3A7198AB0CB00E68DE7 /* PDViewController.m in Sources */,
+				42C0B3B4198B88F100E68DE7 /* PDURLSessionDownloadViewController.m in Sources */,
 				4291988D19669ACF0013E834 /* AFNetworkReachabilityManager.m in Sources */,
 				429198A519669AD80013E834 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				4291988F19669ACF0013E834 /* AFURLConnectionOperation.m in Sources */,
@@ -476,7 +482,7 @@
 				);
 				HEADER_SEARCH_PATHS = "\"$(CONFIGURATION_BUILD_DIR)/usr/local/include\"";
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/PDTestApp-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = "-ObjC";
 				OTHER_LDFLAGS = (
@@ -497,7 +503,7 @@
 				GCC_PREFIX_HEADER = "PDTestApp/PDTestApp-Prefix.pch";
 				HEADER_SEARCH_PATHS = "\"$(CONFIGURATION_BUILD_DIR)/usr/local/include\"";
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/PDTestApp-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
