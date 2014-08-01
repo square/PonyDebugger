@@ -20,7 +20,7 @@
 - (void)_downloadFile
 {
     PDLog(@"Starting download");
-    NSURL *URL = [NSURL URLWithString:@"http://download.thinkbroadband.com/5MB.zip"];    
+    NSURL *URL = [NSURL URLWithString:@"http://download.thinkbroadband.com/5MB.zip"];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
     NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:URL];
 
@@ -41,7 +41,6 @@
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
-    NSLog(@"%f", (totalBytesWritten / (CGFloat)totalBytesExpectedToWrite));
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.progressView setProgress:(totalBytesWritten / (CGFloat)totalBytesExpectedToWrite) animated:YES];
     });
