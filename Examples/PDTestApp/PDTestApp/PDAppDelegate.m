@@ -13,7 +13,7 @@
 #import <CoreData/CoreData.h>
 
 #import "PDAppDelegate.h"
-#import "PDViewController.h"
+#import "PDURLConnectionViewController.h"
 
 #if ENABLE_PONYDEBUGGER
 #import <PonyDebugger/PonyDebugger.h>
@@ -38,7 +38,7 @@
 
     PDDebugger *debugger = [PDDebugger defaultInstance];
     
-    // Enable Network debugging, and automatically track network traffic that comes through any classes that NSURLConnectionDelegate methods.
+    // Enable Network debugging, and automatically track network traffic that comes through any classes that implement either NSURLConnectionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate or NSURLSessionDataDelegate methods.
     [debugger enableNetworkTrafficDebugging];
     [debugger forwardAllNetworkTraffic];
     
@@ -64,7 +64,7 @@
 #endif
     
     UINavigationController *firstTabController = (UINavigationController *)(((UITabBarController *)self.window.rootViewController).viewControllers[0]);
-    PDViewController *controller = firstTabController.viewControllers[0];
+    PDURLConnectionViewController *controller = firstTabController.viewControllers[0];
     controller.managedObjectContext = self.managedObjectContext;
     
     return YES;

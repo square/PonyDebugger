@@ -1,5 +1,5 @@
 //
-//  PDViewController.h
+//  PDURLConnectionViewController.h
 //  PDTestApp
 //
 //  Created by Mike Lewis on 2/27/12.
@@ -11,7 +11,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PDViewController : UIViewController
+@interface PDURLConnectionViewController : UIViewController
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 

@@ -5,9 +5,14 @@
 
 #import <PonyDebugger/PDDebugger.h>
 #import "PDURLSessionDownloadViewController.h"
-#import "AFURLSessionManager.h"
 
-@implementation PDURLSessionDownloadViewController
+@interface PDURLSessionDownloadViewController() <NSURLSessionDownloadDelegate>
+
+@end
+
+@implementation PDURLSessionDownloadViewController {
+    NSURLSession *_urlSession;
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -18,41 +23,40 @@
 {
     PDLog(@"Starting download");
     NSURL *URL = [NSURL URLWithString:@"http://download.thinkbroadband.com/5MB.zip"];
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSProgress *progress = nil;
 
-    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
-    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:[NSURLRequest requestWithURL:URL] progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-        NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-        return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];
-    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-        [progress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
-        PDLog(@"File downloaded to: %@", filePath);
-    }];
-
-    [progress addObserver:self
-               forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
-                  options:NSKeyValueObservingOptionInitial
-                  context:NULL];
+    if (!_urlSession) {
+        _urlSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
+    }
+    
+    NSURLSessionDownloadTask *downloadTask = [_urlSession downloadTaskWithURL:URL];
     
     [downloadTask resume];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ([keyPath isEqualToString:NSStringFromSelector(@selector(fractionCompleted))]) {
-        NSProgress *progress = (NSProgress *)object;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.progressView setProgress:(CGFloat) progress.fractionCompleted animated:YES];
-        });        
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
 }
 
 - (IBAction)downloadFile:(id)sender
 {
     [self _downloadFile];
+}
+
+#pragma mark - NSURLSession Delegate Methods
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes
+{
+    PDLog(@"Download resumed");
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressView.progress = totalBytesWritten / (CGFloat)totalBytesExpectedToWrite;
+    });
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
+{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.progressView.progress = 0.0;
+    });
 }
 
 @end
