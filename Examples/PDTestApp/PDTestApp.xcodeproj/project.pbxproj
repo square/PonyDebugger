@@ -27,7 +27,7 @@
 		42C0B3A4198AB0CB00E68DE7 /* PDOwner.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B39C198AB0CB00E68DE7 /* PDOwner.m */; };
 		42C0B3A5198AB0CB00E68DE7 /* PDRepo.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B39E198AB0CB00E68DE7 /* PDRepo.m */; };
 		42C0B3A6198AB0CB00E68DE7 /* PDURLSessionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3A0198AB0CB00E68DE7 /* PDURLSessionViewController.m */; };
-		42C0B3A7198AB0CB00E68DE7 /* PDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3A2198AB0CB00E68DE7 /* PDViewController.m */; };
+		42C0B3A7198AB0CB00E68DE7 /* PDURLConnectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3A2198AB0CB00E68DE7 /* PDURLConnectionViewController.m */; };
 		42C0B3AA198AB0D700E68DE7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3A8198AB0D700E68DE7 /* main.m */; };
 		42C0B3B4198B88F100E68DE7 /* PDURLSessionDownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C0B3B3198B88F100E68DE7 /* PDURLSessionDownloadViewController.m */; };
 /* End PBXBuildFile section */
@@ -77,8 +77,8 @@
 		42C0B39E198AB0CB00E68DE7 /* PDRepo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDRepo.m; path = PDTestApp/PDRepo.m; sourceTree = SOURCE_ROOT; };
 		42C0B39F198AB0CB00E68DE7 /* PDURLSessionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDURLSessionViewController.h; path = PDTestApp/PDURLSessionViewController.h; sourceTree = SOURCE_ROOT; };
 		42C0B3A0198AB0CB00E68DE7 /* PDURLSessionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDURLSessionViewController.m; path = PDTestApp/PDURLSessionViewController.m; sourceTree = SOURCE_ROOT; };
-		42C0B3A1198AB0CB00E68DE7 /* PDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDViewController.h; path = PDTestApp/PDViewController.h; sourceTree = SOURCE_ROOT; };
-		42C0B3A2198AB0CB00E68DE7 /* PDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDViewController.m; path = PDTestApp/PDViewController.m; sourceTree = SOURCE_ROOT; };
+		42C0B3A1198AB0CB00E68DE7 /* PDURLConnectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDURLConnectionViewController.h; path = PDTestApp/PDURLConnectionViewController.h; sourceTree = SOURCE_ROOT; };
+		42C0B3A2198AB0CB00E68DE7 /* PDURLConnectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDURLConnectionViewController.m; path = PDTestApp/PDURLConnectionViewController.m; sourceTree = SOURCE_ROOT; };
 		42C0B3A8198AB0D700E68DE7 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = PDTestApp/main.m; sourceTree = SOURCE_ROOT; };
 		42C0B3A9198AB0D700E68DE7 /* PDTestApp-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PDTestApp-Prefix.pch"; path = "PDTestApp/PDTestApp-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		42C0B3B2198B88F100E68DE7 /* PDURLSessionDownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDURLSessionDownloadViewController.h; path = PDTestApp/PDURLSessionDownloadViewController.h; sourceTree = SOURCE_ROOT; };
@@ -160,10 +160,10 @@
 				42C0B39C198AB0CB00E68DE7 /* PDOwner.m */,
 				42C0B39D198AB0CB00E68DE7 /* PDRepo.h */,
 				42C0B39E198AB0CB00E68DE7 /* PDRepo.m */,
+				42C0B3A1198AB0CB00E68DE7 /* PDURLConnectionViewController.h */,
+				42C0B3A2198AB0CB00E68DE7 /* PDURLConnectionViewController.m */,
 				42C0B39F198AB0CB00E68DE7 /* PDURLSessionViewController.h */,
 				42C0B3A0198AB0CB00E68DE7 /* PDURLSessionViewController.m */,
-				42C0B3A1198AB0CB00E68DE7 /* PDViewController.h */,
-				42C0B3A2198AB0CB00E68DE7 /* PDViewController.m */,
 				42C0B3B2198B88F100E68DE7 /* PDURLSessionDownloadViewController.h */,
 				42C0B3B3198B88F100E68DE7 /* PDURLSessionDownloadViewController.m */,
 			);
@@ -271,7 +271,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42C0B3AA198AB0D700E68DE7 /* main.m in Sources */,
-				42C0B3A7198AB0CB00E68DE7 /* PDViewController.m in Sources */,
+				42C0B3A7198AB0CB00E68DE7 /* PDURLConnectionViewController.m in Sources */,
 				42C0B3B4198B88F100E68DE7 /* PDURLSessionDownloadViewController.m in Sources */,
 				42C0B3A4198AB0CB00E68DE7 /* PDOwner.m in Sources */,
 				42C0B3A3198AB0CB00E68DE7 /* PDAppDelegate.m in Sources */,

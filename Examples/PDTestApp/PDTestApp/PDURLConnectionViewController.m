@@ -1,5 +1,5 @@
 //
-//  PDViewController.m
+//  PDURLConnectionViewController.m
 //  PDTestApp
 //
 //  Created by Mike Lewis on 11/9/11.
@@ -11,13 +11,13 @@
 
 #import <PonyDebugger/PonyDebugger.h>
 
-#import "PDViewController.h"
+#import "PDURLConnectionViewController.h"
 #import "PDRepo.h"
 #import "PDOwner.h"
 
 #pragma mark - Private Interface
 
-@interface PDViewController () <NSFetchedResultsControllerDelegate, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, NSURLConnectionDelegate>
+@interface PDURLConnectionViewController () <NSFetchedResultsControllerDelegate, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, NSURLConnectionDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UISearchBar *searchBar;
@@ -31,7 +31,7 @@
 
 #pragma mark - Implementation
 
-@implementation PDViewController {
+@implementation PDURLConnectionViewController {
     NSFetchedResultsController *_resultsController;
     NSMutableData *_responseData;
 }
@@ -61,16 +61,6 @@
     
     self.searchBar.text = @"square";
     [self _reloadReposWithSearchTerm:self.searchBar.text];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
-{
-    // Return YES for supported orientations.
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-    }
-    
-    return YES;
 }
 
 #pragma mark - UISearchBarDelegate

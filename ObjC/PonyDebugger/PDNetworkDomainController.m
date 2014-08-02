@@ -940,7 +940,7 @@ static NSArray *prettyStringPrinters = nil;
         NSURLRequest *request = [self requestForTask:dataTask];
         if (!request && [dataTask respondsToSelector:@selector(currentRequest)]) {
 
-            NSLog(@"PonyDebugger Warning: -[PDNetworkDomainController session:task:willPerformHTTPRedirection:] not called, request timestamp may be inaccurate. See Known Issues in the README for more information.");
+            NSLog(@"PonyDebugger Warning: request timestamp may be inaccurate. See Known Issues in the README for more information.");
 
             request = dataTask.currentRequest;
             [self setRequest:request forTask:dataTask];
