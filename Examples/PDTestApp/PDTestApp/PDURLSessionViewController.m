@@ -15,9 +15,7 @@
 @interface PDURLSessionViewController () <NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
 
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
-@property (nonatomic, strong) NSArray *allRepos;
 
-- (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
 
 @end
@@ -36,55 +34,14 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.tableView addSubview:self.refreshControl];
     [self.refreshControl addTarget:self action:@selector(_refresh:) forControlEvents:UIControlEventValueChanged];
-    [self _reloadRepos];
-}
-
-#pragma mark - UITableViewDelegate / UITableViewDataSource
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
-{
-    UITableViewCell *repoCell = [tableView dequeueReusableCellWithIdentifier:@"PDRepoCell"];
-    if (!repoCell) {
-        repoCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"PDRepoCell"];
-        repoCell.textLabel.font = [UIFont systemFontOfSize:12.0f];
-        repoCell.textLabel.numberOfLines = 0;
-        repoCell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    
-    return repoCell;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
-{
-    return [self.allRepos count];
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView;
-{
-    return 1;
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
-{
-    [self _configureCell:cell atIndexPath:indexPath];
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
-{
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self _reloadImage];
 }
 
 #pragma mark - Private Methods
 
-- (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+- (void)_reloadImage
 {
-    NSDictionary *repo = self.allRepos[indexPath.row];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ by %@", [repo valueForKeyPath:@"name"], [repo valueForKeyPath:@"owner.login"]];
-}
-
-- (void)_reloadRepos
-{
-    NSString *resource = [NSString stringWithFormat:@"https://api.github.com/users/square/repos"];
+    NSString *resource = [NSString stringWithFormat:@"http://corner.squareup.com/images/ponydebugger/icon.png"];
 
     if (!_urlSession) {
         _urlSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
@@ -97,13 +54,13 @@
 
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
 {
-    [self _reloadRepos];
+    [self _reloadImage];
     PDLogD(@"Reloading repos");
 }
 
-- (void)displayRepos:(NSArray *)repoArray
+- (void)displayImage:(UIImage *)image
 {
-    self.allRepos = repoArray;
+    self.imageView.image = image;
     [self.tableView reloadData];
 }
 
@@ -133,17 +90,10 @@
             [self.refreshControl endRefreshing];
             return;
         }
+
+        UIImage *image = [[UIImage alloc] initWithData:_responseData];
         
-        NSError *deserializationError;
-        NSArray *responseArray = [NSJSONSerialization JSONObjectWithData:_responseData options:NSJSONReadingAllowFragments error:&deserializationError];
-        
-        if (deserializationError) {
-            [self displayError:error];
-            [self.refreshControl endRefreshing];
-            return;
-        }
-        
-        [self displayRepos:responseArray];
+        [self displayImage:image];
         [self.refreshControl endRefreshing];
     });
 }

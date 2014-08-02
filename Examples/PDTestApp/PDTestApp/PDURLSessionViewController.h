@@ -10,4 +10,6 @@
 
 @interface PDURLSessionViewController : UITableViewController
 
+@property (nonatomic, weak) IBOutlet UIImageView *imageView;
+
 @end
