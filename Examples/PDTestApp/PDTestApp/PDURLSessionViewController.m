@@ -11,8 +11,6 @@
 #import "PDURLSessionViewController.h"
 #import "PDRepo.h"
 #import "PDOwner.h"
-#import "AFNetworking.h"
-#import "UIImageView+AFNetworking.h"
 
 @interface PDURLSessionViewController ()
 
@@ -25,18 +23,6 @@
 @end
 
 @implementation PDURLSessionViewController {
-    AFURLSessionManager *_sessionManager;
-}
-
-- (id)initWithCoder:(NSCoder *)coder;
-{
-    self = [super initWithCoder:coder];
-    if (self) {
-        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        _sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
-    }
-    
-    return self;
 }
 
 #pragma mark - UIViewController
@@ -76,11 +62,6 @@
     return repoCell;
 }
 
-- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
-{
-    [cell.imageView cancelImageRequestOperation];
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
 {
     return [self.allRepos count];
@@ -106,32 +87,32 @@
 - (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 {
     NSDictionary *repo = self.allRepos[indexPath.row];
-    __weak UITableViewCell *weakCell = cell;
-    [cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[repo valueForKeyPath:@"owner.avatar_url"]]] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-        weakCell.imageView.image = image;
-        [weakCell setNeedsLayout];
-    } failure:nil];
+//    __weak UITableViewCell *weakCell = cell;
+//    [cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[repo valueForKeyPath:@"owner.avatar_url"]]] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+//        weakCell.imageView.image = image;
+//        [weakCell setNeedsLayout];
+//    } failure:nil];
     cell.textLabel.text = [NSString stringWithFormat:@"%@ by %@", [repo valueForKeyPath:@"name"], [repo valueForKeyPath:@"owner.login"]];
 }
 
 - (void)_reloadRepos
 {
-    NSString *resource = [NSString stringWithFormat:@"https://api.github.com/users/square/repos"];
-    NSURL *URL = [NSURL URLWithString:resource];
-    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
-    
-    NSURLSessionDataTask *dataTask = [_sessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseArray, NSError *error) {
-        if (error) {
-            NSLog(@"Error: %@", error);
-            [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-        } else {
-            self.allRepos = responseArray;
-        }
-        [self.refreshControl endRefreshing];
-        [self.tableView reloadData];
-    }];
-    
-    [dataTask resume];
+//    NSString *resource = [NSString stringWithFormat:@"https://api.github.com/users/square/repos"];
+//    NSURL *URL = [NSURL URLWithString:resource];
+//    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+//    
+//    NSURLSessionDataTask *dataTask = [_sessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseArray, NSError *error) {
+//        if (error) {
+//            NSLog(@"Error: %@", error);
+//            [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+//        } else {
+//            self.allRepos = responseArray;
+//        }
+//        [self.refreshControl endRefreshing];
+//        [self.tableView reloadData];
+//    }];
+//    
+//    [dataTask resume];
 }
 
 - (IBAction)_refresh:(UIBarButtonItem *)sender;

@@ -14,13 +14,10 @@
 #import "PDViewController.h"
 #import "PDRepo.h"
 #import "PDOwner.h"
-#import "AFNetworking.h"
-#import "UIImageView+AFNetworking.h"
-
 
 #pragma mark - Private Interface
 
-@interface PDViewController () <NSFetchedResultsControllerDelegate, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate>
+@interface PDViewController () <NSFetchedResultsControllerDelegate, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, NSURLConnectionDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UISearchBar *searchBar;
@@ -36,23 +33,11 @@
 
 @implementation PDViewController {
     NSFetchedResultsController *_resultsController;
-    AFHTTPRequestOperationManager *_requestOperationManager;
+    NSMutableData *_responseData;
 }
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize searchBar = _searchBar;
-
-#pragma mark - Initialization
-
-- (id)initWithCoder:(NSCoder *)coder;
-{
-    self = [super initWithCoder:coder];
-    if (self) {
-        _requestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://api.github.com/"]];
-    }
-    
-    return self;
-}
 
 #pragma mark - UIViewController
 
@@ -175,11 +160,6 @@
     return repoCell;
 }
 
-- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
-{
-    [cell.imageView cancelImageRequestOperation];
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
 {
     return _resultsController.fetchedObjects.count;
@@ -212,67 +192,13 @@
 - (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 {
     PDRepo *repo = [_resultsController objectAtIndexPath:indexPath];
-    __weak UITableViewCell *weakCell = cell;
-    [cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:repo.owner.avatarURL]] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-        weakCell.imageView.image = image;
-        [weakCell setNeedsLayout];
-    } failure:nil];
     cell.textLabel.text = [NSString stringWithFormat:@"%@ by %@", repo.name, repo.owner.login];
 }
 
 - (void)_reloadReposWithSearchTerm:(NSString *)searchTerm;
 {
-    NSString *path = [NSString stringWithFormat:@"users/%@/repos", [searchTerm stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    [_requestOperationManager GET:path parameters:nil success:^(AFHTTPRequestOperation *operation, id responseArray) {
-
-        NSMutableSet *repoIDs = [[NSMutableSet alloc] initWithCapacity:[responseArray count]];
-        for (NSDictionary *repoDict in responseArray) {
-            [repoIDs addObject:[repoDict objectForKey:@"id"]];
-        }
-
-        NSFetchRequest *existingRequest = [NSFetchRequest fetchRequestWithEntityName:@"Repo"];
-        existingRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID in %@", repoIDs];
-
-        NSArray *existingRepos = [self.managedObjectContext executeFetchRequest:existingRequest error:nil];
-
-        for (PDRepo *repo in existingRepos) {
-            [repoIDs removeObject:repo.remoteID];
-        }
-
-        PDLogObjects(@"Response array:", responseArray);
-
-        NSEntityDescription *ent = [NSEntityDescription entityForName:@"Repo" inManagedObjectContext:self.managedObjectContext];
-        for (NSDictionary *repoDict in responseArray) {
-            NSNumber *remoteID = [repoDict objectForKey:@"id"];
-            if ([repoIDs containsObject:remoteID]) {
-                PDRepo *repo = [[PDRepo alloc] initWithEntity:ent insertIntoManagedObjectContext:self.managedObjectContext];
-                repo.remoteID = remoteID;
-                repo.name = [repoDict valueForKeyPath:@"name"];
-                repo.lastUpdated = [NSDate date];
-
-                NSNumber *ownerRemoteID = [repoDict valueForKeyPath:@"owner.id"];
-                NSFetchRequest *existingUserRequest = [NSFetchRequest fetchRequestWithEntityName:@"Owner"];
-                existingUserRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID == %@", ownerRemoteID];
-
-                PDOwner *owner = [[self.managedObjectContext executeFetchRequest:existingUserRequest error:NULL] lastObject];
-                if (!owner) {
-                    NSEntityDescription *userEntity = [NSEntityDescription entityForName:@"Owner" inManagedObjectContext:self.managedObjectContext];
-                    owner = [[PDOwner alloc] initWithEntity:userEntity insertIntoManagedObjectContext:self.managedObjectContext];
-                    owner.remoteID = ownerRemoteID;
-                    owner.login = [repoDict valueForKeyPath:@"owner.login"];
-                    owner.avatarURL = [repoDict valueForKeyPath:@"owner.avatar_url"];
-                }
-
-                repo.owner = owner;
-            }
-        }
-
-        [self.managedObjectContext save:NULL];
-        [self.refreshControl endRefreshing];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [self.refreshControl endRefreshing];
-        [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-    }];
+    NSString *URLString = [NSString stringWithFormat:@"https://api.github.com/users/%@/repos", [searchTerm stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:URLString]] delegate:self];
 }
 
 - (IBAction)_refresh:(UIBarButtonItem *)sender;
@@ -282,6 +208,97 @@
     // PDLog() takes the same string/argument formatting as NSLog().
     // PDLogD() formats it with debug formatting.
     PDLogD(@"Reloading repos with search term: %@.", self.searchBar.text);
+}
+
+- (void)displayRepos:(NSArray *)repoArray
+{
+    NSMutableSet *repoIDs = [[NSMutableSet alloc] initWithCapacity:[repoArray count]];
+    for (NSDictionary *repoDict in repoArray) {
+        [repoIDs addObject:[repoDict objectForKey:@"id"]];
+    }
+    
+    NSFetchRequest *existingRequest = [NSFetchRequest fetchRequestWithEntityName:@"Repo"];
+    existingRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID in %@", repoIDs];
+    
+    NSArray *existingRepos = [self.managedObjectContext executeFetchRequest:existingRequest error:nil];
+    
+    for (PDRepo *repo in existingRepos) {
+        [repoIDs removeObject:repo.remoteID];
+    }
+    
+    PDLogObjects(@"Response array:", repoArray);
+    
+    NSEntityDescription *ent = [NSEntityDescription entityForName:@"Repo" inManagedObjectContext:self.managedObjectContext];
+    for (NSDictionary *repoDict in repoArray) {
+        NSNumber *remoteID = [repoDict objectForKey:@"id"];
+        if ([repoIDs containsObject:remoteID]) {
+            PDRepo *repo = [[PDRepo alloc] initWithEntity:ent insertIntoManagedObjectContext:self.managedObjectContext];
+            repo.remoteID = remoteID;
+            repo.name = [repoDict valueForKeyPath:@"name"];
+            repo.lastUpdated = [NSDate date];
+            
+            NSNumber *ownerRemoteID = [repoDict valueForKeyPath:@"owner.id"];
+            NSFetchRequest *existingUserRequest = [NSFetchRequest fetchRequestWithEntityName:@"Owner"];
+            existingUserRequest.predicate = [NSPredicate predicateWithFormat:@"remoteID == %@", ownerRemoteID];
+            
+            PDOwner *owner = [[self.managedObjectContext executeFetchRequest:existingUserRequest error:NULL] lastObject];
+            if (!owner) {
+                NSEntityDescription *userEntity = [NSEntityDescription entityForName:@"Owner" inManagedObjectContext:self.managedObjectContext];
+                owner = [[PDOwner alloc] initWithEntity:userEntity insertIntoManagedObjectContext:self.managedObjectContext];
+                owner.remoteID = ownerRemoteID;
+                owner.login = [repoDict valueForKeyPath:@"owner.login"];
+                owner.avatarURL = [repoDict valueForKeyPath:@"owner.avatar_url"];
+            }
+            
+            repo.owner = owner;
+        }
+    }
+    
+    [self.managedObjectContext save:NULL];
+}
+
+- (void)displayError:(NSError *)error
+{
+    [[[UIAlertView alloc] initWithTitle:@"Request Failed" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+}
+
+#pragma mark NSURLConnection Delegate Methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    _responseData = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    [_responseData appendData:data];
+}
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse*)cachedResponse
+{
+    return nil;
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    NSError *error;
+    NSArray *responseArray = [NSJSONSerialization JSONObjectWithData:_responseData options:NSJSONReadingAllowFragments error:&error];
+    
+    if (error) {
+        [self displayError:error];
+        [self.refreshControl endRefreshing];
+        return;
+    }
+    
+    [self displayRepos:responseArray];
+    [self.refreshControl endRefreshing];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    [self displayError:error];
+    [self.refreshControl endRefreshing];
 }
 
 @end

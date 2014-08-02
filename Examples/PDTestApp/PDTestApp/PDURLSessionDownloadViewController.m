@@ -5,7 +5,6 @@
 
 #import <PonyDebugger/PDDebugger.h>
 #import "PDURLSessionDownloadViewController.h"
-#import "AFURLSessionManager.h"
 
 @implementation PDURLSessionDownloadViewController
 
@@ -16,26 +15,26 @@
 
 - (void)_downloadFile
 {
-    PDLog(@"Starting download");
-    NSURL *URL = [NSURL URLWithString:@"http://download.thinkbroadband.com/5MB.zip"];
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSProgress *progress = nil;
-
-    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
-    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:[NSURLRequest requestWithURL:URL] progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-        NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-        return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];
-    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-        [progress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
-        PDLog(@"File downloaded to: %@", filePath);
-    }];
-
-    [progress addObserver:self
-               forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
-                  options:NSKeyValueObservingOptionInitial
-                  context:NULL];
-    
-    [downloadTask resume];
+//    PDLog(@"Starting download");
+//    NSURL *URL = [NSURL URLWithString:@"http://download.thinkbroadband.com/5MB.zip"];
+//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+//    NSProgress *progress = nil;
+//
+//    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+//    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:[NSURLRequest requestWithURL:URL] progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+//        NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+//        return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];
+//    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+//        [progress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
+//        PDLog(@"File downloaded to: %@", filePath);
+//    }];
+//
+//    [progress addObserver:self
+//               forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
+//                  options:NSKeyValueObservingOptionInitial
+//                  context:NULL];
+//    
+//    [downloadTask resume];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
