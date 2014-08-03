@@ -22,7 +22,7 @@
 - (void)_downloadFile
 {
     PDLog(@"Starting download");
-    NSURL *URL = [NSURL URLWithString:@"http://download.thinkbroadband.com/5MB.zip"];
+    NSURL *URL = [NSURL URLWithString:@"http://www.allcreaturesgreatandsmall.org.uk/media/25575/Shetland_Pony_on_Belstone_Common,_Dartmoor.jpg"];
 
     if (!_urlSession) {
         _urlSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
@@ -54,6 +54,7 @@
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
 {
+    PDLog(@"Download finished");
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.progressView.progress = 0.0;
     });
