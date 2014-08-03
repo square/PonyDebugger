@@ -1,6 +1,6 @@
 //
-//  PDTweet.h
-//  PDTwitterTest 
+//  PDRepo.h
+//  PDTestApp 
 //
 //  Created by Mike Lewis on 11/9/11.
 //
@@ -13,15 +13,15 @@
 #import <CoreData/CoreData.h>
 
 
-@class PDUser;
+@class PDOwner;
 
 
-@interface PDTweet : NSManagedObject
+@interface PDRepo : NSManagedObject
 
 @property (nonatomic, strong) NSNumber *remoteID;
-@property (nonatomic, strong) NSString *text;
-@property (nonatomic, strong) NSDate *retrievalDate;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSDate *lastUpdated;
 
-@property (nonatomic, strong) PDUser *user;
+@property (nonatomic, strong) PDOwner *owner;
 
 @end
