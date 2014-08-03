@@ -542,7 +542,8 @@ static NSArray *prettyStringPrinters = nil;
     typedef void (^NSURLSessionDownloadTaskDidFinishDownloadingBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location);
 
     NSURLSessionDownloadTaskDidFinishDownloadingBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
-        [[PDNetworkDomainController defaultInstance] URLSession:session task:task didFinishDownloadingToURL:location];
+        NSData *data = [NSData dataWithContentsOfFile:location.relativePath];
+        [[PDNetworkDomainController defaultInstance] URLSession:session task:task didFinishDownloadingToURL:location data:data];
     };
 
     NSURLSessionDownloadTaskDidFinishDownloadingBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
@@ -1075,16 +1076,13 @@ static NSArray *prettyStringPrinters = nil;
     }];
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location;
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location data:(NSData *)data
 {
     [self performBlock:^{
         NSURLResponse *response = [self responseForTask:downloadTask];
         NSString *requestID = [self requestIDForTask:downloadTask];
-
-        NSData *accumulatedData = [self accumulatedDataForTask:downloadTask];
-
-        // TODO: error management
-        [self setResponse:accumulatedData
+        
+        [self setResponse:data
              forRequestID:requestID
                  response:response
                   request:[self requestForTask:downloadTask]];
