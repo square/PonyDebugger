@@ -23,9 +23,6 @@
 @property (nonatomic, weak) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 
-- (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-- (IBAction)_refresh:(UIBarButtonItem *)sender;
-
 @end
 
 
@@ -35,9 +32,6 @@
     NSFetchedResultsController *_resultsController;
     NSMutableData *_responseData;
 }
-
-@synthesize managedObjectContext = _managedObjectContext;
-@synthesize searchBar = _searchBar;
 
 #pragma mark - UIViewController
 
@@ -139,14 +133,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    UITableViewCell *repoCell = [tableView dequeueReusableCellWithIdentifier:@"PDRepoCell"];
-    if (!repoCell) {
-        repoCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"PDRepoCell"];
-        repoCell.textLabel.font = [UIFont systemFontOfSize:12.0f];
-        repoCell.textLabel.numberOfLines = 0;
-        repoCell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    
+    static NSString *CellIdentifier = @"PDRepoCell";
+    UITableViewCell *repoCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];    
     return repoCell;
 }
 
@@ -182,7 +170,8 @@
 - (void)_configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 {
     PDRepo *repo = [_resultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ by %@", repo.name, repo.owner.login];
+    cell.textLabel.text = repo.name;
+    cell.detailTextLabel.text = repo.owner.login;
 }
 
 - (void)_reloadReposWithSearchTerm:(NSString *)searchTerm;
