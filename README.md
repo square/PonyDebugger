@@ -17,6 +17,15 @@ PonyDebugger is licensed under the Apache Licence, Version 2.0
 Changes
 -------
 
+### v0.4.0 - 2014-08-15
+
+ - Support `NSURLSession` requests for the Network Debugger. (@viteinfinite)
+ - New test application that removes the AFNetworking dependency.
+   (@viteinfinite)
+ - Remove custom base64 implementation with Apple's built-in implementation.
+   (@kyleve)
+ - Add PodSpec for pulling the git repository directly. (@wlue)
+
 ### v0.3.1 - 2014-01-02
 
  - Fix only building active arch in debug. (@kyleve)
@@ -53,9 +62,9 @@ PonyDebugger forwards network traffic, and does not sniff network traffic. This
 means that traffic sent over a secure protocol (https) is debuggable.
 
 Currently, the iOS client automatically proxies data that is sent via
-`NSURLConnection`. This means that it will automatically work with
-AFNetworking, and other libraries that use `NSURLConnection` for network
-requests.
+`NSURLConnection` and `NSURLSession` methods. This means that it will
+automatically work with AFNetworking, and other libraries that use
+`NSURLConnection` or `NSURLSession` for network requests.
 
 ### Core Data Browser
 
