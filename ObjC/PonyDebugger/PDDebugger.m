@@ -33,7 +33,11 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 {
-    [[PDConsoleDomainController defaultInstance] logWithArguments:arguments severity:severity];
+    if([self isConnected]){
+      [[PDConsoleDomainController defaultInstance] logWithArguments:arguments severity:severity];
+    }else{ // add fallback support to standard NSLog if socket is not active
+      NSLog(@"%@",arguments);
+    }
 }
 
 
@@ -64,7 +68,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     dispatch_once(&onceToken, ^{
         defaultInstance = [[[self class] alloc] init];
     });
-    
+
     return defaultInstance;
 }
 
@@ -74,10 +78,10 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     if (!self) {
         return nil;
     }
-    
+
     _domains = [[NSMutableDictionary alloc] init];
     _controllers = [[NSMutableDictionary alloc] init];
-    
+
     return self;
 }
 
@@ -96,7 +100,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     }
 
     UIDevice *device = [UIDevice currentDevice];
-    
+
 #if TARGET_IPHONE_SIMULATOR
     NSString *deviceName = [NSString stringWithFormat:@"%@'s Simulator", [[[NSProcessInfo processInfo] environment] objectForKey:@"USER"]];
 #else
@@ -112,7 +116,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
         [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], @"app_version",
         [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"], @"app_build",
         nil];
-    
+
     NSString *appIconFile = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIconFile"];
     if (!appIconFile) {
         NSArray *files = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIconFiles"];
@@ -120,7 +124,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
             appIconFile = [files objectAtIndex:0];
         }
     }
-    
+
     if (appIconFile) {
         UIImage *appIcon = [UIImage imageNamed:appIconFile];
         if (appIcon) {
@@ -128,7 +132,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
             [parameters setObject:base64IconString forKey:@"app_icon_base64"];
         }
     }
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self sendEventWithName:@"Gateway.registerDevice" parameters:parameters];
     });
@@ -200,10 +204,10 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     if (_bonjourServiceName != nil && [_bonjourServiceName compare:service.name options:compareOptions] != NSOrderedSame) {
         return;
     }
-    
+
     NSLog(@"Found ponyd bonjour service: %@", service);
     [_bonjourServices addObject:service];
-    
+
     if (!_currentService) {
         [self _resolveService:service];
     }
@@ -216,12 +220,12 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
         _currentService.delegate = nil;
         _currentService = nil;
     }
-    
+
     NSUInteger serviceIndex = [_bonjourServices indexOfObject:service];
     if (NSNotFound != serviceIndex) {
         [_bonjourServices removeObjectAtIndex:serviceIndex];
         NSLog(@"Removed ponyd bonjour service: %@", service);
-        
+
         // Try next one
         if (!_currentService && _bonjourServices.count){
             NSNetService* nextService = [_bonjourServices objectAtIndex:(serviceIndex % _bonjourServices.count)];
@@ -237,7 +241,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     NSAssert([service isEqual:_currentService], @"Did not resolve incorrect service!");
     _currentService.delegate = nil;
     _currentService = nil;
-    
+
     // Try next one, we may retry the same one if there's only 1 service in _bonjourServices
     NSUInteger serviceIndex = [_bonjourServices indexOfObject:service];
     if (NSNotFound != serviceIndex) {
@@ -269,7 +273,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 
     NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:nil];
     NSString *encodedData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    
+
     if (_socket.readyState == SR_OPEN) {
         [_socket send:encodedData];
     }
@@ -294,12 +298,12 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     if (_bonjourBrowser) {
         return;
     }
-    
+
     _bonjourServiceName = serviceName;
     _bonjourServices = [NSMutableArray array];
     _bonjourBrowser = [[NSNetServiceBrowser alloc] init];
     [_bonjourBrowser setDelegate:self];
-    
+
     if (_bonjourServiceName) {
         NSLog(@"Waiting for ponyd bonjour service '%@'...", _bonjourServiceName);
     } else {
@@ -313,7 +317,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     NSLog(@"Connecting to %@", url);
     [_socket close];
     _socket.delegate = nil;
-    
+
     _socket = [[SRWebSocket alloc] initWithURLRequest:[NSURLRequest requestWithURL:url]];
     _socket.delegate = self;
     [_socket open];
@@ -334,7 +338,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     [_currentService stop];
     _currentService.delegate = nil;
     _currentService = nil;
-    
+
     [_socket close];
     _socket.delegate = nil;
     _socket = nil;
@@ -400,10 +404,10 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 {
     [self _addController:[PDDOMDomainController defaultInstance]];
     [self _addController:[PDInspectorDomainController defaultInstance]];
-    
+
     // Choosing frame, alpha, and hidden as the default key paths to display
     [[PDDOMDomainController defaultInstance] setViewKeyPathsToDisplay:@[@"frame", @"alpha", @"hidden"]];
-    
+
     [PDDOMDomainController startMonitoringUIViewChanges];
 }
 
@@ -446,11 +450,11 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     if ([_domains objectForKey:domainName]) {
         return;
     }
-    
+
     Class cls = [[controller class] domainClass];
     PDDynamicDebuggerDomain *domain = [(PDDynamicDebuggerDomain *)[cls alloc] initWithDebuggingServer:self];
     [_domains setObject:domain forKey:domainName];
-    
+
     controller.domain = domain;
     domain.delegate = controller;
 }
@@ -461,7 +465,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     if ([_domains objectForKey:domainName]) {
         return YES;
     }
-    
+
     return NO;
 }
 
