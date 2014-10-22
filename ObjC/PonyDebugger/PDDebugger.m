@@ -33,7 +33,9 @@ static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
 void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 {
-    if([self isConnected]){
+    PDDebugger *connection = [PDDebugger defaultInstance];
+
+    if([connection isConnected]){
       [[PDConsoleDomainController defaultInstance] logWithArguments:arguments severity:severity];
     }else{ // add fallback support to standard NSLog if socket is not active
       NSLog(@"%@",arguments);
