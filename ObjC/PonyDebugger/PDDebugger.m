@@ -30,15 +30,16 @@
 static NSString *const PDClientIDKey = @"com.squareup.PDDebugger.clientID";
 static NSString *const PDBonjourServiceType = @"_ponyd._tcp";
 
-
 void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 {
     PDDebugger *connection = [PDDebugger defaultInstance];
 
-    if([connection isConnected]){
-      [[PDConsoleDomainController defaultInstance] logWithArguments:arguments severity:severity];
-    }else{ // add fallback support to standard NSLog if socket is not active
-      NSLog(@"%@",arguments);
+    if ([connection activeLogOptions] == PDDebuggerLogToSocket) {
+        [[PDConsoleDomainController defaultInstance] logWithArguments:arguments severity:severity];
+    }
+    
+    if ((![connection isConnected] && [connection activeLogOptions] == PDDebuggerLogToConsoleWhenDisconnected) || [connection activeLogOptions] == PDDebuggerLogToConsoleAlways ) {
+        NSLog(@"PDLog: %@", arguments);
     }
 }
 
@@ -60,6 +61,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     NSNetService *_currentService;
     NSMutableDictionary *_domains;
     NSMutableDictionary *_controllers;
+    int _logOptions;
     __strong SRWebSocket *_socket;
 }
 
@@ -83,6 +85,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 
     _domains = [[NSMutableDictionary alloc] init];
     _controllers = [[NSMutableDictionary alloc] init];
+    _logOptions = PDDebuggerLogToSocket;
 
     return self;
 }
@@ -428,6 +431,28 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 - (void)clearConsole;
 {
     [[PDConsoleDomainController defaultInstance] clear];
+}
+
+#pragma mark Console Logging
+
+- (void)enableLogToConsoleWhenDisconnected;
+{
+    _logOptions = PDDebuggerLogToConsoleWhenDisconnected;
+}
+
+- (void)enableLogToConsoleAlways;
+{
+    _logOptions = PDDebuggerLogToConsoleAlways;
+}
+
+- (void)enableLogOnlyToSocket;
+{
+    _logOptions = PDDebuggerLogToSocket;
+}
+
+- (int)activeLogOptions;
+{
+    return _logOptions;
 }
 
 #pragma mark - Private Methods
