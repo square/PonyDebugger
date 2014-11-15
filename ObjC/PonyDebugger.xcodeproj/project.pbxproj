@@ -644,7 +644,7 @@
 		F683ADA314FC1B4C008EBBA7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0610;
 			};
 			buildConfigurationList = F683ADA614FC1B4C008EBBA7 /* Build configuration list for PBXProject "PonyDebugger" */;
 			compatibilityVersion = "Xcode 3.2";
