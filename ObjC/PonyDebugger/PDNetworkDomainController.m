@@ -949,7 +949,11 @@ static NSArray *prettyStringPrinters = nil;
         NSURLRequest *request = [self requestForTask:dataTask];
         if (!request && [dataTask respondsToSelector:@selector(currentRequest)]) {
 
-            NSLog(@"PonyDebugger Warning: request timestamp may be inaccurate. See Known Issues in the README for more information.");
+            static BOOL hasLoggedTimestampWarning = NO;
+            if (!hasLoggedTimestampWarning) {
+                hasLoggedTimestampWarning = YES;
+                NSLog(@"PonyDebugger Warning: Some requests' timestamps may be inaccurate. See Known Issues in the README for more information.");
+            }
 
             request = dataTask.currentRequest;
             [self setRequest:request forTask:dataTask];
