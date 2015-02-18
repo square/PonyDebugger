@@ -767,6 +767,14 @@ static NSArray *prettyStringPrinters = nil;
 
 - (void)addAccumulatedData:(NSData *)data forTask:(NSURLSessionTask *)task;
 {
+    // Bail out if the task is now completed. It *appears* that this method is already called
+    // with all the relevant data while in the "in progress" state, so this is an extraneous call
+    // that results in incorrectly duplicated data. See https://github.com/square/PonyDebugger/issues/141
+    // This is very much a "quick and dirty hack" without much testing to validate its correctness.
+    if (task.state == NSURLSessionTaskStateCompleted) {
+        return;
+    }
+    
     NSMutableData *dataAccumulator = [self requestStateForTask:task].dataAccumulator;
 
     [dataAccumulator appendData:data];
