@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name            =  'PonyDebugger'
-  s.version         =  '0.4.0'
+  s.version         =  '0.4.1'
   s.summary         =  'Remote network and data debugging for your native iOS app using Chrome Developer Tools.'
   s.homepage        =  'https://github.com/square/PonyDebugger'
   s.description     =  'PonyDebugger is a remote debugging toolset. It is a client library and gateway server combination that uses Chrome Developer Tools on your browser to debug your application\s network traffic et managed object contexts'
