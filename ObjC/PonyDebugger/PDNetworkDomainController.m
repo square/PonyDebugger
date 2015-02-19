@@ -634,7 +634,11 @@ static NSArray *prettyStringPrinters = nil;
     NSString *encodedBody;
     BOOL isBinary;
     if (!prettyStringPrinter) {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+        encodedBody = [responseBody base64EncodedStringWithOptions:0];
+#else
         encodedBody = responseBody.base64Encoding;
+#endif
         isBinary = YES;
     } else {
         encodedBody = [prettyStringPrinter prettyStringForData:responseBody forResponse:response request:request];

@@ -125,7 +125,11 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     if (appIconFile) {
         UIImage *appIcon = [UIImage imageNamed:appIconFile];
         if (appIcon) {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+            NSString *base64IconString = [UIImagePNGRepresentation(appIcon) base64EncodedStringWithOptions:0];
+#else
             NSString *base64IconString = [UIImagePNGRepresentation(appIcon) base64Encoding];
+#endif
             [parameters setObject:base64IconString forKey:@"app_icon_base64"];
         }
     }
