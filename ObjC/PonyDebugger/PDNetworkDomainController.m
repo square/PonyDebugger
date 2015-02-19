@@ -137,16 +137,6 @@ static NSArray *prettyStringPrinters = nil;
     return NSSelectorFromString([NSString stringWithFormat:@"_pd_swizzle_%x_%@", arc4random(), NSStringFromSelector(selector)]);
 }
 
-+ (void)domainControllerSwizzleGuardForSwizzledObject:(NSObject *)object selector:(SEL)selector implementationBlock:(void (^)(void))implementationBlock;
-{
-    void *key = (__bridge void *)[[NSString alloc] initWithFormat:@"PDSelectorGuardKeyForSelector:%@", NSStringFromSelector(selector)];
-    if (!objc_getAssociatedObject(object, key)) {
-        objc_setAssociatedObject(object, key, [NSNumber numberWithBool:YES], OBJC_ASSOCIATION_ASSIGN);
-        implementationBlock();
-        objc_setAssociatedObject(object, key, nil, OBJC_ASSOCIATION_ASSIGN);
-    }
-}
-
 + (BOOL)instanceRespondsButDoesNotImplementSelector:(SEL)selector class:(Class)cls;
 {
     if ([cls instancesRespondToSelector:selector]) {
@@ -288,10 +278,7 @@ static NSArray *prettyStringPrinters = nil;
     typedef NSURLRequest *(^NSURLConnectionWillSendRequestBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response);
     
     NSURLConnectionWillSendRequestBlock undefinedBlock = ^NSURLRequest *(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[PDNetworkDomainController defaultInstance] connection:connection willSendRequest:request redirectResponse:response];
-        }];
-        
+        [[PDNetworkDomainController defaultInstance] connection:connection willSendRequest:request redirectResponse:response];
         return request;
     };
     
@@ -319,9 +306,7 @@ static NSArray *prettyStringPrinters = nil;
     typedef void (^NSURLConnectionDidReceiveResponseBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response);
     
     NSURLConnectionDidReceiveResponseBlock undefinedBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[PDNetworkDomainController defaultInstance] connection:connection didReceiveResponse:response];
-        }];
+        [[PDNetworkDomainController defaultInstance] connection:connection didReceiveResponse:response];
     };
     
     NSURLConnectionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response) {
@@ -418,9 +403,7 @@ static NSArray *prettyStringPrinters = nil;
     typedef void (^NSURLSessionWillPerformHTTPRedirectionBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *));
     
     NSURLSessionWillPerformHTTPRedirectionBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[PDNetworkDomainController defaultInstance] URLSession:session task:task willPerformHTTPRedirection:response newRequest:newRequest completionHandler:completionHandler];
-        }];
+        [[PDNetworkDomainController defaultInstance] URLSession:session task:task willPerformHTTPRedirection:response newRequest:newRequest completionHandler:completionHandler];
     };
 
     NSURLSessionWillPerformHTTPRedirectionBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
@@ -468,9 +451,7 @@ static NSArray *prettyStringPrinters = nil;
     typedef void (^NSURLSessionDidReceiveResponseBlock)(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition));
     
     NSURLSessionDidReceiveResponseBlock undefinedBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[PDNetworkDomainController defaultInstance] URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
-        }];
+        [[PDNetworkDomainController defaultInstance] URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
     };
     
     NSURLSessionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
