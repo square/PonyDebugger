@@ -98,7 +98,15 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
     UIDevice *device = [UIDevice currentDevice];
     
 #if TARGET_IPHONE_SIMULATOR
-    NSString *deviceName = [NSString stringWithFormat:@"%@'s Simulator", [[[NSProcessInfo processInfo] environment] objectForKey:@"USER"]];
+    NSDictionary *environment = [[NSProcessInfo processInfo] environment];
+    NSString *userName = [environment objectForKey:@"USER"];
+    if (!userName) {
+        NSString *simulatorHostHome = [environment objectForKey:@"SIMULATOR_HOST_HOME"];
+        if ([simulatorHostHome hasPrefix:@"/Users/"]) {
+            userName = [simulatorHostHome substringFromIndex:7];
+        }
+    }
+    NSString *deviceName = userName ? [NSString stringWithFormat:@"%@'s Simulator", userName] : @"iOS Simulator";
 #else
     NSString *deviceName = device.name;
 #endif
