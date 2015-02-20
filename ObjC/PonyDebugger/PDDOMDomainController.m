@@ -20,9 +20,6 @@
 
 // Constants defined in the DOM Level 2 Core: http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-1950641247
 static const int kPDDOMNodeTypeElement = 1;
-static const int kPDDOMNodeTypeAttribute = 2;
-static const int kPDDOMNodeTypeText = 3;
-static const int kPDDOMNodeTypeComment = 8;
 static const int kPDDOMNodeTypeDocument = 9;
 
 static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";

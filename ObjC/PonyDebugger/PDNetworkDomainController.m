@@ -634,7 +634,11 @@ static NSArray *prettyStringPrinters = nil;
     NSString *encodedBody;
     BOOL isBinary;
     if (!prettyStringPrinter) {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+        encodedBody = [responseBody base64EncodedStringWithOptions:0];
+#else
         encodedBody = responseBody.base64Encoding;
+#endif
         isBinary = YES;
     } else {
         encodedBody = [prettyStringPrinter prettyStringForData:responseBody forResponse:response request:request];
@@ -941,7 +945,11 @@ static NSArray *prettyStringPrinters = nil;
         NSURLRequest *request = [self requestForTask:dataTask];
         if (!request && [dataTask respondsToSelector:@selector(currentRequest)]) {
 
-            NSLog(@"PonyDebugger Warning: request timestamp may be inaccurate. See Known Issues in the README for more information.");
+            static BOOL hasLoggedTimestampWarning = NO;
+            if (!hasLoggedTimestampWarning) {
+                hasLoggedTimestampWarning = YES;
+                NSLog(@"PonyDebugger Warning: Some requests' timestamps may be inaccurate. See Known Issues in the README for more information.");
+            }
 
             request = dataTask.currentRequest;
             [self setRequest:request forTask:dataTask];
