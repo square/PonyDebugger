@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.homepage        =  'https://github.com/square/PonyDebugger'
   s.description     =  'PonyDebugger is a remote debugging toolset. It is a client library and gateway server combination that uses Chrome Developer Tools on your browser to debug your application\s network traffic et managed object contexts'
   s.author          =  'Square'
-  s.source          =  { :git => 'https://github.com/square/PonyDebugger.git'}
+  s.source          =  { :git => 'https://github.com/square/PonyDebugger.git', :tag => "v0.4.1"}
   s.license         =  'Apache License, Version 2.0'
 
   s.requires_arc = true
