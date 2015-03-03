@@ -137,14 +137,22 @@ static NSArray *prettyStringPrinters = nil;
     return NSSelectorFromString([NSString stringWithFormat:@"_pd_swizzle_%x_%@", arc4random(), NSStringFromSelector(selector)]);
 }
 
-+ (void)domainControllerSwizzleGuardForSwizzledObject:(NSObject *)object selector:(SEL)selector implementationBlock:(void (^)(void))implementationBlock;
+/// All swizzled delegate methods should make use of this guard.
+/// This will prevent duplicated sniffing when the original implementation calls up to a superclass implementation which we've also swizzled.
+/// The superclass implementation (and implementations in classes above that) will be executed without inteference if called from the original implementation.
++ (void)sniffWithoutDuplicationForObject:(NSObject *)object selector:(SEL)selector sniffingBlock:(void (^)(void))sniffingBlock originalImplementationBlock:(void (^)(void))originalImplementationBlock
 {
-    void *key = (__bridge void *)[[NSString alloc] initWithFormat:@"PDSelectorGuardKeyForSelector:%@", NSStringFromSelector(selector)];
+    const void *key = selector;
+
+    // Don't run the sniffing block if we're inside a nested call
     if (!objc_getAssociatedObject(object, key)) {
-        objc_setAssociatedObject(object, key, [NSNumber numberWithBool:YES], OBJC_ASSOCIATION_ASSIGN);
-        implementationBlock();
-        objc_setAssociatedObject(object, key, nil, OBJC_ASSOCIATION_ASSIGN);
+        sniffingBlock();
     }
+
+    // Mark that we're calling through to the original so we can detect nested calls
+    objc_setAssociatedObject(object, key, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    originalImplementationBlock();
+    objc_setAssociatedObject(object, key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 + (BOOL)instanceRespondsButDoesNotImplementSelector:(SEL)selector class:(Class)cls;
@@ -288,16 +296,17 @@ static NSArray *prettyStringPrinters = nil;
     typedef NSURLRequest *(^NSURLConnectionWillSendRequestBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response);
     
     NSURLConnectionWillSendRequestBlock undefinedBlock = ^NSURLRequest *(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[PDNetworkDomainController defaultInstance] connection:connection willSendRequest:request redirectResponse:response];
-        }];
-        
+        [[PDNetworkDomainController defaultInstance] connection:connection willSendRequest:request redirectResponse:response];
         return request;
     };
     
     NSURLConnectionWillSendRequestBlock implementationBlock = ^NSURLRequest *(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response) {
-        NSURLRequest *returnValue = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, connection, request, response);
-        undefinedBlock(slf, connection, request, response);
+        __block NSURLRequest *returnValue = nil;
+        [self sniffWithoutDuplicationForObject:connection selector:selector sniffingBlock:^{
+            undefinedBlock(slf, connection, request, response);
+        } originalImplementationBlock:^{
+            returnValue = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, connection, request, response);
+        }];
         return returnValue;
     };
     
@@ -319,14 +328,15 @@ static NSArray *prettyStringPrinters = nil;
     typedef void (^NSURLConnectionDidReceiveResponseBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response);
     
     NSURLConnectionDidReceiveResponseBlock undefinedBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[PDNetworkDomainController defaultInstance] connection:connection didReceiveResponse:response];
-        }];
+        [[PDNetworkDomainController defaultInstance] connection:connection didReceiveResponse:response];
     };
     
     NSURLConnectionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response) {
-        undefinedBlock(slf, connection, response);
-        ((void(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, connection, response);
+        [self sniffWithoutDuplicationForObject:connection selector:selector sniffingBlock:^{
+            undefinedBlock(slf, connection, response);
+        } originalImplementationBlock:^{
+            ((void(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, connection, response);
+        }];
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -351,8 +361,11 @@ static NSArray *prettyStringPrinters = nil;
     };
     
     NSURLConnectionDidReceiveDataBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSData *data) {
-        undefinedBlock(slf, connection, data);
-        ((void(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, connection, data);
+        [self sniffWithoutDuplicationForObject:connection selector:selector sniffingBlock:^{
+            undefinedBlock(slf, connection, data);
+        } originalImplementationBlock:^{
+            ((void(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, connection, data);
+        }];
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -377,8 +390,11 @@ static NSArray *prettyStringPrinters = nil;
     };
     
     NSURLConnectionDidFinishLoadingBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection) {
-        undefinedBlock(slf, connection);
-        ((void(*)(id, SEL, id))objc_msgSend)(slf, swizzledSelector, connection);
+        [self sniffWithoutDuplicationForObject:connection selector:selector sniffingBlock:^{
+            undefinedBlock(slf, connection);
+        } originalImplementationBlock:^{
+            ((void(*)(id, SEL, id))objc_msgSend)(slf, swizzledSelector, connection);
+        }];
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -399,8 +415,11 @@ static NSArray *prettyStringPrinters = nil;
     };
     
     NSURLConnectionDidFailWithErrorBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSError *error) {
-        undefinedBlock(slf, connection, error);
-        ((void(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, connection, error);
+        [self sniffWithoutDuplicationForObject:connection selector:selector sniffingBlock:^{
+            undefinedBlock(slf, connection, error);
+        } originalImplementationBlock:^{
+            ((void(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, connection, error);
+        }];
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -418,14 +437,15 @@ static NSArray *prettyStringPrinters = nil;
     typedef void (^NSURLSessionWillPerformHTTPRedirectionBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *));
     
     NSURLSessionWillPerformHTTPRedirectionBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[PDNetworkDomainController defaultInstance] URLSession:session task:task willPerformHTTPRedirection:response newRequest:newRequest completionHandler:completionHandler];
-        }];
+        [[PDNetworkDomainController defaultInstance] URLSession:session task:task willPerformHTTPRedirection:response newRequest:newRequest completionHandler:completionHandler];
     };
 
     NSURLSessionWillPerformHTTPRedirectionBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
-        ((id(*)(id, SEL, id, id, id, id, void(^)()))objc_msgSend)(slf, swizzledSelector, session, task, response, newRequest, completionHandler);
-        undefinedBlock(slf, session, task, response, newRequest, completionHandler);
+        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
+            undefinedBlock(slf, session, task, response, newRequest, completionHandler);
+        } originalImplementationBlock:^{
+            ((id(*)(id, SEL, id, id, id, id, void(^)()))objc_msgSend)(slf, swizzledSelector, session, task, response, newRequest, completionHandler);
+        }];
     };
 
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -448,8 +468,11 @@ static NSArray *prettyStringPrinters = nil;
     };
     
     NSURLSessionDidReceiveDataBlock implementationBlock = ^(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data) {
-        undefinedBlock(slf, session, dataTask, data);
-        ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, dataTask, data);
+        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
+            undefinedBlock(slf, session, dataTask, data);
+        } originalImplementationBlock:^{
+            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, dataTask, data);
+        }];
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -468,14 +491,15 @@ static NSArray *prettyStringPrinters = nil;
     typedef void (^NSURLSessionDidReceiveResponseBlock)(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition));
     
     NSURLSessionDidReceiveResponseBlock undefinedBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[PDNetworkDomainController defaultInstance] URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
-        }];
+        [[PDNetworkDomainController defaultInstance] URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
     };
     
     NSURLSessionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
-        undefinedBlock(slf, session, dataTask, response, completionHandler);
-        ((void(*)(id, SEL, id, id, id, void(^)()))objc_msgSend)(slf, swizzledSelector, session, dataTask, response, completionHandler);
+        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
+            undefinedBlock(slf, session, dataTask, response, completionHandler);
+        } originalImplementationBlock:^{
+            ((void(*)(id, SEL, id, id, id, void(^)()))objc_msgSend)(slf, swizzledSelector, session, dataTask, response, completionHandler);
+        }];
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -497,8 +521,11 @@ static NSArray *prettyStringPrinters = nil;
     };
 
     NSURLSessionTaskDidCompleteWithErrorBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error) {
-        undefinedBlock(slf, session, task, error);
-        ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, task, error);
+        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
+            undefinedBlock(slf, session, task, error);
+        } originalImplementationBlock:^{
+            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, task, error);
+        }];
     };
 
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -547,8 +574,11 @@ static NSArray *prettyStringPrinters = nil;
     };
 
     NSURLSessionDownloadTaskDidFinishDownloadingBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
-        undefinedBlock(slf, session, task, location);
-        ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, task, location);
+        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
+            undefinedBlock(slf, session, task, location);
+        } originalImplementationBlock:^{
+            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, task, location);
+        }];
     };
 
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
@@ -569,8 +599,11 @@ static NSArray *prettyStringPrinters = nil;
     };
 
     NSURLSessionDownloadTaskDidWriteDataBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
-        undefinedBlock(slf, session, task, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
-        ((void(*)(id, SEL, id, id, int64_t, int64_t, int64_t))objc_msgSend)(slf, swizzledSelector, session, task, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
+        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
+            undefinedBlock(slf, session, task, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
+        } originalImplementationBlock:^{
+            ((void(*)(id, SEL, id, id, int64_t, int64_t, int64_t))objc_msgSend)(slf, swizzledSelector, session, task, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
+        }];
     };
 
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
