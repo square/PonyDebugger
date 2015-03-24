@@ -171,7 +171,7 @@ Install the ruby gem.
 Create a Podfile. You must be running on iOS 5 or above.
 
     platform :ios, '5.0'
-    pod 'PonyDebugger', '~> 0.4.0'
+    pod 'PonyDebugger', '~> 0.4.1'
 
 If you would like to use the latest version of PonyDebugger, point to the Github
 repository directly.
