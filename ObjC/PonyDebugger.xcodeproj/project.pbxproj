@@ -644,7 +644,7 @@
 		F683ADA314FC1B4C008EBBA7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0630;
 			};
 			buildConfigurationList = F683ADA614FC1B4C008EBBA7 /* Build configuration list for PBXProject "PonyDebugger" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -795,8 +795,10 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -809,6 +811,7 @@
 					./SocketRocket,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				ONLY_ACTIVE_ARCH = YES;
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SDKROOT = iphoneos;
 			};
@@ -829,7 +832,9 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
