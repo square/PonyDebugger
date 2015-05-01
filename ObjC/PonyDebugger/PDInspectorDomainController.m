@@ -14,6 +14,8 @@
 
 @implementation PDInspectorDomainController
 
+@dynamic domain;
+
 #pragma mark - Class Methods
 
 + (instancetype)defaultInstance;

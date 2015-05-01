@@ -48,6 +48,8 @@ static NSString *const kPDDOMAttributeParsingRegex = @"[\"'](.*)[\"']";
 
 @implementation PDDOMDomainController
 
+@dynamic domain;
+
 #pragma mark - NSObject
 
 - (id)init;
