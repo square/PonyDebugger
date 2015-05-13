@@ -52,7 +52,6 @@
     }];
 }
 
-
 - (void)PD__didReceiveData:(id)arg1;
 {
     [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] dataTask:(id)self.task didReceiveData:arg1];
@@ -62,10 +61,8 @@
 
 - (void)PD__didReceiveResponse:(NSURLResponse *)response sniff:(BOOL)sniff;
 {
-    // TODO: make sure it is always called with sniff set to false at least once
-    if (!sniff) {
-        [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] dataTask:(id)self.task didReceiveResponse:response];
-    }
+    // This can be called multiple times for the same request. Make sure it doesn't
+    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] dataTask:(id)self.task didReceiveResponse:response];
 
     [self PD__didReceiveResponse:response sniff:sniff];
 }
