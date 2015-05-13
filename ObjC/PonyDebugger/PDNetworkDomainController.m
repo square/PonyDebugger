@@ -302,8 +302,8 @@ static NSArray *prettyStringPrinters = nil;
 
         BOOL success = class_addMethod(cfURLSessionConnectionClass, sourceMethod, originalImp, encoding);
         NSAssert(success, @"Should be successful");
-        success = class_replaceMethod(cfURLSessionConnectionClass, originalMethod, sourceImp, encoding);
-        NSAssert(success, @"Should be successful");
+        IMP replacedImp = class_replaceMethod(cfURLSessionConnectionClass, originalMethod, sourceImp, encoding);
+        NSAssert(replacedImp, @"Expected originam method to have been replaced");
     }
     
     if (methods) {
