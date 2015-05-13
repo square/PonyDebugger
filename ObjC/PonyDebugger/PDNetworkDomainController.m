@@ -43,13 +43,11 @@
 
 @dynamic task;
 
-- (void)PD__redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 completion:(void (^)(id arg))arg3;
+- (void)PD__redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 completion:(id)arg3;
 {
     [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] task:self.task willPerformHTTPRedirection:(id)arg2 newRequest:arg1];
     
-    [self PD__redirectRequest:arg1 redirectResponse:arg2 completion:^(id arg) {
-        arg3(arg);
-    }];
+    [self PD__redirectRequest:arg1 redirectResponse:arg2 completion:arg3];
 }
 
 - (void)PD__didReceiveData:(id)arg1;
@@ -861,7 +859,14 @@ static NSArray *prettyStringPrinters = nil;
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request
 {
     [self performBlock:^{
-        [self setRequest:request forTask:task];
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [session.configuration.HTTPAdditionalHeaders enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+            if (![newRequest valueForHTTPHeaderField:key]) {
+                [newRequest setValue:obj forHTTPHeaderField:key];
+            }
+        }];
+
+        [self setRequest:newRequest forTask:task];
         PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
         PDNetworkResponse *networkRedirectResponse = response ? [[PDNetworkResponse alloc] initWithURLResponse:response request:request] : nil;
 
@@ -889,8 +894,15 @@ static NSArray *prettyStringPrinters = nil;
                 hasLoggedTimestampWarning = YES;
                 NSLog(@"PonyDebugger Warning: Some requests' timestamps may be inaccurate. See Known Issues in the README for more information.");
             }
+            /// We need to set headers from the session configuration
+            NSMutableURLRequest *request = [dataTask.currentRequest mutableCopy];
+            
+            [session.configuration.HTTPAdditionalHeaders enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                if (![request valueForHTTPHeaderField:key]) {
+                    [request setValue:obj forHTTPHeaderField:key];
+                }
+            }];
 
-            request = dataTask.currentRequest;
             [self setRequest:request forTask:dataTask];
 
             PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
