@@ -10,8 +10,11 @@
 
 @end
 
+
+
 @implementation PDURLSessionDownloadViewController {
     NSURLSession *_urlSession;
+    NSURLSession *_urlSession2;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -33,9 +36,30 @@
     [downloadTask resume];
 }
 
+- (void)_downloadFile2
+{
+    PDLog(@"Starting download");
+    NSURL *URL = [NSURL URLWithString:@"http://www.allcreaturesgreatandsmall.org.uk/media/25575/Shetland_Pony_on_Belstone_Common,_Dartmoor.jpg"];
+    
+    if (!_urlSession2) {
+        _urlSession2 = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:nil];
+    }
+    
+    NSURLSessionDownloadTask *downloadTask = [_urlSession2 downloadTaskWithURL:URL completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+        NSLog(@"Download complete");
+    }];
+    
+    [downloadTask resume];
+}
+
 - (IBAction)downloadFile:(id)sender
 {
     [self _downloadFile];
+}
+
+- (IBAction)downloadFile2:(id)sender
+{
+    [self _downloadFile2];
 }
 
 #pragma mark - NSURLSession Delegate Methods
