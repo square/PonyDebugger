@@ -897,6 +897,11 @@ static NSArray *prettyStringPrinters = nil;
             /// We need to set headers from the session configuration
             NSMutableURLRequest *request = [dataTask.currentRequest mutableCopy];
             
+            /// FOr some reason, the currentRequest doesn't always keep the HTTPBody around.
+            if (request.HTTPBody == nil && dataTask.originalRequest.HTTPBody) {
+                request.HTTPBody = dataTask.originalRequest.HTTPBody;
+            }
+            
             [session.configuration.HTTPAdditionalHeaders enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
                 if (![request valueForHTTPHeaderField:key]) {
                     [request setValue:obj forHTTPHeaderField:key];
