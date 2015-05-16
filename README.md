@@ -120,7 +120,7 @@ preference pane.
 
 ```sh
 
-curl -sk https://cloud.github.com/downloads/square/PonyDebugger/bootstrap-ponyd.py | \
+curl -s https://cloud.github.com/downloads/square/PonyDebugger/bootstrap-ponyd.py | \
   python - --ponyd-symlink=/usr/local/bin/ponyd ~/Library/PonyDebugger
 ```
 
