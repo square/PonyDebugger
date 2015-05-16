@@ -25,6 +25,8 @@
     NSURLSession *_urlSession;
 }
 
+@dynamic refreshControl;
+
 #pragma mark - UIViewController
 
 - (void)viewDidLoad;
@@ -41,7 +43,7 @@
 
 - (void)_reloadImage
 {
-    NSString *resource = [NSString stringWithFormat:@"http://corner.squareup.com/images/ponydebugger/icon.png"];
+    NSString *resource = [NSString stringWithFormat:@"https://corner.squareup.com/images/ponydebugger/icon.png"];
 
     if (!_urlSession) {
         _urlSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];

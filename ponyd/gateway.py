@@ -237,7 +237,7 @@ class Gateway(PonydCommand):
             (r"/(.*)", tornado.web.StaticFileHandler, {"path": self.static_path, "default_filename": 'index.html'}),
         ])
 
-        print "PonyGateway starting. Listening on %s:%s" % (self.listen_interface, self.listen_port)
+        print "PonyGateway starting. Listening on http://%s:%s" % (self.listen_interface, self.listen_port)
 
         bonjour.register_service(self.bonjour_name, "_ponyd._tcp", self.listen_port)
 

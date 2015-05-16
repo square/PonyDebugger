@@ -366,6 +366,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 {
     [PDNetworkDomainController registerPrettyStringPrinter:[[PDJSONPrettyStringPrinter alloc] init]];
     [PDNetworkDomainController injectIntoAllNSURLConnectionDelegateClasses];
+    [PDNetworkDomainController swizzleNSURLSessionClasses];
 }
 
 - (void)forwardNetworkTrafficFromDelegateClass:(Class)cls;

@@ -18,6 +18,60 @@
 #import <objc/message.h>
 #import <dispatch/queue.h>
 
+// For reference from the private class dump
+//@interface __NSCFURLSessionConnection : NSObject
+//
+//- (void)_redirectRequest:(id)arg1 redirectResponse:(id)arg2 completion:(void (^)(id arg))arg3;
+//- (void)_conditionalRequirementsChanged:(BOOL)arg1;
+//- (void)_connectionIsWaiting;
+//- (void)_willSendRequestForEstablishedConnection:(id)arg1 completion:(void (^)(NSURLRequest *arg3))arg2;
+//- (void)_didReceiveConnectionCacheKey:(struct HTTPConnectionCacheKey *)arg1;
+//- (void)_didFinishWithError:(id)arg1;
+//- (void)_didSendBodyData:(struct UploadProgressInfo)arg1;
+//- (void)_didReceiveData:(id)arg1;
+//- (void)_didReceiveResponse:(id)arg1 sniff:(BOOL)arg2;
+//
+//@end
+
+@interface __NSCFURLSessionConnection_Swizzles : NSObject
+
+@property(copy) NSURLSessionTask *task; // @synthesize task=_task;
+
+@end
+
+@implementation __NSCFURLSessionConnection_Swizzles
+
+@dynamic task;
+
+- (void)PD__redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 completion:(id)arg3;
+{
+    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] task:self.task willPerformHTTPRedirection:(id)arg2 newRequest:arg1];
+    
+    [self PD__redirectRequest:arg1 redirectResponse:arg2 completion:arg3];
+}
+
+- (void)PD__didReceiveData:(id)arg1;
+{
+    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] dataTask:(id)self.task didReceiveData:arg1];
+    
+    [self PD__didReceiveData:arg1];
+}
+
+- (void)PD__didReceiveResponse:(NSURLResponse *)response sniff:(BOOL)sniff;
+{
+    // This can be called multiple times for the same request. Make sure it doesn't
+    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] dataTask:(id)self.task didReceiveResponse:response];
+
+    [self PD__didReceiveResponse:response sniff:sniff];
+}
+
+- (void)PD__didFinishWithError:(NSError *)arg1;
+{
+    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] task:self.task didCompleteWithError:arg1];
+    [self PD__didFinishWithError:arg1];
+}
+
+@end
 
 @interface _PDRequestState : NSObject
 
@@ -206,6 +260,52 @@ static NSArray *prettyStringPrinters = nil;
 
 #pragma mark - Delegate Injection
 
++ (void)swizzleNSURLSessionClasses;
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self _swizzleNSURLSessionClasses];
+    });
+}
+
++ (void)_swizzleNSURLSessionClasses;
+{
+    Class cfURLSessionConnectionClass = NSClassFromString(@"__NSCFURLSessionConnection");
+    if (!cfURLSessionConnectionClass) {
+        PDLog(@"Could not find __NSCFURLSessionConnection");
+        return;
+    }
+    
+    unsigned int outCount = 0;
+    Method *methods = class_copyMethodList([__NSCFURLSessionConnection_Swizzles class], &outCount);
+    
+    for (int i = 0; i < outCount; i++) {
+        Method m = methods[i];
+        SEL sourceMethod = method_getName(m);
+        const char *encoding = method_getTypeEncoding(m);
+        NSString *sourceMethodName = NSStringFromSelector(sourceMethod);
+        NSAssert([sourceMethodName hasPrefix:@"PD_"], @"Expecting swizzle methods only");
+        NSString *originalMethodName = [sourceMethodName substringFromIndex:3];
+        SEL originalMethod = NSSelectorFromString(originalMethodName);
+        NSAssert(originalMethod, @"Must find selector");
+        
+        IMP sourceImp = method_getImplementation(m);
+        
+        IMP originalImp = class_getMethodImplementation(cfURLSessionConnectionClass, originalMethod);
+        
+        NSAssert(originalImp, @"Must find imp");
+
+        BOOL success = class_addMethod(cfURLSessionConnectionClass, sourceMethod, originalImp, encoding);
+        NSAssert(success, @"Should be successful");
+        IMP replacedImp = class_replaceMethod(cfURLSessionConnectionClass, originalMethod, sourceImp, encoding);
+        NSAssert(replacedImp, @"Expected originam method to have been replaced");
+    }
+    
+    if (methods) {
+        free(methods);
+    }
+}
+
 + (void)injectIntoAllNSURLConnectionDelegateClasses;
 {
     // Only allow swizzling once.
@@ -268,17 +368,6 @@ static NSArray *prettyStringPrinters = nil;
     [self injectDidReceiveResponseIntoDelegateClass:cls];
     [self injectDidFinishLoadingIntoDelegateClass:cls];
     [self injectDidFailWithErrorIntoDelegateClass:cls];
-    
-    // Sessions
-    [self injectTaskWillPerformHTTPRedirectionIntoDelegateClass:cls];
-    [self injectTaskDidReceiveDataIntoDelegateClass:cls];
-    [self injectTaskDidReceiveResponseIntoDelegateClass:cls];
-    [self injectTaskDidCompleteWithErrorIntoDelegateClass:cls];
-    [self injectRespondsToSelectorIntoDelegateClass:cls];
-
-    // Download tasks
-    [self injectDownloadTaskDidWriteDataIntoDelegateClass:cls];
-    [self injectDownloadTaskDidFinishDownloadingIntoDelegateClass:cls];
 }
 
 + (void)injectWillSendRequestIntoDelegateClass:(Class)cls;
@@ -423,191 +512,6 @@ static NSArray *prettyStringPrinters = nil;
     };
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
-}
-
-+ (void)injectTaskWillPerformHTTPRedirectionIntoDelegateClass:(Class)cls
-{
-    SEL selector = @selector(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-
-    Protocol *protocol = @protocol(NSURLSessionTaskDelegate);
-
-    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
-    
-    typedef void (^NSURLSessionWillPerformHTTPRedirectionBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *));
-    
-    NSURLSessionWillPerformHTTPRedirectionBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
-        [[PDNetworkDomainController defaultInstance] URLSession:session task:task willPerformHTTPRedirection:response newRequest:newRequest completionHandler:completionHandler];
-    };
-
-    NSURLSessionWillPerformHTTPRedirectionBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
-        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
-            undefinedBlock(slf, session, task, response, newRequest, completionHandler);
-        } originalImplementationBlock:^{
-            ((id(*)(id, SEL, id, id, id, id, void(^)()))objc_msgSend)(slf, swizzledSelector, session, task, response, newRequest, completionHandler);
-        }];
-    };
-
-    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
-
-}
-
-+ (void)injectTaskDidReceiveDataIntoDelegateClass:(Class)cls
-{
-    SEL selector = @selector(URLSession:dataTask:didReceiveData:);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-    
-    Protocol *protocol = @protocol(NSURLSessionDataDelegate);
-    
-    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
-    
-    typedef void (^NSURLSessionDidReceiveDataBlock)(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data);
-    
-    NSURLSessionDidReceiveDataBlock undefinedBlock = ^(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data) {
-        [[PDNetworkDomainController defaultInstance] URLSession:session dataTask:dataTask didReceiveData:data];
-    };
-    
-    NSURLSessionDidReceiveDataBlock implementationBlock = ^(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data) {
-        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
-            undefinedBlock(slf, session, dataTask, data);
-        } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, dataTask, data);
-        }];
-    };
-    
-    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
-
-}
-
-+ (void)injectTaskDidReceiveResponseIntoDelegateClass:(Class)cls
-{
-    SEL selector = @selector(URLSession:dataTask:didReceiveResponse:completionHandler:);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-    
-    Protocol *protocol = @protocol(NSURLSessionDataDelegate);
-    
-    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
-    
-    typedef void (^NSURLSessionDidReceiveResponseBlock)(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition));
-    
-    NSURLSessionDidReceiveResponseBlock undefinedBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
-        [[PDNetworkDomainController defaultInstance] URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
-    };
-    
-    NSURLSessionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
-        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
-            undefinedBlock(slf, session, dataTask, response, completionHandler);
-        } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, id, void(^)()))objc_msgSend)(slf, swizzledSelector, session, dataTask, response, completionHandler);
-        }];
-    };
-    
-    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
-
-}
-
-+ (void)injectTaskDidCompleteWithErrorIntoDelegateClass:(Class)cls;
-{
-    SEL selector = @selector(URLSession:task:didCompleteWithError:);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-    
-    Protocol *protocol = @protocol(NSURLSessionTaskDelegate);
-    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
-    
-    typedef void (^NSURLSessionTaskDidCompleteWithErrorBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error);
-
-    NSURLSessionTaskDidCompleteWithErrorBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error) {
-        [[PDNetworkDomainController defaultInstance] URLSession:session task:task didCompleteWithError:error];
-    };
-
-    NSURLSessionTaskDidCompleteWithErrorBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error) {
-        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
-            undefinedBlock(slf, session, task, error);
-        } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, task, error);
-        }];
-    };
-
-    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
-}
-
-// Used for overriding AFNetworking behavior
-+ (void)injectRespondsToSelectorIntoDelegateClass:(Class)cls
-{
-    SEL selector = @selector(respondsToSelector:);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-
-    //Protocol *protocol = @protocol(NSURLSessionTaskDelegate);
-    Method method = class_getInstanceMethod(cls, selector);
-    struct objc_method_description methodDescription = *method_getDescription(method);
-
-    typedef void (^NSURLSessionTaskDidCompleteWithErrorBlock)(id slf, SEL sel);
-
-    BOOL (^undefinedBlock)(id <NSURLSessionTaskDelegate>, SEL) = ^(id slf, SEL sel) {
-        return YES;
-    };
-
-    BOOL (^implementationBlock)(id <NSURLSessionTaskDelegate>, SEL) = ^(id <NSURLSessionTaskDelegate> slf, SEL sel) {
-        if (sel == @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)) {
-            return undefinedBlock(slf, sel);
-        }
-        return ((BOOL(*)(id, SEL, SEL))objc_msgSend)(slf, swizzledSelector, sel);
-    };
-
-    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
-}
-
-
-+ (void)injectDownloadTaskDidFinishDownloadingIntoDelegateClass:(Class)cls
-{
-    SEL selector = @selector(URLSession:downloadTask:didFinishDownloadingToURL:);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-
-    Protocol *protocol = @protocol(NSURLSessionDownloadDelegate);
-    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
-
-    typedef void (^NSURLSessionDownloadTaskDidFinishDownloadingBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location);
-
-    NSURLSessionDownloadTaskDidFinishDownloadingBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
-        NSData *data = [NSData dataWithContentsOfFile:location.relativePath];
-        [[PDNetworkDomainController defaultInstance] URLSession:session task:task didFinishDownloadingToURL:location data:data];
-    };
-
-    NSURLSessionDownloadTaskDidFinishDownloadingBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
-        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
-            undefinedBlock(slf, session, task, location);
-        } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, task, location);
-        }];
-    };
-
-    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
-}
-
-+ (void)injectDownloadTaskDidWriteDataIntoDelegateClass:(Class)cls
-{
-    SEL selector = @selector(URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-
-    Protocol *protocol = @protocol(NSURLSessionDownloadDelegate);
-    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
-
-    typedef void (^NSURLSessionDownloadTaskDidWriteDataBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite);
-
-    NSURLSessionDownloadTaskDidWriteDataBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
-        [[PDNetworkDomainController defaultInstance] URLSession:session downloadTask:task didWriteData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
-    };
-
-    NSURLSessionDownloadTaskDidWriteDataBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
-        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
-            undefinedBlock(slf, session, task, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
-        } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, int64_t, int64_t, int64_t))objc_msgSend)(slf, swizzledSelector, session, task, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
-        }];
-    };
-
-    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
-
 }
 
 #pragma mark - Initialization
@@ -952,10 +856,17 @@ static NSArray *prettyStringPrinters = nil;
 
 @implementation PDNetworkDomainController (NSURLSessionTaskHelpers)
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request
 {
     [self performBlock:^{
-        [self setRequest:request forTask:task];
+        NSMutableURLRequest *newRequest = [request mutableCopy];
+        [session.configuration.HTTPAdditionalHeaders enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+            if (![newRequest valueForHTTPHeaderField:key]) {
+                [newRequest setValue:obj forHTTPHeaderField:key];
+            }
+        }];
+
+        [self setRequest:newRequest forTask:task];
         PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
         PDNetworkResponse *networkRedirectResponse = response ? [[PDNetworkResponse alloc] initWithURLResponse:response request:request] : nil;
 
@@ -970,7 +881,7 @@ static NSArray *prettyStringPrinters = nil;
     }];
 }
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler;
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response;
 {
     if ([response respondsToSelector:@selector(copyWithZone:)]) {
 
@@ -983,8 +894,20 @@ static NSArray *prettyStringPrinters = nil;
                 hasLoggedTimestampWarning = YES;
                 NSLog(@"PonyDebugger Warning: Some requests' timestamps may be inaccurate. See Known Issues in the README for more information.");
             }
+            /// We need to set headers from the session configuration
+            NSMutableURLRequest *request = [dataTask.currentRequest mutableCopy];
+            
+            /// FOr some reason, the currentRequest doesn't always keep the HTTPBody around.
+            if (request.HTTPBody == nil && dataTask.originalRequest.HTTPBody) {
+                request.HTTPBody = dataTask.originalRequest.HTTPBody;
+            }
+            
+            [session.configuration.HTTPAdditionalHeaders enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                if (![request valueForHTTPHeaderField:key]) {
+                    [request setValue:obj forHTTPHeaderField:key];
+                }
+            }];
 
-            request = dataTask.currentRequest;
             [self setRequest:request forTask:dataTask];
 
             PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
@@ -1064,74 +987,6 @@ static NSArray *prettyStringPrinters = nil;
                                         timestamp:[NSDate PD_timestamp]];
 
         [self taskFinished:task];
-    }];
-}
-
-- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
-{
-    [self performBlock:^{
-        // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
-        // and behavior.
-        NSURLRequest *request = [self requestForTask:downloadTask];
-        if (!request && [downloadTask respondsToSelector:@selector(currentRequest)]) {
-
-            request = downloadTask.currentRequest;
-            [self setRequest:request forTask:downloadTask];
-            NSString *requestID = [self requestIDForTask:downloadTask];
-
-            PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
-            [self.domain requestWillBeSentWithRequestId:requestID
-                                                frameId:@""
-                                               loaderId:@""
-                                            documentURL:[request.URL absoluteString]
-                                                request:networkRequest
-                                              timestamp:[NSDate PD_timestamp]
-                                              initiator:nil
-                                       redirectResponse:nil];
-
-            [self setResponse:downloadTask.response forTask:downloadTask];
-
-            NSMutableData *dataAccumulator = nil;
-            dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger) totalBytesExpectedToWrite];
-            [self setAccumulatedData:dataAccumulator forTask:downloadTask];
-            
-            PDNetworkResponse *networkResponse = [PDNetworkResponse networkResponseWithURLResponse:downloadTask.response request:request];
-            
-            [self.domain responseReceivedWithRequestId:requestID
-                                               frameId:@""
-                                              loaderId:@""
-                                             timestamp:[NSDate PD_timestamp]
-                                                  type:downloadTask.response.PD_responseType
-                                              response:networkResponse];
-        }
-
-        [self addAccumulatedData:[NSData emptyDataOfLength:(NSUInteger) bytesWritten] forTask:downloadTask];
-
-        NSNumber *length = [NSNumber numberWithInteger:(NSInteger) bytesWritten];
-        NSString *requestID = [self requestIDForTask:downloadTask];
-
-        [self.domain dataReceivedWithRequestId:requestID
-                                     timestamp:[NSDate PD_timestamp]
-                                    dataLength:length
-                             encodedDataLength:length];
-    }];
-}
-
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location data:(NSData *)data
-{
-    [self performBlock:^{
-        NSURLResponse *response = [self responseForTask:downloadTask];
-        NSString *requestID = [self requestIDForTask:downloadTask];
-        
-        [self setResponse:data
-             forRequestID:requestID
-                 response:response
-                  request:[self requestForTask:downloadTask]];
-
-        [self.domain loadingFinishedWithRequestId:requestID
-                                        timestamp:[NSDate PD_timestamp]];
-
-        [self taskFinished:downloadTask];
     }];
 }
 
