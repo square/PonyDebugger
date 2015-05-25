@@ -371,7 +371,7 @@ request, we'll make sure you're in the list of people who have signed a CLA.
 
 Some useful links:
 
-- [Chrome Remote Debugging Documentation](https://developers.google.com/chrome-developer-tools/docs/protocol/tot/index)
+- [Chrome Remote Debugging Documentation](https://developer.chrome.com/devtools/docs/protocol/tot)
 - [WebKit Inspector Protocol Definition on GitHub](https://github.com/WebKit/webkit/blob/master/Source/WebCore/inspector/Inspector.json)
 
 
