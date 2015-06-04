@@ -1,8 +1,12 @@
+import sys
+
+import tornado.options
 
 import tornado
+import tornado.ioloop
 import tornado.web
 import tornado.websocket
-import tornado.options
+import tornado.log
 
 from ponyd.command import PonydCommand
 from ponyd.argbase import Arg
@@ -11,8 +15,6 @@ import os
 
 import json
 import uuid
-
-import argparse
 
 import bonjour
 
@@ -37,7 +39,7 @@ class AppState(object):
         self.currentPageNumber += 1
 
         self._sendToWeb('Gateway.deviceAdded', device.deviceInfo)
-        
+
         self.devices.add(device)
 
     def unregisterDevice(self, device):
@@ -83,7 +85,7 @@ class AppState(object):
             lobby.write_method(method, params)
 
 global_app_state = AppState()
- 
+
 
 class DeviceHandler(tornado.websocket.WebSocketHandler):
     app_state = global_app_state
@@ -96,6 +98,7 @@ class DeviceHandler(tornado.websocket.WebSocketHandler):
         logger.info("Device Connected")
         self.deviceID = None
         self.connectionId = str(uuid.uuid4())
+        self._registerForHeartbeats()
         return None
 
     def on_message(self, msg):
@@ -109,7 +112,23 @@ class DeviceHandler(tornado.websocket.WebSocketHandler):
                 logger.info("dropping device message: %s", msg)
 
     def on_close(self):
+        logger.info("On Close")
+        self._unregisterForHeartbeats()
         self.app_state.unregisterDevice(self)
+
+
+    def _runHeartbeat(self):
+        logging.info("Heartbeating")
+        self.ping(b"PING")
+
+    def _registerForHeartbeats(self):
+        # Heartbeat the client every 10 seconds
+        self.heartbeat_process = tornado.ioloop.PeriodicCallback(callback=self._runHeartbeat,
+                                                                 callback_time=10000)
+        self.heartbeat_process.start()
+
+    def _unregisterForHeartbeats(self):
+        self.heartbeat_process.stop()
 
     def _registerDevice(self, params):
         self.deviceID = params.get('device_id')
@@ -175,7 +194,7 @@ class LobbyHandler(tornado.websocket.WebSocketHandler):
     def on_close(self):
         logger.info('Lobby Disconnected')
         self.app_state.removeLobby(self)
-    
+
     def on_message(self, msg):
         pass
 
@@ -205,8 +224,8 @@ class Gateway(PonydCommand):
                         default=DEFAULT_DEVTOOLS_PATH)
 
     listen_port = Arg('-p', '--listen-port',
-                      help='port to listen on [default: %(default)s]', 
-                      default=9000, 
+                      help='port to listen on [default: %(default)s]',
+                      default=9000,
                       type=int,
                       metavar='PORT')
 
@@ -225,9 +244,10 @@ class Gateway(PonydCommand):
             return
 
         if self.verbose:
-            tornado.options.enable_pretty_logging()
+            tornado.options.options.logging = 'debug'
+            tornado.log.enable_pretty_logging(options=tornado.options.options)
             logger = logging.getLogger()
-            logger.setLevel(logging.INFO)
+            logger.setLevel(logging.DEBUG)
 
         application = tornado.web.Application([
             (r"/devtools/page/([0-9]*)/?", DevToolsHandler),
@@ -242,5 +262,8 @@ class Gateway(PonydCommand):
         bonjour.register_service(self.bonjour_name, "_ponyd._tcp", self.listen_port)
 
         application.listen(self.listen_port, self.listen_interface)
-        tornado.ioloop.IOLoop.instance().start()
+        ioloop = tornado.ioloop.IOLoop.instance()
+        ioloop.start()
 
+if __name__ == '__main__':
+    PonydCommand.main(sys.argv[1:])
