@@ -2,6 +2,10 @@
 
 PonyDebugger
 ============
+[![CI Status](https://travis-ci.org/square/PonyDebugger.svg?branch=master)](https://travis-ci.org/square/PonyDebugger)
+[![Version](https://img.shields.io/cocoapods/v/PonyDebugger.svg)](http://cocoadocs.org/docsets/PonyDebugger)
+[![License](https://img.shields.io/cocoapods/l/PonyDebugger.svg)](http://cocoadocs.org/docsets/PonyDebugger)
+[![Platform](https://img.shields.io/cocoapods/p/PonyDebugger.svg)](http://cocoadocs.org/docsets/PonyDebugger)
 
 PonyDebugger is a remote debugging toolset.  It is a client library and gateway
 server combination that uses Chrome Developer Tools on your browser to debug
