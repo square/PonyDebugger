@@ -270,9 +270,15 @@ static NSArray *prettyStringPrinters = nil;
 
 + (void)_swizzleNSURLSessionClasses;
 {
-    Class cfURLSessionConnectionClass = NSClassFromString(@"__NSCFURLSessionConnection");
+    // On iOS 8 we want to swizzle __NSCFURLSessionConnection. On 9 we want to swizzle its subclass, __NSCFURLLocalSessionConnection
+    Class cfURLSessionConnectionClass = NSClassFromString(@"__NSCFURLLocalSessionConnection");
+    
+    if (cfURLSessionConnectionClass == nil) {
+        cfURLSessionConnectionClass = NSClassFromString(@"__NSCFURLSessionConnection");
+
+    }
     if (!cfURLSessionConnectionClass) {
-        PDLog(@"Could not find __NSCFURLSessionConnection");
+        PDLog(@"Could not find __NSCFURLSessionConnection or __NSCFURLLocalSessionConnection");
         return;
     }
     
