@@ -2,7 +2,7 @@
 //  PDDOMTypes.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -14,7 +14,23 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 
-@class PDDebuggerLocation;
+@class PDDOMShapeOutsideInfo;
+
+
+// Backend node with a friendly name.
+@interface PDDOMBackendNode : PDObject
+
+// <code>Node</code>'s nodeType.
+// Type: integer
+@property (nonatomic, strong) NSNumber *nodeType;
+
+// <code>Node</code>'s nodeName.
+// Type: string
+@property (nonatomic, strong) NSString *nodeName;
+
+@property (nonatomic, strong) NSNumber *backendNodeId;
+
+@end
 
 
 // DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes. DOMNode is a base node mirror type.
@@ -55,6 +71,10 @@
 // Type: string
 @property (nonatomic, strong) NSString *documentURL;
 
+// Base URL that <code>Document</code> or <code>FrameOwner</code> node uses for URL completion.
+// Type: string
+@property (nonatomic, strong) NSString *baseURL;
+
 // <code>DocumentType</code>'s publicId.
 // Type: string
 @property (nonatomic, strong) NSString *publicId;
@@ -79,6 +99,15 @@
 // Type: string
 @property (nonatomic, strong) NSString *value;
 
+// Pseudo element type for this node.
+@property (nonatomic, strong) NSString *pseudoType;
+
+// Shadow root type.
+@property (nonatomic, strong) NSString *shadowRootType;
+
+// Frame ID for frame owner elements.
+@property (nonatomic, strong) NSString *frameId;
+
 // Content document for frame owner elements.
 @property (nonatomic, strong) PDDOMNode *contentDocument;
 
@@ -86,33 +115,19 @@
 // Type: array
 @property (nonatomic, strong) NSArray *shadowRoots;
 
-@end
+// Content document fragment for template elements.
+@property (nonatomic, strong) PDDOMNode *templateContent;
 
+// Pseudo elements associated with this node.
+// Type: array
+@property (nonatomic, strong) NSArray *pseudoElements;
 
-// DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes. DOMNode is a base node mirror type.
-@interface PDDOMEventListener : PDObject
+// Import document for the HTMLImport links.
+@property (nonatomic, strong) PDDOMNode *importedDocument;
 
-// <code>EventListener</code>'s type.
-// Type: string
-@property (nonatomic, strong) NSString *type;
-
-// <code>EventListener</code>'s useCapture.
-// Type: boolean
-@property (nonatomic, strong) NSNumber *useCapture;
-
-// <code>EventListener</code>'s isAttribute.
-// Type: boolean
-@property (nonatomic, strong) NSNumber *isAttribute;
-
-// Target <code>DOMNode</code> id.
-@property (nonatomic, strong) NSNumber *nodeId;
-
-// Event handler function body.
-// Type: string
-@property (nonatomic, strong) NSString *handlerBody;
-
-// Handler code location.
-@property (nonatomic, strong) PDDebuggerLocation *location;
+// Distributed nodes for given insertion point.
+// Type: array
+@property (nonatomic, strong) NSArray *distributedNodes;
 
 @end
 
@@ -139,12 +154,91 @@
 @end
 
 
+// Box model.
+@interface PDDOMBoxModel : PDObject
+
+// Content box
+@property (nonatomic, strong) NSArray *content;
+
+// Padding box
+@property (nonatomic, strong) NSArray *padding;
+
+// Border box
+@property (nonatomic, strong) NSArray *border;
+
+// Margin box
+@property (nonatomic, strong) NSArray *margin;
+
+// Node width
+// Type: integer
+@property (nonatomic, strong) NSNumber *width;
+
+// Node height
+// Type: integer
+@property (nonatomic, strong) NSNumber *height;
+
+// Shape outside coordinates
+@property (nonatomic, strong) PDDOMShapeOutsideInfo *shapeOutside;
+
+@end
+
+
+// CSS Shape Outside details.
+@interface PDDOMShapeOutsideInfo : PDObject
+
+// Shape bounds
+@property (nonatomic, strong) NSArray *bounds;
+
+// Shape coordinate details
+// Type: array
+@property (nonatomic, strong) NSArray *shape;
+
+// Margin shape bounds
+// Type: array
+@property (nonatomic, strong) NSArray *marginShape;
+
+@end
+
+
+// Rectangle.
+@interface PDDOMRect : PDObject
+
+// X coordinate
+// Type: number
+@property (nonatomic, strong) NSNumber *x;
+
+// Y coordinate
+// Type: number
+@property (nonatomic, strong) NSNumber *y;
+
+// Rectangle width
+// Type: number
+@property (nonatomic, strong) NSNumber *width;
+
+// Rectangle height
+// Type: number
+@property (nonatomic, strong) NSNumber *height;
+
+@end
+
+
 // Configuration data for the highlighting of page elements.
 @interface PDDOMHighlightConfig : PDObject
 
 // Whether the node info tooltip should be shown (default: false).
 // Type: boolean
 @property (nonatomic, strong) NSNumber *showInfo;
+
+// Whether the rulers should be shown (default: false).
+// Type: boolean
+@property (nonatomic, strong) NSNumber *showRulers;
+
+// Whether the extension lines from node to the rulers should be shown (default: false).
+// Type: boolean
+@property (nonatomic, strong) NSNumber *showExtensionLines;
+
+// Type: boolean
+@property (nonatomic, strong) NSNumber *showLayoutEditor;
 
 // The content box highlight fill color (default: transparent).
 @property (nonatomic, strong) PDDOMRGBA *contentColor;
@@ -157,6 +251,15 @@
 
 // The margin highlight fill color (default: transparent).
 @property (nonatomic, strong) PDDOMRGBA *marginColor;
+
+// The event target element highlight fill color (default: transparent).
+@property (nonatomic, strong) PDDOMRGBA *eventTargetColor;
+
+// The shape outside fill color (default: transparent).
+@property (nonatomic, strong) PDDOMRGBA *shapeColor;
+
+// The shape margin fill color (default: transparent).
+@property (nonatomic, strong) PDDOMRGBA *shapeMarginColor;
 
 @end
 

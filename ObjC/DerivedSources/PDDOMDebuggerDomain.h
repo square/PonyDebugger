@@ -2,7 +2,7 @@
 //  PDDOMDebuggerDomain.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -38,17 +38,19 @@
 
 // Sets breakpoint on particular DOM event.
 // Param eventName: DOM Event name to stop on (any DOM event will do).
-- (void)domain:(PDDOMDebuggerDomain *)domain setEventListenerBreakpointWithEventName:(NSString *)eventName callback:(void (^)(id error))callback;
+// Param targetName: EventTarget interface name to stop on. If equal to <code>"*"</code> or not provided, will stop on any EventTarget.
+- (void)domain:(PDDOMDebuggerDomain *)domain setEventListenerBreakpointWithEventName:(NSString *)eventName targetName:(NSString *)targetName callback:(void (^)(id error))callback;
 
 // Removes breakpoint on particular DOM event.
 // Param eventName: Event name.
-- (void)domain:(PDDOMDebuggerDomain *)domain removeEventListenerBreakpointWithEventName:(NSString *)eventName callback:(void (^)(id error))callback;
+// Param targetName: EventTarget interface name.
+- (void)domain:(PDDOMDebuggerDomain *)domain removeEventListenerBreakpointWithEventName:(NSString *)eventName targetName:(NSString *)targetName callback:(void (^)(id error))callback;
 
 // Sets breakpoint on particular native event.
 // Param eventName: Instrumentation name to stop on.
 - (void)domain:(PDDOMDebuggerDomain *)domain setInstrumentationBreakpointWithEventName:(NSString *)eventName callback:(void (^)(id error))callback;
 
-// Sets breakpoint on particular native event.
+// Removes breakpoint on particular native event.
 // Param eventName: Instrumentation name to stop on.
 - (void)domain:(PDDOMDebuggerDomain *)domain removeInstrumentationBreakpointWithEventName:(NSString *)eventName callback:(void (^)(id error))callback;
 
@@ -59,6 +61,11 @@
 // Removes breakpoint from XMLHttpRequest.
 // Param url: Resource URL substring.
 - (void)domain:(PDDOMDebuggerDomain *)domain removeXHRBreakpointWithUrl:(NSString *)url callback:(void (^)(id error))callback;
+
+// Returns event listeners of the given object.
+// Param objectId: Identifier of the object to return listeners for.
+// Callback Param listeners: Array of relevant listeners.
+- (void)domain:(PDDOMDebuggerDomain *)domain getEventListenersWithObjectId:(NSString *)objectId callback:(void (^)(NSArray *listeners, id error))callback;
 
 @end
 

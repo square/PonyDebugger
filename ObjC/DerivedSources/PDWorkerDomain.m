@@ -2,7 +2,7 @@
 //  PDWorkerDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -29,7 +29,7 @@
 }
 
 // Events
-- (void)workerCreatedWithWorkerId:(NSNumber *)workerId url:(NSString *)url inspectorConnected:(NSNumber *)inspectorConnected;
+- (void)workerCreatedWithWorkerId:(NSString *)workerId url:(NSString *)url inspectorConnected:(NSNumber *)inspectorConnected;
 {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
 
@@ -45,7 +45,7 @@
     
     [self.debuggingServer sendEventWithName:@"Worker.workerCreated" parameters:params];
 }
-- (void)workerTerminatedWithWorkerId:(NSNumber *)workerId;
+- (void)workerTerminatedWithWorkerId:(NSString *)workerId;
 {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
@@ -55,7 +55,7 @@
     
     [self.debuggingServer sendEventWithName:@"Worker.workerTerminated" parameters:params];
 }
-- (void)dispatchMessageFromWorkerWithWorkerId:(NSNumber *)workerId message:(NSDictionary *)message;
+- (void)dispatchMessageFromWorkerWithWorkerId:(NSString *)workerId message:(NSString *)message;
 {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
 
@@ -67,10 +67,6 @@
     }
     
     [self.debuggingServer sendEventWithName:@"Worker.dispatchMessageFromWorker" parameters:params];
-}
-- (void)disconnectedFromWorker;
-{
-    [self.debuggingServer sendEventWithName:@"Worker.disconnectedFromWorker" parameters:nil];
 }
 
 

@@ -2,7 +2,7 @@
 //  PDRuntimeTypes.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -15,6 +15,7 @@
 
 
 @class PDRuntimeObjectPreview;
+@class PDRuntimeCustomPreview;
 
 
 // Mirror object referencing original JavaScript object.
@@ -32,7 +33,7 @@
 // Type: string
 @property (nonatomic, strong) NSString *classNameString;
 
-// Remote object value (in case of primitive values or JSON values if it was requested).
+// Remote object value in case of primitive values or JSON values (if it was requested), or description string if the value can not be JSON-stringified (like NaN, Infinity, -Infinity, -0).
 // Type: any
 @property (nonatomic, strong) id value;
 
@@ -43,8 +44,25 @@
 // Unique object identifier (for non-primitive values).
 @property (nonatomic, strong) NSString *objectId;
 
-// Preview containsing abbreviated property values.
+// Preview containing abbreviated property values. Specified for <code>object</code> type values only.
 @property (nonatomic, strong) PDRuntimeObjectPreview *preview;
+
+@property (nonatomic, strong) PDRuntimeCustomPreview *customPreview;
+
+@end
+
+
+@interface PDRuntimeCustomPreview : PDObject
+
+// Type: string
+@property (nonatomic, strong) NSString *header;
+
+// Type: boolean
+@property (nonatomic, strong) NSNumber *hasBody;
+
+@property (nonatomic, strong) NSString *formatterObjectId;
+
+@property (nonatomic, strong) NSString *configObjectId;
 
 @end
 
@@ -52,17 +70,33 @@
 // Object containing abbreviated remote object value.
 @interface PDRuntimeObjectPreview : PDObject
 
+// Object type.
+// Type: string
+@property (nonatomic, strong) NSString *type;
+
+// Object subtype hint. Specified for <code>object</code> type values only.
+// Type: string
+@property (nonatomic, strong) NSString *subtype;
+
+// String representation of the object.
+// Type: string
+@property (nonatomic, strong) NSString *objectDescription;
+
 // Determines whether preview is lossless (contains all information of the original object).
 // Type: boolean
 @property (nonatomic, strong) NSNumber *lossless;
 
-// True iff some of the properties of the original did not fit.
+// True iff some of the properties or entries of the original object did not fit.
 // Type: boolean
 @property (nonatomic, strong) NSNumber *overflow;
 
 // List of the properties.
 // Type: array
 @property (nonatomic, strong) NSArray *properties;
+
+// List of the entries. Specified for <code>map</code> and <code>set</code> subtype values only.
+// Type: array
+@property (nonatomic, strong) NSArray *entries;
 
 @end
 
@@ -73,13 +107,16 @@
 // Type: string
 @property (nonatomic, strong) NSString *name;
 
-// Object type.
+// Object type. Accessor means that the property itself is an accessor property.
 // Type: string
 @property (nonatomic, strong) NSString *type;
 
 // User-friendly property value string.
 // Type: string
 @property (nonatomic, strong) NSString *value;
+
+// Nested value preview.
+@property (nonatomic, strong) PDRuntimeObjectPreview *valuePreview;
 
 // Object subtype hint. Specified for <code>object</code> type values only.
 // Type: string
@@ -88,10 +125,21 @@
 @end
 
 
+@interface PDRuntimeEntryPreview : PDObject
+
+// Preview of the key. Specified for map-like collection entries.
+@property (nonatomic, strong) PDRuntimeObjectPreview *key;
+
+// Preview of the value.
+@property (nonatomic, strong) PDRuntimeObjectPreview *value;
+
+@end
+
+
 // Object property descriptor.
 @interface PDRuntimePropertyDescriptor : PDObject
 
-// Property name.
+// Property name or symbol description.
 // Type: string
 @property (nonatomic, strong) NSString *name;
 
@@ -120,18 +168,42 @@
 // Type: boolean
 @property (nonatomic, strong) NSNumber *wasThrown;
 
+// True if the property is owned for the object.
+// Type: boolean
+@property (nonatomic, strong) NSNumber *isOwn;
+
+// Property symbol object, if the property is of the <code>symbol</code> type.
+@property (nonatomic, strong) PDRuntimeRemoteObject *symbol;
+
+@end
+
+
+// Object internal property descriptor. This property isn't normally visible in JavaScript code.
+@interface PDRuntimeInternalPropertyDescriptor : PDObject
+
+// Conventional property name.
+// Type: string
+@property (nonatomic, strong) NSString *name;
+
+// The value associated with the property.
+@property (nonatomic, strong) PDRuntimeRemoteObject *value;
+
 @end
 
 
 // Represents function call argument. Either remote object id <code>objectId</code> or primitive <code>value</code> or neither of (for undefined) them should be specified.
 @interface PDRuntimeCallArgument : PDObject
 
-// Primitive value.
+// Primitive value, or description string if the value can not be JSON-stringified (like NaN, Infinity, -Infinity, -0).
 // Type: any
 @property (nonatomic, strong) id value;
 
 // Remote object handle.
 @property (nonatomic, strong) NSString *objectId;
+
+// Object type.
+// Type: string
+@property (nonatomic, strong) NSString *type;
 
 @end
 
@@ -142,15 +214,20 @@
 // Unique id of the execution context. It can be used to specify in which execution context script evaluation should be performed.
 @property (nonatomic, strong) NSNumber *identifier;
 
-// True if this is a context where inpspected web page scripts run. False if it is a content script isolated context.
-// Type: boolean
-@property (nonatomic, strong) NSNumber *isPageContext;
+// Context type. It is used e.g. to distinguish content scripts from web page script.
+// Type: string
+@property (nonatomic, strong) NSString *type;
+
+// Execution context origin.
+// Type: string
+@property (nonatomic, strong) NSString *origin;
 
 // Human readable name describing given context.
 // Type: string
 @property (nonatomic, strong) NSString *name;
 
-// Id of the owning frame.
+// Id of the owning frame. May be an empty string if the context is not associated with a frame.
+// Type: string
 @property (nonatomic, strong) NSString *frameId;
 
 @end

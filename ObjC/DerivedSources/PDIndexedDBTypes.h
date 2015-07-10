@@ -2,7 +2,7 @@
 //  PDIndexedDBTypes.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -14,22 +14,7 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 
-@class PDRuntimeRemoteObject;
 @class PDIndexedDBKeyPath;
-
-
-// Security origin with database names.
-@interface PDIndexedDBSecurityOriginWithDatabaseNames : PDObject
-
-// Security origin.
-// Type: string
-@property (nonatomic, strong) NSString *securityOrigin;
-
-// Database names for this origin.
-// Type: array
-@property (nonatomic, strong) NSArray *databaseNames;
-
-@end
 
 
 // Database with an array of object stores.
@@ -39,9 +24,13 @@
 // Type: string
 @property (nonatomic, strong) NSString *name;
 
-// Database version.
+// Deprecated string database version.
 // Type: string
 @property (nonatomic, strong) NSString *version;
+
+// Integer database version.
+// Type: integer
+@property (nonatomic, strong) NSNumber *intVersion;
 
 // Object stores in this database.
 // Type: array
@@ -141,14 +130,17 @@
 // Data entry.
 @interface PDIndexedDBDataEntry : PDObject
 
-// Key.
-@property (nonatomic, strong) PDIndexedDBKey *key;
+// JSON-stringified key object.
+// Type: string
+@property (nonatomic, strong) NSString *key;
 
-// Primary key.
-@property (nonatomic, strong) PDIndexedDBKey *primaryKey;
+// JSON-stringified primary key object.
+// Type: string
+@property (nonatomic, strong) NSString *primaryKey;
 
-// Value.
-@property (nonatomic, strong) PDRuntimeRemoteObject *value;
+// JSON-stringified value object.
+// Type: string
+@property (nonatomic, strong) NSString *value;
 
 @end
 

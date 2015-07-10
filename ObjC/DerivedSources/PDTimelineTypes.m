@@ -2,7 +2,7 @@
 //  PDTimelineTypes.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -21,7 +21,12 @@
         mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
                     @"type",@"type",
                     @"data",@"data",
+                    @"startTime",@"startTime",
+                    @"endTime",@"endTime",
                     @"children",@"children",
+                    @"thread",@"thread",
+                    @"stackTrace",@"stackTrace",
+                    @"frameId",@"frameId",
                     nil];
     });
 
@@ -30,7 +35,12 @@
 
 @dynamic type;
 @dynamic data;
+@dynamic startTime;
+@dynamic endTime;
 @dynamic children;
+@dynamic thread;
+@dynamic stackTrace;
+@dynamic frameId;
  
 @end
 

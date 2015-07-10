@@ -2,7 +2,7 @@
 //  PDIndexedDBDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -29,66 +29,6 @@
     return @"IndexedDB";
 }
 
-// Events
-- (void)databaseNamesLoadedWithRequestId:(NSNumber *)requestId securityOriginWithDatabaseNames:(PDIndexedDBSecurityOriginWithDatabaseNames *)securityOriginWithDatabaseNames;
-{
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
-
-    if (requestId != nil) {
-        [params setObject:[requestId PD_JSONObject] forKey:@"requestId"];
-    }
-    if (securityOriginWithDatabaseNames != nil) {
-        [params setObject:[securityOriginWithDatabaseNames PD_JSONObject] forKey:@"securityOriginWithDatabaseNames"];
-    }
-    
-    [self.debuggingServer sendEventWithName:@"IndexedDB.databaseNamesLoaded" parameters:params];
-}
-- (void)databaseLoadedWithRequestId:(NSNumber *)requestId databaseWithObjectStores:(PDIndexedDBDatabaseWithObjectStores *)databaseWithObjectStores;
-{
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
-
-    if (requestId != nil) {
-        [params setObject:[requestId PD_JSONObject] forKey:@"requestId"];
-    }
-    if (databaseWithObjectStores != nil) {
-        [params setObject:[databaseWithObjectStores PD_JSONObject] forKey:@"databaseWithObjectStores"];
-    }
-    
-    [self.debuggingServer sendEventWithName:@"IndexedDB.databaseLoaded" parameters:params];
-}
-- (void)objectStoreDataLoadedWithRequestId:(NSNumber *)requestId objectStoreDataEntries:(NSArray *)objectStoreDataEntries hasMore:(NSNumber *)hasMore;
-{
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
-
-    if (requestId != nil) {
-        [params setObject:[requestId PD_JSONObject] forKey:@"requestId"];
-    }
-    if (objectStoreDataEntries != nil) {
-        [params setObject:[objectStoreDataEntries PD_JSONObject] forKey:@"objectStoreDataEntries"];
-    }
-    if (hasMore != nil) {
-        [params setObject:[hasMore PD_JSONObject] forKey:@"hasMore"];
-    }
-    
-    [self.debuggingServer sendEventWithName:@"IndexedDB.objectStoreDataLoaded" parameters:params];
-}
-- (void)indexDataLoadedWithRequestId:(NSNumber *)requestId indexDataEntries:(NSArray *)indexDataEntries hasMore:(NSNumber *)hasMore;
-{
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
-
-    if (requestId != nil) {
-        [params setObject:[requestId PD_JSONObject] forKey:@"requestId"];
-    }
-    if (indexDataEntries != nil) {
-        [params setObject:[indexDataEntries PD_JSONObject] forKey:@"indexDataEntries"];
-    }
-    if (hasMore != nil) {
-        [params setObject:[hasMore PD_JSONObject] forKey:@"hasMore"];
-    }
-    
-    [self.debuggingServer sendEventWithName:@"IndexedDB.indexDataLoaded" parameters:params];
-}
-
 
 
 - (void)handleMethodWithName:(NSString *)methodName parameters:(NSDictionary *)params responseCallback:(PDResponseCallback)responseCallback;
@@ -101,16 +41,41 @@
         [self.delegate domain:self disableWithCallback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"requestDatabaseNamesForFrame"] && [self.delegate respondsToSelector:@selector(domain:requestDatabaseNamesForFrameWithRequestId:frameId:callback:)]) {
-        [self.delegate domain:self requestDatabaseNamesForFrameWithRequestId:[params objectForKey:@"requestId"] frameId:[params objectForKey:@"frameId"] callback:^(id error) {
-            responseCallback(nil, error);
+    } else if ([methodName isEqualToString:@"requestDatabaseNames"] && [self.delegate respondsToSelector:@selector(domain:requestDatabaseNamesWithSecurityOrigin:callback:)]) {
+        [self.delegate domain:self requestDatabaseNamesWithSecurityOrigin:[params objectForKey:@"securityOrigin"] callback:^(NSArray *databaseNames, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (databaseNames != nil) {
+                [params setObject:databaseNames forKey:@"databaseNames"];
+            }
+
+            responseCallback(params, error);
         }];
-    } else if ([methodName isEqualToString:@"requestDatabase"] && [self.delegate respondsToSelector:@selector(domain:requestDatabaseWithRequestId:frameId:databaseName:callback:)]) {
-        [self.delegate domain:self requestDatabaseWithRequestId:[params objectForKey:@"requestId"] frameId:[params objectForKey:@"frameId"] databaseName:[params objectForKey:@"databaseName"] callback:^(id error) {
-            responseCallback(nil, error);
+    } else if ([methodName isEqualToString:@"requestDatabase"] && [self.delegate respondsToSelector:@selector(domain:requestDatabaseWithSecurityOrigin:databaseName:callback:)]) {
+        [self.delegate domain:self requestDatabaseWithSecurityOrigin:[params objectForKey:@"securityOrigin"] databaseName:[params objectForKey:@"databaseName"] callback:^(PDIndexedDBDatabaseWithObjectStores *databaseWithObjectStores, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (databaseWithObjectStores != nil) {
+                [params setObject:databaseWithObjectStores forKey:@"databaseWithObjectStores"];
+            }
+
+            responseCallback(params, error);
         }];
-    } else if ([methodName isEqualToString:@"requestData"] && [self.delegate respondsToSelector:@selector(domain:requestDataWithRequestId:frameId:databaseName:objectStoreName:indexName:skipCount:pageSize:keyRange:callback:)]) {
-        [self.delegate domain:self requestDataWithRequestId:[params objectForKey:@"requestId"] frameId:[params objectForKey:@"frameId"] databaseName:[params objectForKey:@"databaseName"] objectStoreName:[params objectForKey:@"objectStoreName"] indexName:[params objectForKey:@"indexName"] skipCount:[params objectForKey:@"skipCount"] pageSize:[params objectForKey:@"pageSize"] keyRange:[params objectForKey:@"keyRange"] callback:^(id error) {
+    } else if ([methodName isEqualToString:@"requestData"] && [self.delegate respondsToSelector:@selector(domain:requestDataWithSecurityOrigin:databaseName:objectStoreName:indexName:skipCount:pageSize:keyRange:callback:)]) {
+        [self.delegate domain:self requestDataWithSecurityOrigin:[params objectForKey:@"securityOrigin"] databaseName:[params objectForKey:@"databaseName"] objectStoreName:[params objectForKey:@"objectStoreName"] indexName:[params objectForKey:@"indexName"] skipCount:[params objectForKey:@"skipCount"] pageSize:[params objectForKey:@"pageSize"] keyRange:[params objectForKey:@"keyRange"] callback:^(NSArray *objectStoreDataEntries, NSNumber *hasMore, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+
+            if (objectStoreDataEntries != nil) {
+                [params setObject:objectStoreDataEntries forKey:@"objectStoreDataEntries"];
+            }
+            if (hasMore != nil) {
+                [params setObject:hasMore forKey:@"hasMore"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"clearObjectStore"] && [self.delegate respondsToSelector:@selector(domain:clearObjectStoreWithSecurityOrigin:databaseName:objectStoreName:callback:)]) {
+        [self.delegate domain:self clearObjectStoreWithSecurityOrigin:[params objectForKey:@"securityOrigin"] databaseName:[params objectForKey:@"databaseName"] objectStoreName:[params objectForKey:@"objectStoreName"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else {

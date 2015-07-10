@@ -2,7 +2,7 @@
 //  PDPageTypes.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -64,75 +64,54 @@
 @end
 
 
-// Search match for resource.
-@interface PDPageSearchMatch : PDObject
+// Navigation history entry.
+@interface PDPageNavigationEntry : PDObject
 
-// Line number in resource content.
-// Type: number
-@property (nonatomic, strong) NSNumber *lineNumber;
+// Unique id of the navigation history entry.
+// Type: integer
+@property (nonatomic, strong) NSNumber *identifier;
 
-// Line with match content.
-// Type: string
-@property (nonatomic, strong) NSString *lineContent;
-
-@end
-
-
-// Search result for resource.
-@interface PDPageSearchResult : PDObject
-
-// Resource URL.
+// URL of the navigation history entry.
 // Type: string
 @property (nonatomic, strong) NSString *url;
 
-// Resource frame id.
-@property (nonatomic, strong) NSString *frameId;
-
-// Number of matches in the resource content.
-// Type: number
-@property (nonatomic, strong) NSNumber *matchesCount;
+// Title of the navigation history entry.
+// Type: string
+@property (nonatomic, strong) NSString *title;
 
 @end
 
 
-// Cookie object
-@interface PDPageCookie : PDObject
+// Screencast frame metadata
+@interface PDPageScreencastFrameMetadata : PDObject
 
-// Cookie name.
-// Type: string
-@property (nonatomic, strong) NSString *name;
-
-// Cookie value.
-// Type: string
-@property (nonatomic, strong) NSString *value;
-
-// Cookie domain.
-// Type: string
-@property (nonatomic, strong) NSString *domain;
-
-// Cookie path.
-// Type: string
-@property (nonatomic, strong) NSString *path;
-
-// Cookie expires.
+// Top offset in DIP.
 // Type: number
-@property (nonatomic, strong) NSNumber *expires;
+@property (nonatomic, strong) NSNumber *offsetTop;
 
-// Cookie size.
-// Type: integer
-@property (nonatomic, strong) NSNumber *size;
+// Page scale factor.
+// Type: number
+@property (nonatomic, strong) NSNumber *pageScaleFactor;
 
-// True if cookie is http-only.
-// Type: boolean
-@property (nonatomic, strong) NSNumber *httpOnly;
+// Device screen width in DIP.
+// Type: number
+@property (nonatomic, strong) NSNumber *deviceWidth;
 
-// True if cookie is secure.
-// Type: boolean
-@property (nonatomic, strong) NSNumber *secure;
+// Device screen height in DIP.
+// Type: number
+@property (nonatomic, strong) NSNumber *deviceHeight;
 
-// True in case of session cookie.
-// Type: boolean
-@property (nonatomic, strong) NSNumber *session;
+// Position of horizontal scroll in CSS pixels.
+// Type: number
+@property (nonatomic, strong) NSNumber *scrollOffsetX;
+
+// Position of vertical scroll in CSS pixels.
+// Type: number
+@property (nonatomic, strong) NSNumber *scrollOffsetY;
+
+// Frame swap timestamp.
+// Type: number
+@property (nonatomic, strong) NSNumber *timestamp;
 
 @end
 

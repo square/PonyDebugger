@@ -2,7 +2,7 @@
 //  PDConsoleDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -43,13 +43,16 @@
     [self.debuggingServer sendEventWithName:@"Console.messageAdded" parameters:params];
 }
 
-// Issued when subsequent message(s) are equal to the previous one(s).
-- (void)messageRepeatCountUpdatedWithCount:(NSNumber *)count;
+// Is not issued. Will be gone in the future versions of the protocol.
+- (void)messageRepeatCountUpdatedWithCount:(NSNumber *)count timestamp:(NSNumber *)timestamp;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
 
     if (count != nil) {
         [params setObject:[count PD_JSONObject] forKey:@"count"];
+    }
+    if (timestamp != nil) {
+        [params setObject:[timestamp PD_JSONObject] forKey:@"timestamp"];
     }
     
     [self.debuggingServer sendEventWithName:@"Console.messageRepeatCountUpdated" parameters:params];
@@ -75,18 +78,6 @@
         }];
     } else if ([methodName isEqualToString:@"clearMessages"] && [self.delegate respondsToSelector:@selector(domain:clearMessagesWithCallback:)]) {
         [self.delegate domain:self clearMessagesWithCallback:^(id error) {
-            responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"setMonitoringXHREnabled"] && [self.delegate respondsToSelector:@selector(domain:setMonitoringXHREnabledWithEnabled:callback:)]) {
-        [self.delegate domain:self setMonitoringXHREnabledWithEnabled:[params objectForKey:@"enabled"] callback:^(id error) {
-            responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"addInspectedNode"] && [self.delegate respondsToSelector:@selector(domain:addInspectedNodeWithNodeId:callback:)]) {
-        [self.delegate domain:self addInspectedNodeWithNodeId:[params objectForKey:@"nodeId"] callback:^(id error) {
-            responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"addInspectedHeapObject"] && [self.delegate respondsToSelector:@selector(domain:addInspectedHeapObjectWithHeapObjectId:callback:)]) {
-        [self.delegate domain:self addInspectedHeapObjectWithHeapObjectId:[params objectForKey:@"heapObjectId"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else {

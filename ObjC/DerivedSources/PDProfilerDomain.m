@@ -2,7 +2,7 @@
 //  PDProfilerDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -12,7 +12,7 @@
 #import <PonyDebugger/PDObject.h>
 #import <PonyDebugger/PDProfilerDomain.h>
 #import <PonyDebugger/PDObject.h>
-#import <PonyDebugger/PDRuntimeTypes.h>
+#import <PonyDebugger/PDDebuggerTypes.h>
 #import <PonyDebugger/PDProfilerTypes.h>
 
 
@@ -31,102 +31,49 @@
 }
 
 // Events
-- (void)addProfileHeaderWithHeader:(PDProfilerProfileHeader *)header;
-{
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
-    if (header != nil) {
-        [params setObject:[header PD_JSONObject] forKey:@"header"];
+// Sent when new profile recodring is started using console.profile() call.
+- (void)consoleProfileStartedWithId:(NSString *)identifier location:(PDDebuggerLocation *)location title:(NSString *)title;
+{
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
+
+    if (identifier != nil) {
+        [params setObject:[identifier PD_JSONObject] forKey:@"id"];
+    }
+    if (location != nil) {
+        [params setObject:[location PD_JSONObject] forKey:@"location"];
+    }
+    if (title != nil) {
+        [params setObject:[title PD_JSONObject] forKey:@"title"];
     }
     
-    [self.debuggingServer sendEventWithName:@"Profiler.addProfileHeader" parameters:params];
+    [self.debuggingServer sendEventWithName:@"Profiler.consoleProfileStarted" parameters:params];
 }
-- (void)addHeapSnapshotChunkWithUid:(NSNumber *)uid chunk:(NSString *)chunk;
+- (void)consoleProfileFinishedWithId:(NSString *)identifier location:(PDDebuggerLocation *)location profile:(PDProfilerCPUProfile *)profile title:(NSString *)title;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:4];
 
-    if (uid != nil) {
-        [params setObject:[uid PD_JSONObject] forKey:@"uid"];
+    if (identifier != nil) {
+        [params setObject:[identifier PD_JSONObject] forKey:@"id"];
     }
-    if (chunk != nil) {
-        [params setObject:[chunk PD_JSONObject] forKey:@"chunk"];
+    if (location != nil) {
+        [params setObject:[location PD_JSONObject] forKey:@"location"];
+    }
+    if (profile != nil) {
+        [params setObject:[profile PD_JSONObject] forKey:@"profile"];
+    }
+    if (title != nil) {
+        [params setObject:[title PD_JSONObject] forKey:@"title"];
     }
     
-    [self.debuggingServer sendEventWithName:@"Profiler.addHeapSnapshotChunk" parameters:params];
-}
-- (void)finishHeapSnapshotWithUid:(NSNumber *)uid;
-{
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-    if (uid != nil) {
-        [params setObject:[uid PD_JSONObject] forKey:@"uid"];
-    }
-    
-    [self.debuggingServer sendEventWithName:@"Profiler.finishHeapSnapshot" parameters:params];
-}
-- (void)setRecordingProfileWithIsProfiling:(NSNumber *)isProfiling;
-{
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-    if (isProfiling != nil) {
-        [params setObject:[isProfiling PD_JSONObject] forKey:@"isProfiling"];
-    }
-    
-    [self.debuggingServer sendEventWithName:@"Profiler.setRecordingProfile" parameters:params];
-}
-- (void)resetProfiles;
-{
-    [self.debuggingServer sendEventWithName:@"Profiler.resetProfiles" parameters:nil];
-}
-- (void)reportHeapSnapshotProgressWithDone:(NSNumber *)done total:(NSNumber *)total;
-{
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
-
-    if (done != nil) {
-        [params setObject:[done PD_JSONObject] forKey:@"done"];
-    }
-    if (total != nil) {
-        [params setObject:[total PD_JSONObject] forKey:@"total"];
-    }
-    
-    [self.debuggingServer sendEventWithName:@"Profiler.reportHeapSnapshotProgress" parameters:params];
+    [self.debuggingServer sendEventWithName:@"Profiler.consoleProfileFinished" parameters:params];
 }
 
 
 
 - (void)handleMethodWithName:(NSString *)methodName parameters:(NSDictionary *)params responseCallback:(PDResponseCallback)responseCallback;
 {
-    if ([methodName isEqualToString:@"causesRecompilation"] && [self.delegate respondsToSelector:@selector(domain:causesRecompilationWithCallback:)]) {
-        [self.delegate domain:self causesRecompilationWithCallback:^(NSNumber *result, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (result != nil) {
-                [params setObject:result forKey:@"result"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"isSampling"] && [self.delegate respondsToSelector:@selector(domain:isSamplingWithCallback:)]) {
-        [self.delegate domain:self isSamplingWithCallback:^(NSNumber *result, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (result != nil) {
-                [params setObject:result forKey:@"result"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"hasHeapProfiler"] && [self.delegate respondsToSelector:@selector(domain:hasHeapProfilerWithCallback:)]) {
-        [self.delegate domain:self hasHeapProfilerWithCallback:^(NSNumber *result, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (result != nil) {
-                [params setObject:result forKey:@"result"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"enable"] && [self.delegate respondsToSelector:@selector(domain:enableWithCallback:)]) {
+    if ([methodName isEqualToString:@"enable"] && [self.delegate respondsToSelector:@selector(domain:enableWithCallback:)]) {
         [self.delegate domain:self enableWithCallback:^(id error) {
             responseCallback(nil, error);
         }];
@@ -134,66 +81,20 @@
         [self.delegate domain:self disableWithCallback:^(id error) {
             responseCallback(nil, error);
         }];
+    } else if ([methodName isEqualToString:@"setSamplingInterval"] && [self.delegate respondsToSelector:@selector(domain:setSamplingIntervalWithInterval:callback:)]) {
+        [self.delegate domain:self setSamplingIntervalWithInterval:[params objectForKey:@"interval"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
     } else if ([methodName isEqualToString:@"start"] && [self.delegate respondsToSelector:@selector(domain:startWithCallback:)]) {
         [self.delegate domain:self startWithCallback:^(id error) {
             responseCallback(nil, error);
         }];
     } else if ([methodName isEqualToString:@"stop"] && [self.delegate respondsToSelector:@selector(domain:stopWithCallback:)]) {
-        [self.delegate domain:self stopWithCallback:^(id error) {
-            responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"getProfileHeaders"] && [self.delegate respondsToSelector:@selector(domain:getProfileHeadersWithCallback:)]) {
-        [self.delegate domain:self getProfileHeadersWithCallback:^(NSArray *headers, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (headers != nil) {
-                [params setObject:headers forKey:@"headers"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"getProfile"] && [self.delegate respondsToSelector:@selector(domain:getProfileWithType:uid:callback:)]) {
-        [self.delegate domain:self getProfileWithType:[params objectForKey:@"type"] uid:[params objectForKey:@"uid"] callback:^(PDProfilerProfile *profile, id error) {
+        [self.delegate domain:self stopWithCallback:^(PDProfilerCPUProfile *profile, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
             if (profile != nil) {
                 [params setObject:profile forKey:@"profile"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"removeProfile"] && [self.delegate respondsToSelector:@selector(domain:removeProfileWithType:uid:callback:)]) {
-        [self.delegate domain:self removeProfileWithType:[params objectForKey:@"type"] uid:[params objectForKey:@"uid"] callback:^(id error) {
-            responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"clearProfiles"] && [self.delegate respondsToSelector:@selector(domain:clearProfilesWithCallback:)]) {
-        [self.delegate domain:self clearProfilesWithCallback:^(id error) {
-            responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"takeHeapSnapshot"] && [self.delegate respondsToSelector:@selector(domain:takeHeapSnapshotWithCallback:)]) {
-        [self.delegate domain:self takeHeapSnapshotWithCallback:^(id error) {
-            responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"collectGarbage"] && [self.delegate respondsToSelector:@selector(domain:collectGarbageWithCallback:)]) {
-        [self.delegate domain:self collectGarbageWithCallback:^(id error) {
-            responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"getObjectByHeapObjectId"] && [self.delegate respondsToSelector:@selector(domain:getObjectByHeapObjectIdWithObjectId:objectGroup:callback:)]) {
-        [self.delegate domain:self getObjectByHeapObjectIdWithObjectId:[params objectForKey:@"objectId"] objectGroup:[params objectForKey:@"objectGroup"] callback:^(PDRuntimeRemoteObject *result, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (result != nil) {
-                [params setObject:result forKey:@"result"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"getHeapObjectId"] && [self.delegate respondsToSelector:@selector(domain:getHeapObjectIdWithObjectId:callback:)]) {
-        [self.delegate domain:self getHeapObjectIdWithObjectId:[params objectForKey:@"objectId"] callback:^(NSString *heapSnapshotObjectId, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (heapSnapshotObjectId != nil) {
-                [params setObject:heapSnapshotObjectId forKey:@"heapSnapshotObjectId"];
             }
 
             responseCallback(params, error);

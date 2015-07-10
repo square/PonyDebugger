@@ -2,7 +2,7 @@
 //  PDNetworkDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -32,9 +32,9 @@
 // Events
 
 // Fired when page is about to send HTTP request.
-- (void)requestWillBeSentWithRequestId:(NSString *)requestId frameId:(NSString *)frameId loaderId:(NSString *)loaderId documentURL:(NSString *)documentURL request:(PDNetworkRequest *)request timestamp:(NSNumber *)timestamp initiator:(PDNetworkInitiator *)initiator redirectResponse:(PDNetworkResponse *)redirectResponse;
+- (void)requestWillBeSentWithRequestId:(NSString *)requestId frameId:(NSString *)frameId loaderId:(NSString *)loaderId documentURL:(NSString *)documentURL request:(PDNetworkRequest *)request timestamp:(NSNumber *)timestamp wallTime:(NSNumber *)wallTime initiator:(PDNetworkInitiator *)initiator redirectResponse:(PDNetworkResponse *)redirectResponse type:(NSString *)type;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:8];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:10];
 
     if (requestId != nil) {
         [params setObject:[requestId PD_JSONObject] forKey:@"requestId"];
@@ -54,11 +54,17 @@
     if (timestamp != nil) {
         [params setObject:[timestamp PD_JSONObject] forKey:@"timestamp"];
     }
+    if (wallTime != nil) {
+        [params setObject:[wallTime PD_JSONObject] forKey:@"wallTime"];
+    }
     if (initiator != nil) {
         [params setObject:[initiator PD_JSONObject] forKey:@"initiator"];
     }
     if (redirectResponse != nil) {
         [params setObject:[redirectResponse PD_JSONObject] forKey:@"redirectResponse"];
+    }
+    if (type != nil) {
+        [params setObject:[type PD_JSONObject] forKey:@"type"];
     }
     
     [self.debuggingServer sendEventWithName:@"Network.requestWillBeSent" parameters:params];
@@ -125,30 +131,36 @@
 }
 
 // Fired when HTTP request has finished loading.
-- (void)loadingFinishedWithRequestId:(NSString *)requestId timestamp:(NSNumber *)timestamp;
+- (void)loadingFinishedWithRequestId:(NSString *)requestId timestamp:(NSNumber *)timestamp encodedDataLength:(NSNumber *)encodedDataLength;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
 
     if (requestId != nil) {
         [params setObject:[requestId PD_JSONObject] forKey:@"requestId"];
     }
     if (timestamp != nil) {
         [params setObject:[timestamp PD_JSONObject] forKey:@"timestamp"];
+    }
+    if (encodedDataLength != nil) {
+        [params setObject:[encodedDataLength PD_JSONObject] forKey:@"encodedDataLength"];
     }
     
     [self.debuggingServer sendEventWithName:@"Network.loadingFinished" parameters:params];
 }
 
 // Fired when HTTP request has failed to load.
-- (void)loadingFailedWithRequestId:(NSString *)requestId timestamp:(NSNumber *)timestamp errorText:(NSString *)errorText canceled:(NSNumber *)canceled;
+- (void)loadingFailedWithRequestId:(NSString *)requestId timestamp:(NSNumber *)timestamp type:(NSString *)type errorText:(NSString *)errorText canceled:(NSNumber *)canceled;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:4];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:5];
 
     if (requestId != nil) {
         [params setObject:[requestId PD_JSONObject] forKey:@"requestId"];
     }
     if (timestamp != nil) {
         [params setObject:[timestamp PD_JSONObject] forKey:@"timestamp"];
+    }
+    if (type != nil) {
+        [params setObject:[type PD_JSONObject] forKey:@"type"];
     }
     if (errorText != nil) {
         [params setObject:[errorText PD_JSONObject] forKey:@"errorText"];
@@ -160,46 +172,19 @@
     [self.debuggingServer sendEventWithName:@"Network.loadingFailed" parameters:params];
 }
 
-// Fired when HTTP request has been served from memory cache.
-- (void)requestServedFromMemoryCacheWithRequestId:(NSString *)requestId frameId:(NSString *)frameId loaderId:(NSString *)loaderId documentURL:(NSString *)documentURL timestamp:(NSNumber *)timestamp initiator:(PDNetworkInitiator *)initiator resource:(PDNetworkCachedResource *)resource;
-{
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:7];
-
-    if (requestId != nil) {
-        [params setObject:[requestId PD_JSONObject] forKey:@"requestId"];
-    }
-    if (frameId != nil) {
-        [params setObject:[frameId PD_JSONObject] forKey:@"frameId"];
-    }
-    if (loaderId != nil) {
-        [params setObject:[loaderId PD_JSONObject] forKey:@"loaderId"];
-    }
-    if (documentURL != nil) {
-        [params setObject:[documentURL PD_JSONObject] forKey:@"documentURL"];
-    }
-    if (timestamp != nil) {
-        [params setObject:[timestamp PD_JSONObject] forKey:@"timestamp"];
-    }
-    if (initiator != nil) {
-        [params setObject:[initiator PD_JSONObject] forKey:@"initiator"];
-    }
-    if (resource != nil) {
-        [params setObject:[resource PD_JSONObject] forKey:@"resource"];
-    }
-    
-    [self.debuggingServer sendEventWithName:@"Network.requestServedFromMemoryCache" parameters:params];
-}
-
 // Fired when WebSocket is about to initiate handshake.
-- (void)webSocketWillSendHandshakeRequestWithRequestId:(NSString *)requestId timestamp:(NSNumber *)timestamp request:(PDNetworkWebSocketRequest *)request;
+- (void)webSocketWillSendHandshakeRequestWithRequestId:(NSString *)requestId timestamp:(NSNumber *)timestamp wallTime:(NSNumber *)wallTime request:(PDNetworkWebSocketRequest *)request;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:4];
 
     if (requestId != nil) {
         [params setObject:[requestId PD_JSONObject] forKey:@"requestId"];
     }
     if (timestamp != nil) {
         [params setObject:[timestamp PD_JSONObject] forKey:@"timestamp"];
+    }
+    if (wallTime != nil) {
+        [params setObject:[wallTime PD_JSONObject] forKey:@"wallTime"];
     }
     if (request != nil) {
         [params setObject:[request PD_JSONObject] forKey:@"request"];
@@ -310,6 +295,30 @@
     [self.debuggingServer sendEventWithName:@"Network.webSocketFrameSent" parameters:params];
 }
 
+// Fired when EventSource message is received.
+- (void)eventSourceMessageReceivedWithRequestId:(NSString *)requestId timestamp:(NSNumber *)timestamp eventName:(NSString *)eventName eventId:(NSString *)eventId data:(NSString *)data;
+{
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:5];
+
+    if (requestId != nil) {
+        [params setObject:[requestId PD_JSONObject] forKey:@"requestId"];
+    }
+    if (timestamp != nil) {
+        [params setObject:[timestamp PD_JSONObject] forKey:@"timestamp"];
+    }
+    if (eventName != nil) {
+        [params setObject:[eventName PD_JSONObject] forKey:@"eventName"];
+    }
+    if (eventId != nil) {
+        [params setObject:[eventId PD_JSONObject] forKey:@"eventId"];
+    }
+    if (data != nil) {
+        [params setObject:[data PD_JSONObject] forKey:@"data"];
+    }
+    
+    [self.debuggingServer sendEventWithName:@"Network.eventSourceMessageReceived" parameters:params];
+}
+
 
 
 - (void)handleMethodWithName:(NSString *)methodName parameters:(NSDictionary *)params responseCallback:(PDResponseCallback)responseCallback;
@@ -343,6 +352,14 @@
 
             responseCallback(params, error);
         }];
+    } else if ([methodName isEqualToString:@"replayXHR"] && [self.delegate respondsToSelector:@selector(domain:replayXHRWithRequestId:callback:)]) {
+        [self.delegate domain:self replayXHRWithRequestId:[params objectForKey:@"requestId"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"setMonitoringXHREnabled"] && [self.delegate respondsToSelector:@selector(domain:setMonitoringXHREnabledWithEnabled:callback:)]) {
+        [self.delegate domain:self setMonitoringXHREnabledWithEnabled:[params objectForKey:@"enabled"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
     } else if ([methodName isEqualToString:@"canClearBrowserCache"] && [self.delegate respondsToSelector:@selector(domain:canClearBrowserCacheWithCallback:)]) {
         [self.delegate domain:self canClearBrowserCacheWithCallback:^(NSNumber *result, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
@@ -371,8 +388,40 @@
         [self.delegate domain:self clearBrowserCookiesWithCallback:^(id error) {
             responseCallback(nil, error);
         }];
+    } else if ([methodName isEqualToString:@"getCookies"] && [self.delegate respondsToSelector:@selector(domain:getCookiesWithCallback:)]) {
+        [self.delegate domain:self getCookiesWithCallback:^(NSArray *cookies, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (cookies != nil) {
+                [params setObject:cookies forKey:@"cookies"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"deleteCookie"] && [self.delegate respondsToSelector:@selector(domain:deleteCookieWithCookieName:url:callback:)]) {
+        [self.delegate domain:self deleteCookieWithCookieName:[params objectForKey:@"cookieName"] url:[params objectForKey:@"url"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"canEmulateNetworkConditions"] && [self.delegate respondsToSelector:@selector(domain:canEmulateNetworkConditionsWithCallback:)]) {
+        [self.delegate domain:self canEmulateNetworkConditionsWithCallback:^(NSNumber *result, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (result != nil) {
+                [params setObject:result forKey:@"result"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"emulateNetworkConditions"] && [self.delegate respondsToSelector:@selector(domain:emulateNetworkConditionsWithOffline:latency:downloadThroughput:uploadThroughput:callback:)]) {
+        [self.delegate domain:self emulateNetworkConditionsWithOffline:[params objectForKey:@"offline"] latency:[params objectForKey:@"latency"] downloadThroughput:[params objectForKey:@"downloadThroughput"] uploadThroughput:[params objectForKey:@"uploadThroughput"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
     } else if ([methodName isEqualToString:@"setCacheDisabled"] && [self.delegate respondsToSelector:@selector(domain:setCacheDisabledWithCacheDisabled:callback:)]) {
         [self.delegate domain:self setCacheDisabledWithCacheDisabled:[params objectForKey:@"cacheDisabled"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"setDataSizeLimitsForTest"] && [self.delegate respondsToSelector:@selector(domain:setDataSizeLimitsForTestWithMaxTotalSize:maxResourceSize:callback:)]) {
+        [self.delegate domain:self setDataSizeLimitsForTestWithMaxTotalSize:[params objectForKey:@"maxTotalSize"] maxResourceSize:[params objectForKey:@"maxResourceSize"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else {

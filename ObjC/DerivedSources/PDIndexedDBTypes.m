@@ -2,7 +2,7 @@
 //  PDIndexedDBTypes.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -10,27 +10,6 @@
 //
 
 #import "PDIndexedDBTypes.h"
-
-@implementation PDIndexedDBSecurityOriginWithDatabaseNames
-
-+ (NSDictionary *)keysToEncode;
-{
-    static NSDictionary *mappings = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                    @"securityOrigin",@"securityOrigin",
-                    @"databaseNames",@"databaseNames",
-                    nil];
-    });
-
-    return mappings;
-}
-
-@dynamic securityOrigin;
-@dynamic databaseNames;
- 
-@end
 
 @implementation PDIndexedDBDatabaseWithObjectStores
 
@@ -42,6 +21,7 @@
         mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
                     @"name",@"name",
                     @"version",@"version",
+                    @"intVersion",@"intVersion",
                     @"objectStores",@"objectStores",
                     nil];
     });
@@ -51,6 +31,7 @@
 
 @dynamic name;
 @dynamic version;
+@dynamic intVersion;
 @dynamic objectStores;
  
 @end

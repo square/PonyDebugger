@@ -2,7 +2,7 @@
 //  PDWorkerDomain.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -21,10 +21,9 @@
 @property (nonatomic, assign) id <PDWorkerCommandDelegate, PDCommandDelegate> delegate;
 
 // Events
-- (void)workerCreatedWithWorkerId:(NSNumber *)workerId url:(NSString *)url inspectorConnected:(NSNumber *)inspectorConnected;
-- (void)workerTerminatedWithWorkerId:(NSNumber *)workerId;
-- (void)dispatchMessageFromWorkerWithWorkerId:(NSNumber *)workerId message:(NSDictionary *)message;
-- (void)disconnectedFromWorker;
+- (void)workerCreatedWithWorkerId:(NSString *)workerId url:(NSString *)url inspectorConnected:(NSNumber *)inspectorConnected;
+- (void)workerTerminatedWithWorkerId:(NSString *)workerId;
+- (void)dispatchMessageFromWorkerWithWorkerId:(NSString *)workerId message:(NSString *)message;
 
 @end
 
@@ -32,9 +31,9 @@
 @optional
 - (void)domain:(PDWorkerDomain *)domain enableWithCallback:(void (^)(id error))callback;
 - (void)domain:(PDWorkerDomain *)domain disableWithCallback:(void (^)(id error))callback;
-- (void)domain:(PDWorkerDomain *)domain sendMessageToWorkerWithWorkerId:(NSNumber *)workerId message:(NSDictionary *)message callback:(void (^)(id error))callback;
-- (void)domain:(PDWorkerDomain *)domain connectToWorkerWithWorkerId:(NSNumber *)workerId callback:(void (^)(id error))callback;
-- (void)domain:(PDWorkerDomain *)domain disconnectFromWorkerWithWorkerId:(NSNumber *)workerId callback:(void (^)(id error))callback;
+- (void)domain:(PDWorkerDomain *)domain sendMessageToWorkerWithWorkerId:(NSString *)workerId message:(NSString *)message callback:(void (^)(id error))callback;
+- (void)domain:(PDWorkerDomain *)domain connectToWorkerWithWorkerId:(NSString *)workerId callback:(void (^)(id error))callback;
+- (void)domain:(PDWorkerDomain *)domain disconnectFromWorkerWithWorkerId:(NSString *)workerId callback:(void (^)(id error))callback;
 - (void)domain:(PDWorkerDomain *)domain setAutoconnectToWorkersWithValue:(NSNumber *)value callback:(void (^)(id error))callback;
 
 @end

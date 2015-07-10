@@ -2,7 +2,7 @@
 //  PDCSSDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -49,34 +49,28 @@
     [self.debuggingServer sendEventWithName:@"CSS.styleSheetChanged" parameters:params];
 }
 
-// Fires when a Named Flow is created.
-- (void)namedFlowCreatedWithDocumentNodeId:(NSNumber *)documentNodeId namedFlow:(NSString *)namedFlow;
+// Fired whenever an active document stylesheet is added.
+- (void)styleSheetAddedWithHeader:(PDCSSCSSStyleSheetHeader *)header;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
-    if (documentNodeId != nil) {
-        [params setObject:[documentNodeId PD_JSONObject] forKey:@"documentNodeId"];
-    }
-    if (namedFlow != nil) {
-        [params setObject:[namedFlow PD_JSONObject] forKey:@"namedFlow"];
+    if (header != nil) {
+        [params setObject:[header PD_JSONObject] forKey:@"header"];
     }
     
-    [self.debuggingServer sendEventWithName:@"CSS.namedFlowCreated" parameters:params];
+    [self.debuggingServer sendEventWithName:@"CSS.styleSheetAdded" parameters:params];
 }
 
-// Fires when a Named Flow is removed: has no associated content nodes and regions.
-- (void)namedFlowRemovedWithDocumentNodeId:(NSNumber *)documentNodeId namedFlow:(NSString *)namedFlow;
+// Fired whenever an active document stylesheet is removed.
+- (void)styleSheetRemovedWithStyleSheetId:(NSString *)styleSheetId;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
-    if (documentNodeId != nil) {
-        [params setObject:[documentNodeId PD_JSONObject] forKey:@"documentNodeId"];
-    }
-    if (namedFlow != nil) {
-        [params setObject:[namedFlow PD_JSONObject] forKey:@"namedFlow"];
+    if (styleSheetId != nil) {
+        [params setObject:[styleSheetId PD_JSONObject] forKey:@"styleSheetId"];
     }
     
-    [self.debuggingServer sendEventWithName:@"CSS.namedFlowRemoved" parameters:params];
+    [self.debuggingServer sendEventWithName:@"CSS.styleSheetRemoved" parameters:params];
 }
 
 
@@ -91,8 +85,8 @@
         [self.delegate domain:self disableWithCallback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"getMatchedStylesForNode"] && [self.delegate respondsToSelector:@selector(domain:getMatchedStylesForNodeWithNodeId:includePseudo:includeInherited:callback:)]) {
-        [self.delegate domain:self getMatchedStylesForNodeWithNodeId:[params objectForKey:@"nodeId"] includePseudo:[params objectForKey:@"includePseudo"] includeInherited:[params objectForKey:@"includeInherited"] callback:^(NSArray *matchedCSSRules, NSArray *pseudoElements, NSArray *inherited, id error) {
+    } else if ([methodName isEqualToString:@"getMatchedStylesForNode"] && [self.delegate respondsToSelector:@selector(domain:getMatchedStylesForNodeWithNodeId:excludePseudo:excludeInherited:callback:)]) {
+        [self.delegate domain:self getMatchedStylesForNodeWithNodeId:[params objectForKey:@"nodeId"] excludePseudo:[params objectForKey:@"excludePseudo"] excludeInherited:[params objectForKey:@"excludeInherited"] callback:^(NSArray *matchedCSSRules, NSArray *pseudoElements, NSArray *inherited, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
 
             if (matchedCSSRules != nil) {
@@ -130,22 +124,12 @@
 
             responseCallback(params, error);
         }];
-    } else if ([methodName isEqualToString:@"getAllStyleSheets"] && [self.delegate respondsToSelector:@selector(domain:getAllStyleSheetsWithCallback:)]) {
-        [self.delegate domain:self getAllStyleSheetsWithCallback:^(NSArray *headers, id error) {
+    } else if ([methodName isEqualToString:@"getPlatformFontsForNode"] && [self.delegate respondsToSelector:@selector(domain:getPlatformFontsForNodeWithNodeId:callback:)]) {
+        [self.delegate domain:self getPlatformFontsForNodeWithNodeId:[params objectForKey:@"nodeId"] callback:^(NSArray *fonts, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
-            if (headers != nil) {
-                [params setObject:headers forKey:@"headers"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"getStyleSheet"] && [self.delegate respondsToSelector:@selector(domain:getStyleSheetWithStyleSheetId:callback:)]) {
-        [self.delegate domain:self getStyleSheetWithStyleSheetId:[params objectForKey:@"styleSheetId"] callback:^(PDCSSCSSStyleSheetBody *styleSheet, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (styleSheet != nil) {
-                [params setObject:styleSheet forKey:@"styleSheet"];
+            if (fonts != nil) {
+                [params setObject:fonts forKey:@"fonts"];
             }
 
             responseCallback(params, error);
@@ -164,28 +148,8 @@
         [self.delegate domain:self setStyleSheetTextWithStyleSheetId:[params objectForKey:@"styleSheetId"] text:[params objectForKey:@"text"] callback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"setPropertyText"] && [self.delegate respondsToSelector:@selector(domain:setPropertyTextWithStyleId:propertyIndex:text:overwrite:callback:)]) {
-        [self.delegate domain:self setPropertyTextWithStyleId:[params objectForKey:@"styleId"] propertyIndex:[params objectForKey:@"propertyIndex"] text:[params objectForKey:@"text"] overwrite:[params objectForKey:@"overwrite"] callback:^(PDCSSCSSStyle *style, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (style != nil) {
-                [params setObject:style forKey:@"style"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"toggleProperty"] && [self.delegate respondsToSelector:@selector(domain:togglePropertyWithStyleId:propertyIndex:disable:callback:)]) {
-        [self.delegate domain:self togglePropertyWithStyleId:[params objectForKey:@"styleId"] propertyIndex:[params objectForKey:@"propertyIndex"] disable:[params objectForKey:@"disable"] callback:^(PDCSSCSSStyle *style, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (style != nil) {
-                [params setObject:style forKey:@"style"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"setRuleSelector"] && [self.delegate respondsToSelector:@selector(domain:setRuleSelectorWithRuleId:selector:callback:)]) {
-        [self.delegate domain:self setRuleSelectorWithRuleId:[params objectForKey:@"ruleId"] selector:[params objectForKey:@"selector"] callback:^(PDCSSCSSRule *rule, id error) {
+    } else if ([methodName isEqualToString:@"setRuleSelector"] && [self.delegate respondsToSelector:@selector(domain:setRuleSelectorWithStyleSheetId:range:selector:callback:)]) {
+        [self.delegate domain:self setRuleSelectorWithStyleSheetId:[params objectForKey:@"styleSheetId"] range:[params objectForKey:@"range"] selector:[params objectForKey:@"selector"] callback:^(PDCSSCSSRule *rule, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
             if (rule != nil) {
@@ -194,22 +158,42 @@
 
             responseCallback(params, error);
         }];
-    } else if ([methodName isEqualToString:@"addRule"] && [self.delegate respondsToSelector:@selector(domain:addRuleWithContextNodeId:selector:callback:)]) {
-        [self.delegate domain:self addRuleWithContextNodeId:[params objectForKey:@"contextNodeId"] selector:[params objectForKey:@"selector"] callback:^(PDCSSCSSRule *rule, id error) {
+    } else if ([methodName isEqualToString:@"setStyleText"] && [self.delegate respondsToSelector:@selector(domain:setStyleTextWithStyleSheetId:range:text:callback:)]) {
+        [self.delegate domain:self setStyleTextWithStyleSheetId:[params objectForKey:@"styleSheetId"] range:[params objectForKey:@"range"] text:[params objectForKey:@"text"] callback:^(PDCSSCSSStyle *style, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
-            if (rule != nil) {
-                [params setObject:rule forKey:@"rule"];
+            if (style != nil) {
+                [params setObject:style forKey:@"style"];
             }
 
             responseCallback(params, error);
         }];
-    } else if ([methodName isEqualToString:@"getSupportedCSSProperties"] && [self.delegate respondsToSelector:@selector(domain:getSupportedCSSPropertiesWithCallback:)]) {
-        [self.delegate domain:self getSupportedCSSPropertiesWithCallback:^(NSArray *cssProperties, id error) {
+    } else if ([methodName isEqualToString:@"setMediaText"] && [self.delegate respondsToSelector:@selector(domain:setMediaTextWithStyleSheetId:range:text:callback:)]) {
+        [self.delegate domain:self setMediaTextWithStyleSheetId:[params objectForKey:@"styleSheetId"] range:[params objectForKey:@"range"] text:[params objectForKey:@"text"] callback:^(PDCSSCSSMedia *media, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
-            if (cssProperties != nil) {
-                [params setObject:cssProperties forKey:@"cssProperties"];
+            if (media != nil) {
+                [params setObject:media forKey:@"media"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"createStyleSheet"] && [self.delegate respondsToSelector:@selector(domain:createStyleSheetWithFrameId:callback:)]) {
+        [self.delegate domain:self createStyleSheetWithFrameId:[params objectForKey:@"frameId"] callback:^(NSString *styleSheetId, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (styleSheetId != nil) {
+                [params setObject:styleSheetId forKey:@"styleSheetId"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"addRule"] && [self.delegate respondsToSelector:@selector(domain:addRuleWithStyleSheetId:ruleText:location:callback:)]) {
+        [self.delegate domain:self addRuleWithStyleSheetId:[params objectForKey:@"styleSheetId"] ruleText:[params objectForKey:@"ruleText"] location:[params objectForKey:@"location"] callback:^(PDCSSCSSRule *rule, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (rule != nil) {
+                [params setObject:rule forKey:@"rule"];
             }
 
             responseCallback(params, error);
@@ -218,39 +202,19 @@
         [self.delegate domain:self forcePseudoStateWithNodeId:[params objectForKey:@"nodeId"] forcedPseudoClasses:[params objectForKey:@"forcedPseudoClasses"] callback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"startSelectorProfiler"] && [self.delegate respondsToSelector:@selector(domain:startSelectorProfilerWithCallback:)]) {
-        [self.delegate domain:self startSelectorProfilerWithCallback:^(id error) {
+    } else if ([methodName isEqualToString:@"getMediaQueries"] && [self.delegate respondsToSelector:@selector(domain:getMediaQueriesWithCallback:)]) {
+        [self.delegate domain:self getMediaQueriesWithCallback:^(NSArray *medias, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (medias != nil) {
+                [params setObject:medias forKey:@"medias"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"setEffectivePropertyValueForNode"] && [self.delegate respondsToSelector:@selector(domain:setEffectivePropertyValueForNodeWithNodeId:propertyName:value:callback:)]) {
+        [self.delegate domain:self setEffectivePropertyValueForNodeWithNodeId:[params objectForKey:@"nodeId"] propertyName:[params objectForKey:@"propertyName"] value:[params objectForKey:@"value"] callback:^(id error) {
             responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"stopSelectorProfiler"] && [self.delegate respondsToSelector:@selector(domain:stopSelectorProfilerWithCallback:)]) {
-        [self.delegate domain:self stopSelectorProfilerWithCallback:^(PDCSSSelectorProfile *profile, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (profile != nil) {
-                [params setObject:profile forKey:@"profile"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"getNamedFlowCollection"] && [self.delegate respondsToSelector:@selector(domain:getNamedFlowCollectionWithDocumentNodeId:callback:)]) {
-        [self.delegate domain:self getNamedFlowCollectionWithDocumentNodeId:[params objectForKey:@"documentNodeId"] callback:^(NSArray *namedFlows, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (namedFlows != nil) {
-                [params setObject:namedFlows forKey:@"namedFlows"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"getFlowByName"] && [self.delegate respondsToSelector:@selector(domain:getFlowByNameWithDocumentNodeId:name:callback:)]) {
-        [self.delegate domain:self getFlowByNameWithDocumentNodeId:[params objectForKey:@"documentNodeId"] name:[params objectForKey:@"name"] callback:^(PDCSSNamedFlow *namedFlow, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (namedFlow != nil) {
-                [params setObject:namedFlow forKey:@"namedFlow"];
-            }
-
-            responseCallback(params, error);
         }];
     } else {
         [super handleMethodWithName:methodName parameters:params responseCallback:responseCallback];

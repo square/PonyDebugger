@@ -2,7 +2,7 @@
 //  PDDatabaseDomain.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -14,6 +14,7 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 @class PDDatabaseDatabase;
+@class PDDatabaseError;
 
 @protocol PDDatabaseCommandDelegate;
 
@@ -23,8 +24,6 @@
 
 // Events
 - (void)addDatabaseWithDatabase:(PDDatabaseDatabase *)database;
-- (void)sqlTransactionSucceededWithTransactionId:(NSNumber *)transactionId columnNames:(NSArray *)columnNames values:(NSArray *)values;
-- (void)sqlTransactionFailedWithTransactionId:(NSNumber *)transactionId sqlError:(NSDictionary *)sqlError;
 
 @end
 
@@ -37,7 +36,7 @@
 // Disables database tracking, prevents database events from being sent to the client.
 - (void)domain:(PDDatabaseDomain *)domain disableWithCallback:(void (^)(id error))callback;
 - (void)domain:(PDDatabaseDomain *)domain getDatabaseTableNamesWithDatabaseId:(NSString *)databaseId callback:(void (^)(NSArray *tableNames, id error))callback;
-- (void)domain:(PDDatabaseDomain *)domain executeSQLWithDatabaseId:(NSString *)databaseId query:(NSString *)query callback:(void (^)(NSNumber *success, NSNumber *transactionId, id error))callback;
+- (void)domain:(PDDatabaseDomain *)domain executeSQLWithDatabaseId:(NSString *)databaseId query:(NSString *)query callback:(void (^)(NSArray *columnNames, NSArray *values, PDDatabaseError *sqlError, id error))callback;
 
 @end
 

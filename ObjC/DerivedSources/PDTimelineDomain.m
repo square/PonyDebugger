@@ -2,7 +2,7 @@
 //  PDTimelineDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -31,7 +31,7 @@
 
 // Events
 
-// Fired for every instrumentation event while timeline is started.
+// Deprecated.
 - (void)eventRecordedWithRecord:(PDTimelineTimelineEvent *)record;
 {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
@@ -47,27 +47,21 @@
 
 - (void)handleMethodWithName:(NSString *)methodName parameters:(NSDictionary *)params responseCallback:(PDResponseCallback)responseCallback;
 {
-    if ([methodName isEqualToString:@"start"] && [self.delegate respondsToSelector:@selector(domain:startWithMaxCallStackDepth:callback:)]) {
-        [self.delegate domain:self startWithMaxCallStackDepth:[params objectForKey:@"maxCallStackDepth"] callback:^(id error) {
+    if ([methodName isEqualToString:@"enable"] && [self.delegate respondsToSelector:@selector(domain:enableWithCallback:)]) {
+        [self.delegate domain:self enableWithCallback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"disable"] && [self.delegate respondsToSelector:@selector(domain:disableWithCallback:)]) {
+        [self.delegate domain:self disableWithCallback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"start"] && [self.delegate respondsToSelector:@selector(domain:startWithMaxCallStackDepth:bufferEvents:liveEvents:includeCounters:includeGPUEvents:callback:)]) {
+        [self.delegate domain:self startWithMaxCallStackDepth:[params objectForKey:@"maxCallStackDepth"] bufferEvents:[params objectForKey:@"bufferEvents"] liveEvents:[params objectForKey:@"liveEvents"] includeCounters:[params objectForKey:@"includeCounters"] includeGPUEvents:[params objectForKey:@"includeGPUEvents"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else if ([methodName isEqualToString:@"stop"] && [self.delegate respondsToSelector:@selector(domain:stopWithCallback:)]) {
         [self.delegate domain:self stopWithCallback:^(id error) {
             responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"setIncludeMemoryDetails"] && [self.delegate respondsToSelector:@selector(domain:setIncludeMemoryDetailsWithEnabled:callback:)]) {
-        [self.delegate domain:self setIncludeMemoryDetailsWithEnabled:[params objectForKey:@"enabled"] callback:^(id error) {
-            responseCallback(nil, error);
-        }];
-    } else if ([methodName isEqualToString:@"supportsFrameInstrumentation"] && [self.delegate respondsToSelector:@selector(domain:supportsFrameInstrumentationWithCallback:)]) {
-        [self.delegate domain:self supportsFrameInstrumentationWithCallback:^(NSNumber *result, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (result != nil) {
-                [params setObject:result forKey:@"result"];
-            }
-
-            responseCallback(params, error);
         }];
     } else {
         [super handleMethodWithName:methodName parameters:params responseCallback:responseCallback];

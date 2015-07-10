@@ -2,7 +2,7 @@
 //  PDDebuggerDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -39,9 +39,9 @@
 }
 
 // Fired when virtual machine parses script. This event is also fired for all known and uncollected scripts upon enabling debugger.
-- (void)scriptParsedWithScriptId:(NSString *)scriptId url:(NSString *)url startLine:(NSNumber *)startLine startColumn:(NSNumber *)startColumn endLine:(NSNumber *)endLine endColumn:(NSNumber *)endColumn isContentScript:(NSNumber *)isContentScript sourceMapURL:(NSString *)sourceMapURL;
+- (void)scriptParsedWithScriptId:(NSString *)scriptId url:(NSString *)url startLine:(NSNumber *)startLine startColumn:(NSNumber *)startColumn endLine:(NSNumber *)endLine endColumn:(NSNumber *)endColumn isContentScript:(NSNumber *)isContentScript isInternalScript:(NSNumber *)isInternalScript sourceMapURL:(NSString *)sourceMapURL hasSourceURL:(NSNumber *)hasSourceURL;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:8];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:10];
 
     if (scriptId != nil) {
         [params setObject:[scriptId PD_JSONObject] forKey:@"scriptId"];
@@ -64,32 +64,53 @@
     if (isContentScript != nil) {
         [params setObject:[isContentScript PD_JSONObject] forKey:@"isContentScript"];
     }
+    if (isInternalScript != nil) {
+        [params setObject:[isInternalScript PD_JSONObject] forKey:@"isInternalScript"];
+    }
     if (sourceMapURL != nil) {
         [params setObject:[sourceMapURL PD_JSONObject] forKey:@"sourceMapURL"];
+    }
+    if (hasSourceURL != nil) {
+        [params setObject:[hasSourceURL PD_JSONObject] forKey:@"hasSourceURL"];
     }
     
     [self.debuggingServer sendEventWithName:@"Debugger.scriptParsed" parameters:params];
 }
 
 // Fired when virtual machine fails to parse the script.
-- (void)scriptFailedToParseWithUrl:(NSString *)url scriptSource:(NSString *)scriptSource startLine:(NSNumber *)startLine errorLine:(NSNumber *)errorLine errorMessage:(NSString *)errorMessage;
+- (void)scriptFailedToParseWithScriptId:(NSString *)scriptId url:(NSString *)url startLine:(NSNumber *)startLine startColumn:(NSNumber *)startColumn endLine:(NSNumber *)endLine endColumn:(NSNumber *)endColumn isContentScript:(NSNumber *)isContentScript isInternalScript:(NSNumber *)isInternalScript sourceMapURL:(NSString *)sourceMapURL hasSourceURL:(NSNumber *)hasSourceURL;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:5];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:10];
 
+    if (scriptId != nil) {
+        [params setObject:[scriptId PD_JSONObject] forKey:@"scriptId"];
+    }
     if (url != nil) {
         [params setObject:[url PD_JSONObject] forKey:@"url"];
-    }
-    if (scriptSource != nil) {
-        [params setObject:[scriptSource PD_JSONObject] forKey:@"scriptSource"];
     }
     if (startLine != nil) {
         [params setObject:[startLine PD_JSONObject] forKey:@"startLine"];
     }
-    if (errorLine != nil) {
-        [params setObject:[errorLine PD_JSONObject] forKey:@"errorLine"];
+    if (startColumn != nil) {
+        [params setObject:[startColumn PD_JSONObject] forKey:@"startColumn"];
     }
-    if (errorMessage != nil) {
-        [params setObject:[errorMessage PD_JSONObject] forKey:@"errorMessage"];
+    if (endLine != nil) {
+        [params setObject:[endLine PD_JSONObject] forKey:@"endLine"];
+    }
+    if (endColumn != nil) {
+        [params setObject:[endColumn PD_JSONObject] forKey:@"endColumn"];
+    }
+    if (isContentScript != nil) {
+        [params setObject:[isContentScript PD_JSONObject] forKey:@"isContentScript"];
+    }
+    if (isInternalScript != nil) {
+        [params setObject:[isInternalScript PD_JSONObject] forKey:@"isInternalScript"];
+    }
+    if (sourceMapURL != nil) {
+        [params setObject:[sourceMapURL PD_JSONObject] forKey:@"sourceMapURL"];
+    }
+    if (hasSourceURL != nil) {
+        [params setObject:[hasSourceURL PD_JSONObject] forKey:@"hasSourceURL"];
     }
     
     [self.debuggingServer sendEventWithName:@"Debugger.scriptFailedToParse" parameters:params];
@@ -111,9 +132,9 @@
 }
 
 // Fired when the virtual machine stopped on breakpoint or exception or any other stop criteria.
-- (void)pausedWithCallFrames:(NSArray *)callFrames reason:(NSString *)reason data:(NSDictionary *)data;
+- (void)pausedWithCallFrames:(NSArray *)callFrames reason:(NSString *)reason data:(NSDictionary *)data hitBreakpoints:(NSArray *)hitBreakpoints asyncStackTrace:(PDDebuggerStackTrace *)asyncStackTrace;
 {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:5];
 
     if (callFrames != nil) {
         [params setObject:[callFrames PD_JSONObject] forKey:@"callFrames"];
@@ -123,6 +144,12 @@
     }
     if (data != nil) {
         [params setObject:[data PD_JSONObject] forKey:@"data"];
+    }
+    if (hitBreakpoints != nil) {
+        [params setObject:[hitBreakpoints PD_JSONObject] forKey:@"hitBreakpoints"];
+    }
+    if (asyncStackTrace != nil) {
+        [params setObject:[asyncStackTrace PD_JSONObject] forKey:@"asyncStackTrace"];
     }
     
     [self.debuggingServer sendEventWithName:@"Debugger.paused" parameters:params];
@@ -134,31 +161,50 @@
     [self.debuggingServer sendEventWithName:@"Debugger.resumed" parameters:nil];
 }
 
+// Fired when a <code>Promise</code> is created, updated or garbage collected.
+- (void)promiseUpdatedWithEventType:(NSString *)eventType promise:(PDDebuggerPromiseDetails *)promise;
+{
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+
+    if (eventType != nil) {
+        [params setObject:[eventType PD_JSONObject] forKey:@"eventType"];
+    }
+    if (promise != nil) {
+        [params setObject:[promise PD_JSONObject] forKey:@"promise"];
+    }
+    
+    [self.debuggingServer sendEventWithName:@"Debugger.promiseUpdated" parameters:params];
+}
+
+// Fired when an async operation is scheduled (while in a debugger stepping session).
+- (void)asyncOperationStartedWithOperation:(PDDebuggerAsyncOperation *)operation;
+{
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+    if (operation != nil) {
+        [params setObject:[operation PD_JSONObject] forKey:@"operation"];
+    }
+    
+    [self.debuggingServer sendEventWithName:@"Debugger.asyncOperationStarted" parameters:params];
+}
+
+// Fired when an async operation is completed (while in a debugger stepping session).
+- (void)asyncOperationCompletedWithId:(NSNumber *)identifier;
+{
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+    if (identifier != nil) {
+        [params setObject:[identifier PD_JSONObject] forKey:@"id"];
+    }
+    
+    [self.debuggingServer sendEventWithName:@"Debugger.asyncOperationCompleted" parameters:params];
+}
+
 
 
 - (void)handleMethodWithName:(NSString *)methodName parameters:(NSDictionary *)params responseCallback:(PDResponseCallback)responseCallback;
 {
-    if ([methodName isEqualToString:@"causesRecompilation"] && [self.delegate respondsToSelector:@selector(domain:causesRecompilationWithCallback:)]) {
-        [self.delegate domain:self causesRecompilationWithCallback:^(NSNumber *result, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (result != nil) {
-                [params setObject:result forKey:@"result"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"supportsSeparateScriptCompilationAndExecution"] && [self.delegate respondsToSelector:@selector(domain:supportsSeparateScriptCompilationAndExecutionWithCallback:)]) {
-        [self.delegate domain:self supportsSeparateScriptCompilationAndExecutionWithCallback:^(NSNumber *result, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (result != nil) {
-                [params setObject:result forKey:@"result"];
-            }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"enable"] && [self.delegate respondsToSelector:@selector(domain:enableWithCallback:)]) {
+    if ([methodName isEqualToString:@"enable"] && [self.delegate respondsToSelector:@selector(domain:enableWithCallback:)]) {
         [self.delegate domain:self enableWithCallback:^(id error) {
             responseCallback(nil, error);
         }];
@@ -168,6 +214,10 @@
         }];
     } else if ([methodName isEqualToString:@"setBreakpointsActive"] && [self.delegate respondsToSelector:@selector(domain:setBreakpointsActiveWithActive:callback:)]) {
         [self.delegate domain:self setBreakpointsActiveWithActive:[params objectForKey:@"active"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"setSkipAllPauses"] && [self.delegate respondsToSelector:@selector(domain:setSkipAllPausesWithSkipped:callback:)]) {
+        [self.delegate domain:self setSkipAllPausesWithSkipped:[params objectForKey:@"skipped"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else if ([methodName isEqualToString:@"setBreakpointByUrl"] && [self.delegate respondsToSelector:@selector(domain:setBreakpointByUrlWithLineNumber:url:urlRegex:columnNumber:condition:callback:)]) {
@@ -200,8 +250,8 @@
         [self.delegate domain:self removeBreakpointWithBreakpointId:[params objectForKey:@"breakpointId"] callback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"continueToLocation"] && [self.delegate respondsToSelector:@selector(domain:continueToLocationWithLocation:callback:)]) {
-        [self.delegate domain:self continueToLocationWithLocation:[params objectForKey:@"location"] callback:^(id error) {
+    } else if ([methodName isEqualToString:@"continueToLocation"] && [self.delegate respondsToSelector:@selector(domain:continueToLocationWithLocation:interstatementLocation:callback:)]) {
+        [self.delegate domain:self continueToLocationWithLocation:[params objectForKey:@"location"] interstatementLocation:[params objectForKey:@"interstatementLocation"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else if ([methodName isEqualToString:@"stepOver"] && [self.delegate respondsToSelector:@selector(domain:stepOverWithCallback:)]) {
@@ -222,6 +272,10 @@
         }];
     } else if ([methodName isEqualToString:@"resume"] && [self.delegate respondsToSelector:@selector(domain:resumeWithCallback:)]) {
         [self.delegate domain:self resumeWithCallback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"stepIntoAsync"] && [self.delegate respondsToSelector:@selector(domain:stepIntoAsyncWithCallback:)]) {
+        [self.delegate domain:self stepIntoAsyncWithCallback:^(id error) {
             responseCallback(nil, error);
         }];
     } else if ([methodName isEqualToString:@"searchInContent"] && [self.delegate respondsToSelector:@selector(domain:searchInContentWithScriptId:query:caseSensitive:isRegex:callback:)]) {
@@ -245,27 +299,33 @@
             responseCallback(params, error);
         }];
     } else if ([methodName isEqualToString:@"setScriptSource"] && [self.delegate respondsToSelector:@selector(domain:setScriptSourceWithScriptId:scriptSource:preview:callback:)]) {
-        [self.delegate domain:self setScriptSourceWithScriptId:[params objectForKey:@"scriptId"] scriptSource:[params objectForKey:@"scriptSource"] preview:[params objectForKey:@"preview"] callback:^(NSArray *callFrames, NSDictionary *result, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+        [self.delegate domain:self setScriptSourceWithScriptId:[params objectForKey:@"scriptId"] scriptSource:[params objectForKey:@"scriptSource"] preview:[params objectForKey:@"preview"] callback:^(NSArray *callFrames, NSDictionary *result, PDDebuggerStackTrace *asyncStackTrace, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
 
             if (callFrames != nil) {
                 [params setObject:callFrames forKey:@"callFrames"];
             }
             if (result != nil) {
                 [params setObject:result forKey:@"result"];
+            }
+            if (asyncStackTrace != nil) {
+                [params setObject:asyncStackTrace forKey:@"asyncStackTrace"];
             }
 
             responseCallback(params, error);
         }];
     } else if ([methodName isEqualToString:@"restartFrame"] && [self.delegate respondsToSelector:@selector(domain:restartFrameWithCallFrameId:callback:)]) {
-        [self.delegate domain:self restartFrameWithCallFrameId:[params objectForKey:@"callFrameId"] callback:^(NSArray *callFrames, NSDictionary *result, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+        [self.delegate domain:self restartFrameWithCallFrameId:[params objectForKey:@"callFrameId"] callback:^(NSArray *callFrames, NSDictionary *result, PDDebuggerStackTrace *asyncStackTrace, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
 
             if (callFrames != nil) {
                 [params setObject:callFrames forKey:@"callFrames"];
             }
             if (result != nil) {
                 [params setObject:result forKey:@"result"];
+            }
+            if (asyncStackTrace != nil) {
+                [params setObject:asyncStackTrace forKey:@"asyncStackTrace"];
             }
 
             responseCallback(params, error);
@@ -290,13 +350,33 @@
 
             responseCallback(params, error);
         }];
+    } else if ([methodName isEqualToString:@"getGeneratorObjectDetails"] && [self.delegate respondsToSelector:@selector(domain:getGeneratorObjectDetailsWithObjectId:callback:)]) {
+        [self.delegate domain:self getGeneratorObjectDetailsWithObjectId:[params objectForKey:@"objectId"] callback:^(PDDebuggerGeneratorObjectDetails *details, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (details != nil) {
+                [params setObject:details forKey:@"details"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"getCollectionEntries"] && [self.delegate respondsToSelector:@selector(domain:getCollectionEntriesWithObjectId:callback:)]) {
+        [self.delegate domain:self getCollectionEntriesWithObjectId:[params objectForKey:@"objectId"] callback:^(NSArray *entries, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (entries != nil) {
+                [params setObject:entries forKey:@"entries"];
+            }
+
+            responseCallback(params, error);
+        }];
     } else if ([methodName isEqualToString:@"setPauseOnExceptions"] && [self.delegate respondsToSelector:@selector(domain:setPauseOnExceptionsWithState:callback:)]) {
         [self.delegate domain:self setPauseOnExceptionsWithState:[params objectForKey:@"state"] callback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"evaluateOnCallFrame"] && [self.delegate respondsToSelector:@selector(domain:evaluateOnCallFrameWithCallFrameId:expression:objectGroup:includeCommandLineAPI:doNotPauseOnExceptionsAndMuteConsole:returnByValue:callback:)]) {
-        [self.delegate domain:self evaluateOnCallFrameWithCallFrameId:[params objectForKey:@"callFrameId"] expression:[params objectForKey:@"expression"] objectGroup:[params objectForKey:@"objectGroup"] includeCommandLineAPI:[params objectForKey:@"includeCommandLineAPI"] doNotPauseOnExceptionsAndMuteConsole:[params objectForKey:@"doNotPauseOnExceptionsAndMuteConsole"] returnByValue:[params objectForKey:@"returnByValue"] callback:^(PDRuntimeRemoteObject *result, NSNumber *wasThrown, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+    } else if ([methodName isEqualToString:@"evaluateOnCallFrame"] && [self.delegate respondsToSelector:@selector(domain:evaluateOnCallFrameWithCallFrameId:expression:objectGroup:includeCommandLineAPI:doNotPauseOnExceptionsAndMuteConsole:returnByValue:generatePreview:callback:)]) {
+        [self.delegate domain:self evaluateOnCallFrameWithCallFrameId:[params objectForKey:@"callFrameId"] expression:[params objectForKey:@"expression"] objectGroup:[params objectForKey:@"objectGroup"] includeCommandLineAPI:[params objectForKey:@"includeCommandLineAPI"] doNotPauseOnExceptionsAndMuteConsole:[params objectForKey:@"doNotPauseOnExceptionsAndMuteConsole"] returnByValue:[params objectForKey:@"returnByValue"] generatePreview:[params objectForKey:@"generatePreview"] callback:^(PDRuntimeRemoteObject *result, NSNumber *wasThrown, PDDebuggerExceptionDetails *exceptionDetails, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
 
             if (result != nil) {
                 [params setObject:result forKey:@"result"];
@@ -304,37 +384,101 @@
             if (wasThrown != nil) {
                 [params setObject:wasThrown forKey:@"wasThrown"];
             }
+            if (exceptionDetails != nil) {
+                [params setObject:exceptionDetails forKey:@"exceptionDetails"];
+            }
 
             responseCallback(params, error);
         }];
-    } else if ([methodName isEqualToString:@"compileScript"] && [self.delegate respondsToSelector:@selector(domain:compileScriptWithExpression:sourceURL:callback:)]) {
-        [self.delegate domain:self compileScriptWithExpression:[params objectForKey:@"expression"] sourceURL:[params objectForKey:@"sourceURL"] callback:^(NSString *scriptId, NSString *syntaxErrorMessage, id error) {
+    } else if ([methodName isEqualToString:@"compileScript"] && [self.delegate respondsToSelector:@selector(domain:compileScriptWithExpression:sourceURL:persistScript:executionContextId:callback:)]) {
+        [self.delegate domain:self compileScriptWithExpression:[params objectForKey:@"expression"] sourceURL:[params objectForKey:@"sourceURL"] persistScript:[params objectForKey:@"persistScript"] executionContextId:[params objectForKey:@"executionContextId"] callback:^(NSString *scriptId, PDDebuggerExceptionDetails *exceptionDetails, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
 
             if (scriptId != nil) {
                 [params setObject:scriptId forKey:@"scriptId"];
             }
-            if (syntaxErrorMessage != nil) {
-                [params setObject:syntaxErrorMessage forKey:@"syntaxErrorMessage"];
+            if (exceptionDetails != nil) {
+                [params setObject:exceptionDetails forKey:@"exceptionDetails"];
             }
 
             responseCallback(params, error);
         }];
-    } else if ([methodName isEqualToString:@"runScript"] && [self.delegate respondsToSelector:@selector(domain:runScriptWithScriptId:contextId:objectGroup:doNotPauseOnExceptionsAndMuteConsole:callback:)]) {
-        [self.delegate domain:self runScriptWithScriptId:[params objectForKey:@"scriptId"] contextId:[params objectForKey:@"contextId"] objectGroup:[params objectForKey:@"objectGroup"] doNotPauseOnExceptionsAndMuteConsole:[params objectForKey:@"doNotPauseOnExceptionsAndMuteConsole"] callback:^(PDRuntimeRemoteObject *result, NSNumber *wasThrown, id error) {
+    } else if ([methodName isEqualToString:@"runScript"] && [self.delegate respondsToSelector:@selector(domain:runScriptWithScriptId:executionContextId:objectGroup:doNotPauseOnExceptionsAndMuteConsole:callback:)]) {
+        [self.delegate domain:self runScriptWithScriptId:[params objectForKey:@"scriptId"] executionContextId:[params objectForKey:@"executionContextId"] objectGroup:[params objectForKey:@"objectGroup"] doNotPauseOnExceptionsAndMuteConsole:[params objectForKey:@"doNotPauseOnExceptionsAndMuteConsole"] callback:^(PDRuntimeRemoteObject *result, PDDebuggerExceptionDetails *exceptionDetails, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
 
             if (result != nil) {
                 [params setObject:result forKey:@"result"];
             }
-            if (wasThrown != nil) {
-                [params setObject:wasThrown forKey:@"wasThrown"];
+            if (exceptionDetails != nil) {
+                [params setObject:exceptionDetails forKey:@"exceptionDetails"];
             }
 
             responseCallback(params, error);
         }];
-    } else if ([methodName isEqualToString:@"setOverlayMessage"] && [self.delegate respondsToSelector:@selector(domain:setOverlayMessageWithMessage:callback:)]) {
-        [self.delegate domain:self setOverlayMessageWithMessage:[params objectForKey:@"message"] callback:^(id error) {
+    } else if ([methodName isEqualToString:@"setVariableValue"] && [self.delegate respondsToSelector:@selector(domain:setVariableValueWithScopeNumber:variableName:newValue:callFrameId:functionObjectId:callback:)]) {
+        [self.delegate domain:self setVariableValueWithScopeNumber:[params objectForKey:@"scopeNumber"] variableName:[params objectForKey:@"variableName"] newValue:[params objectForKey:@"newValue"] callFrameId:[params objectForKey:@"callFrameId"] functionObjectId:[params objectForKey:@"functionObjectId"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"getStepInPositions"] && [self.delegate respondsToSelector:@selector(domain:getStepInPositionsWithCallFrameId:callback:)]) {
+        [self.delegate domain:self getStepInPositionsWithCallFrameId:[params objectForKey:@"callFrameId"] callback:^(NSArray *stepInPositions, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (stepInPositions != nil) {
+                [params setObject:stepInPositions forKey:@"stepInPositions"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"getBacktrace"] && [self.delegate respondsToSelector:@selector(domain:getBacktraceWithCallback:)]) {
+        [self.delegate domain:self getBacktraceWithCallback:^(NSArray *callFrames, PDDebuggerStackTrace *asyncStackTrace, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+
+            if (callFrames != nil) {
+                [params setObject:callFrames forKey:@"callFrames"];
+            }
+            if (asyncStackTrace != nil) {
+                [params setObject:asyncStackTrace forKey:@"asyncStackTrace"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"skipStackFrames"] && [self.delegate respondsToSelector:@selector(domain:skipStackFramesWithScript:skipContentScripts:callback:)]) {
+        [self.delegate domain:self skipStackFramesWithScript:[params objectForKey:@"script"] skipContentScripts:[params objectForKey:@"skipContentScripts"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"setAsyncCallStackDepth"] && [self.delegate respondsToSelector:@selector(domain:setAsyncCallStackDepthWithMaxDepth:callback:)]) {
+        [self.delegate domain:self setAsyncCallStackDepthWithMaxDepth:[params objectForKey:@"maxDepth"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"enablePromiseTracker"] && [self.delegate respondsToSelector:@selector(domain:enablePromiseTrackerWithCaptureStacks:callback:)]) {
+        [self.delegate domain:self enablePromiseTrackerWithCaptureStacks:[params objectForKey:@"captureStacks"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"disablePromiseTracker"] && [self.delegate respondsToSelector:@selector(domain:disablePromiseTrackerWithCallback:)]) {
+        [self.delegate domain:self disablePromiseTrackerWithCallback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"getPromiseById"] && [self.delegate respondsToSelector:@selector(domain:getPromiseByIdWithPromiseId:objectGroup:callback:)]) {
+        [self.delegate domain:self getPromiseByIdWithPromiseId:[params objectForKey:@"promiseId"] objectGroup:[params objectForKey:@"objectGroup"] callback:^(PDRuntimeRemoteObject *promise, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (promise != nil) {
+                [params setObject:promise forKey:@"promise"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"flushAsyncOperationEvents"] && [self.delegate respondsToSelector:@selector(domain:flushAsyncOperationEventsWithCallback:)]) {
+        [self.delegate domain:self flushAsyncOperationEventsWithCallback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"setAsyncOperationBreakpoint"] && [self.delegate respondsToSelector:@selector(domain:setAsyncOperationBreakpointWithOperationId:callback:)]) {
+        [self.delegate domain:self setAsyncOperationBreakpointWithOperationId:[params objectForKey:@"operationId"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"removeAsyncOperationBreakpoint"] && [self.delegate respondsToSelector:@selector(domain:removeAsyncOperationBreakpointWithOperationId:callback:)]) {
+        [self.delegate domain:self removeAsyncOperationBreakpointWithOperationId:[params objectForKey:@"operationId"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else {

@@ -2,7 +2,7 @@
 //  PDTimelineDomain.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -17,14 +17,14 @@
 
 @protocol PDTimelineCommandDelegate;
 
-// Timeline provides its clients with instrumentation records that are generated during the page runtime. Timeline instrumentation can be started and stopped using corresponding commands. While timeline is started, it is generating timeline event records.
+// Timeline domain is deprecated. Please use Tracing instead.
 @interface PDTimelineDomain : PDDynamicDebuggerDomain 
 
 @property (nonatomic, assign) id <PDTimelineCommandDelegate, PDCommandDelegate> delegate;
 
 // Events
 
-// Fired for every instrumentation event while timeline is started.
+// Deprecated.
 // Param record: Timeline event record data.
 - (void)eventRecordedWithRecord:(PDTimelineTimelineEvent *)record;
 
@@ -33,20 +33,22 @@
 @protocol PDTimelineCommandDelegate <PDCommandDelegate>
 @optional
 
-// Starts capturing instrumentation events.
+// Deprecated.
+- (void)domain:(PDTimelineDomain *)domain enableWithCallback:(void (^)(id error))callback;
+
+// Deprecated.
+- (void)domain:(PDTimelineDomain *)domain disableWithCallback:(void (^)(id error))callback;
+
+// Deprecated.
 // Param maxCallStackDepth: Samples JavaScript stack traces up to <code>maxCallStackDepth</code>, defaults to 5.
-- (void)domain:(PDTimelineDomain *)domain startWithMaxCallStackDepth:(NSNumber *)maxCallStackDepth callback:(void (^)(id error))callback;
+// Param bufferEvents: Whether instrumentation events should be buffered and returned upon <code>stop</code> call.
+// Param liveEvents: Coma separated event types to issue although bufferEvents is set.
+// Param includeCounters: Whether counters data should be included into timeline events.
+// Param includeGPUEvents: Whether events from GPU process should be collected.
+- (void)domain:(PDTimelineDomain *)domain startWithMaxCallStackDepth:(NSNumber *)maxCallStackDepth bufferEvents:(NSNumber *)bufferEvents liveEvents:(NSString *)liveEvents includeCounters:(NSNumber *)includeCounters includeGPUEvents:(NSNumber *)includeGPUEvents callback:(void (^)(id error))callback;
 
-// Stops capturing instrumentation events.
+// Deprecated.
 - (void)domain:(PDTimelineDomain *)domain stopWithCallback:(void (^)(id error))callback;
-
-// Starts calculating various DOM statistics and sending them as part of timeline events.
-// Param enabled: True to start collecting DOM counters.
-- (void)domain:(PDTimelineDomain *)domain setIncludeMemoryDetailsWithEnabled:(NSNumber *)enabled callback:(void (^)(id error))callback;
-
-// Tells whether timeline agent supports frame instrumentation.
-// Callback Param result: True if timeline supports frame instrumentation.
-- (void)domain:(PDTimelineDomain *)domain supportsFrameInstrumentationWithCallback:(void (^)(NSNumber *result, id error))callback;
 
 @end
 

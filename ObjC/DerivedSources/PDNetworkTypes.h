@@ -2,7 +2,7 @@
 //  PDNetworkTypes.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -12,6 +12,9 @@
 #import <PonyDebugger/PDObject.h>
 #import <PonyDebugger/PDDebugger.h>
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
+
+
+@class PDConsoleAsyncStackTrace;
 
 
 // Timing information for the request.
@@ -53,6 +56,14 @@
 // Type: number
 @property (nonatomic, strong) NSNumber *sslEnd;
 
+// Started running ServiceWorker.
+// Type: number
+@property (nonatomic, strong) NSNumber *workerStart;
+
+// Finished Starting ServiceWorker.
+// Type: number
+@property (nonatomic, strong) NSNumber *workerReady;
+
 // Started sending request.
 // Type: number
 @property (nonatomic, strong) NSNumber *sendStart;
@@ -92,7 +103,7 @@
 // HTTP response data.
 @interface PDNetworkResponse : PDObject
 
-// Response URL.
+// Response URL. This URL can be different from CachedResource.url in case of redirect.
 // Type: string
 @property (nonatomic, strong) NSString *url;
 
@@ -130,12 +141,32 @@
 // Type: number
 @property (nonatomic, strong) NSNumber *connectionId;
 
+// Remote IP address.
+// Type: string
+@property (nonatomic, strong) NSString *remoteIPAddress;
+
+// Remote port.
+// Type: integer
+@property (nonatomic, strong) NSNumber *remotePort;
+
 // Specifies that the request was served from the disk cache.
 // Type: boolean
 @property (nonatomic, strong) NSNumber *fromDiskCache;
 
+// Specifies that the request was served from the ServiceWorker.
+// Type: boolean
+@property (nonatomic, strong) NSNumber *fromServiceWorker;
+
+// Total number of bytes received for this request so far.
+// Type: number
+@property (nonatomic, strong) NSNumber *encodedDataLength;
+
 // Timing information for the given request.
 @property (nonatomic, strong) PDNetworkResourceTiming *timing;
+
+// Protocol used to fetch this request.
+// Type: string
+@property (nonatomic, strong) NSString *protocol;
 
 @end
 
@@ -143,11 +174,7 @@
 // WebSocket request data.
 @interface PDNetworkWebSocketRequest : PDObject
 
-// HTTP response status text.
-// Type: string
-@property (nonatomic, strong) NSString *requestKey3;
-
-// HTTP response headers.
+// HTTP request headers.
 @property (nonatomic, strong) NSDictionary *headers;
 
 @end
@@ -167,9 +194,16 @@
 // HTTP response headers.
 @property (nonatomic, strong) NSDictionary *headers;
 
-// Challenge response.
+// HTTP response headers text.
 // Type: string
-@property (nonatomic, strong) NSString *challengeResponse;
+@property (nonatomic, strong) NSString *headersText;
+
+// HTTP request headers.
+@property (nonatomic, strong) NSDictionary *requestHeaders;
+
+// HTTP request headers text.
+// Type: string
+@property (nonatomic, strong) NSString *requestHeadersText;
 
 @end
 
@@ -195,7 +229,7 @@
 // Information about the cached resource.
 @interface PDNetworkCachedResource : PDObject
 
-// Resource URL.
+// Resource URL. This is the url of the original network request.
 // Type: string
 @property (nonatomic, strong) NSString *url;
 
@@ -229,6 +263,51 @@
 // Initiator line number, set for Parser type only.
 // Type: number
 @property (nonatomic, strong) NSNumber *lineNumber;
+
+// Initiator asynchronous JavaScript stack trace, if available.
+@property (nonatomic, strong) PDConsoleAsyncStackTrace *asyncStackTrace;
+
+@end
+
+
+// Cookie object
+@interface PDNetworkCookie : PDObject
+
+// Cookie name.
+// Type: string
+@property (nonatomic, strong) NSString *name;
+
+// Cookie value.
+// Type: string
+@property (nonatomic, strong) NSString *value;
+
+// Cookie domain.
+// Type: string
+@property (nonatomic, strong) NSString *domain;
+
+// Cookie path.
+// Type: string
+@property (nonatomic, strong) NSString *path;
+
+// Cookie expires.
+// Type: number
+@property (nonatomic, strong) NSNumber *expires;
+
+// Cookie size.
+// Type: integer
+@property (nonatomic, strong) NSNumber *size;
+
+// True if cookie is http-only.
+// Type: boolean
+@property (nonatomic, strong) NSNumber *httpOnly;
+
+// True if cookie is secure.
+// Type: boolean
+@property (nonatomic, strong) NSNumber *secure;
+
+// True in case of session cookie.
+// Type: boolean
+@property (nonatomic, strong) NSNumber *session;
 
 @end
 

@@ -2,7 +2,7 @@
 //  PDConsoleDomain.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -28,9 +28,10 @@
 // Param message: Console message that has been added.
 - (void)messageAddedWithMessage:(PDConsoleConsoleMessage *)message;
 
-// Issued when subsequent message(s) are equal to the previous one(s).
+// Is not issued. Will be gone in the future versions of the protocol.
 // Param count: New repeat count value.
-- (void)messageRepeatCountUpdatedWithCount:(NSNumber *)count;
+// Param timestamp: Timestamp of most recent message in batch.
+- (void)messageRepeatCountUpdatedWithCount:(NSNumber *)count timestamp:(NSNumber *)timestamp;
 
 // Issued when console is cleared. This happens either upon <code>clearMessages</code> command or after page navigation.
 - (void)messagesCleared;
@@ -48,15 +49,6 @@
 
 // Clears console messages collected in the browser.
 - (void)domain:(PDConsoleDomain *)domain clearMessagesWithCallback:(void (^)(id error))callback;
-
-// Toggles monitoring of XMLHttpRequest. If <code>true</code>, console will receive messages upon each XHR issued.
-// Param enabled: Monitoring enabled state.
-- (void)domain:(PDConsoleDomain *)domain setMonitoringXHREnabledWithEnabled:(NSNumber *)enabled callback:(void (^)(id error))callback;
-
-// Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions).
-// Param nodeId: DOM node id to be accessible by means of $x command line API.
-- (void)domain:(PDConsoleDomain *)domain addInspectedNodeWithNodeId:(NSNumber *)nodeId callback:(void (^)(id error))callback;
-- (void)domain:(PDConsoleDomain *)domain addInspectedHeapObjectWithHeapObjectId:(NSNumber *)heapObjectId callback:(void (^)(id error))callback;
 
 @end
 

@@ -2,7 +2,7 @@
 //  PDDatabaseTypes.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -31,6 +31,20 @@
 // Database version.
 // Type: string
 @property (nonatomic, strong) NSString *version;
+
+@end
+
+
+// Database error.
+@interface PDDatabaseError : PDObject
+
+// Error message.
+// Type: string
+@property (nonatomic, strong) NSString *message;
+
+// Error code.
+// Type: integer
+@property (nonatomic, strong) NSNumber *code;
 
 @end
 

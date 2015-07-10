@@ -2,7 +2,7 @@
 //  PDDOMStorageDomain.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -13,17 +13,20 @@
 #import <PonyDebugger/PDDebugger.h>
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
-@class PDDOMStorageEntry;
+@class PDDOMStorageStorageId;
 
 @protocol PDDOMStorageCommandDelegate;
 
+// Query and modify DOM storage.
 @interface PDDOMStorageDomain : PDDynamicDebuggerDomain 
 
 @property (nonatomic, assign) id <PDDOMStorageCommandDelegate, PDCommandDelegate> delegate;
 
 // Events
-- (void)addDOMStorageWithStorage:(PDDOMStorageEntry *)storage;
-- (void)domStorageUpdatedWithStorageId:(NSString *)storageId;
+- (void)domStorageItemsClearedWithStorageId:(PDDOMStorageStorageId *)storageId;
+- (void)domStorageItemRemovedWithStorageId:(PDDOMStorageStorageId *)storageId key:(NSString *)key;
+- (void)domStorageItemAddedWithStorageId:(PDDOMStorageStorageId *)storageId key:(NSString *)key newValue:(NSString *)newValue;
+- (void)domStorageItemUpdatedWithStorageId:(PDDOMStorageStorageId *)storageId key:(NSString *)key oldValue:(NSString *)oldValue newValue:(NSString *)newValue;
 
 @end
 
@@ -35,9 +38,9 @@
 
 // Disables storage tracking, prevents storage events from being sent to the client.
 - (void)domain:(PDDOMStorageDomain *)domain disableWithCallback:(void (^)(id error))callback;
-- (void)domain:(PDDOMStorageDomain *)domain getDOMStorageEntriesWithStorageId:(NSString *)storageId callback:(void (^)(NSArray *entries, id error))callback;
-- (void)domain:(PDDOMStorageDomain *)domain setDOMStorageItemWithStorageId:(NSString *)storageId key:(NSString *)key value:(NSString *)value callback:(void (^)(NSNumber *success, id error))callback;
-- (void)domain:(PDDOMStorageDomain *)domain removeDOMStorageItemWithStorageId:(NSString *)storageId key:(NSString *)key callback:(void (^)(NSNumber *success, id error))callback;
+- (void)domain:(PDDOMStorageDomain *)domain getDOMStorageItemsWithStorageId:(PDDOMStorageStorageId *)storageId callback:(void (^)(NSArray *entries, id error))callback;
+- (void)domain:(PDDOMStorageDomain *)domain setDOMStorageItemWithStorageId:(PDDOMStorageStorageId *)storageId key:(NSString *)key value:(NSString *)value callback:(void (^)(id error))callback;
+- (void)domain:(PDDOMStorageDomain *)domain removeDOMStorageItemWithStorageId:(PDDOMStorageStorageId *)storageId key:(NSString *)key callback:(void (^)(id error))callback;
 
 @end
 

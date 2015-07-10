@@ -2,7 +2,7 @@
 //  PDMemoryDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -12,7 +12,6 @@
 #import <PonyDebugger/PDObject.h>
 #import <PonyDebugger/PDMemoryDomain.h>
 #import <PonyDebugger/PDObject.h>
-#import <PonyDebugger/PDMemoryTypes.h>
 
 
 @interface PDMemoryDomain ()
@@ -33,25 +32,18 @@
 
 - (void)handleMethodWithName:(NSString *)methodName parameters:(NSDictionary *)params responseCallback:(PDResponseCallback)responseCallback;
 {
-    if ([methodName isEqualToString:@"getDOMNodeCount"] && [self.delegate respondsToSelector:@selector(domain:getDOMNodeCountWithCallback:)]) {
-        [self.delegate domain:self getDOMNodeCountWithCallback:^(NSArray *domGroups, PDMemoryStringStatistics *strings, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+    if ([methodName isEqualToString:@"getDOMCounters"] && [self.delegate respondsToSelector:@selector(domain:getDOMCountersWithCallback:)]) {
+        [self.delegate domain:self getDOMCountersWithCallback:^(NSNumber *documents, NSNumber *nodes, NSNumber *jsEventListeners, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:3];
 
-            if (domGroups != nil) {
-                [params setObject:domGroups forKey:@"domGroups"];
+            if (documents != nil) {
+                [params setObject:documents forKey:@"documents"];
             }
-            if (strings != nil) {
-                [params setObject:strings forKey:@"strings"];
+            if (nodes != nil) {
+                [params setObject:nodes forKey:@"nodes"];
             }
-
-            responseCallback(params, error);
-        }];
-    } else if ([methodName isEqualToString:@"getProcessMemoryDistribution"] && [self.delegate respondsToSelector:@selector(domain:getProcessMemoryDistributionWithCallback:)]) {
-        [self.delegate domain:self getProcessMemoryDistributionWithCallback:^(PDMemoryMemoryBlock *distribution, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (distribution != nil) {
-                [params setObject:distribution forKey:@"distribution"];
+            if (jsEventListeners != nil) {
+                [params setObject:jsEventListeners forKey:@"jsEventListeners"];
             }
 
             responseCallback(params, error);

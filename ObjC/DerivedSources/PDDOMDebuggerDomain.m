@@ -2,7 +2,7 @@
 //  PDDOMDebuggerDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -40,12 +40,12 @@
         [self.delegate domain:self removeDOMBreakpointWithNodeId:[params objectForKey:@"nodeId"] type:[params objectForKey:@"type"] callback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"setEventListenerBreakpoint"] && [self.delegate respondsToSelector:@selector(domain:setEventListenerBreakpointWithEventName:callback:)]) {
-        [self.delegate domain:self setEventListenerBreakpointWithEventName:[params objectForKey:@"eventName"] callback:^(id error) {
+    } else if ([methodName isEqualToString:@"setEventListenerBreakpoint"] && [self.delegate respondsToSelector:@selector(domain:setEventListenerBreakpointWithEventName:targetName:callback:)]) {
+        [self.delegate domain:self setEventListenerBreakpointWithEventName:[params objectForKey:@"eventName"] targetName:[params objectForKey:@"targetName"] callback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"removeEventListenerBreakpoint"] && [self.delegate respondsToSelector:@selector(domain:removeEventListenerBreakpointWithEventName:callback:)]) {
-        [self.delegate domain:self removeEventListenerBreakpointWithEventName:[params objectForKey:@"eventName"] callback:^(id error) {
+    } else if ([methodName isEqualToString:@"removeEventListenerBreakpoint"] && [self.delegate respondsToSelector:@selector(domain:removeEventListenerBreakpointWithEventName:targetName:callback:)]) {
+        [self.delegate domain:self removeEventListenerBreakpointWithEventName:[params objectForKey:@"eventName"] targetName:[params objectForKey:@"targetName"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else if ([methodName isEqualToString:@"setInstrumentationBreakpoint"] && [self.delegate respondsToSelector:@selector(domain:setInstrumentationBreakpointWithEventName:callback:)]) {
@@ -63,6 +63,16 @@
     } else if ([methodName isEqualToString:@"removeXHRBreakpoint"] && [self.delegate respondsToSelector:@selector(domain:removeXHRBreakpointWithUrl:callback:)]) {
         [self.delegate domain:self removeXHRBreakpointWithUrl:[params objectForKey:@"url"] callback:^(id error) {
             responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"getEventListeners"] && [self.delegate respondsToSelector:@selector(domain:getEventListenersWithObjectId:callback:)]) {
+        [self.delegate domain:self getEventListenersWithObjectId:[params objectForKey:@"objectId"] callback:^(NSArray *listeners, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (listeners != nil) {
+                [params setObject:listeners forKey:@"listeners"];
+            }
+
+            responseCallback(params, error);
         }];
     } else {
         [super handleMethodWithName:methodName parameters:params responseCallback:responseCallback];

@@ -2,7 +2,7 @@
 //  PDNetworkTypes.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -28,6 +28,8 @@
                     @"connectEnd",@"connectEnd",
                     @"sslStart",@"sslStart",
                     @"sslEnd",@"sslEnd",
+                    @"workerStart",@"workerStart",
+                    @"workerReady",@"workerReady",
                     @"sendStart",@"sendStart",
                     @"sendEnd",@"sendEnd",
                     @"receiveHeadersEnd",@"receiveHeadersEnd",
@@ -46,6 +48,8 @@
 @dynamic connectEnd;
 @dynamic sslStart;
 @dynamic sslEnd;
+@dynamic workerStart;
+@dynamic workerReady;
 @dynamic sendStart;
 @dynamic sendEnd;
 @dynamic receiveHeadersEnd;
@@ -95,8 +99,13 @@
                     @"requestHeadersText",@"requestHeadersText",
                     @"connectionReused",@"connectionReused",
                     @"connectionId",@"connectionId",
+                    @"remoteIPAddress",@"remoteIPAddress",
+                    @"remotePort",@"remotePort",
                     @"fromDiskCache",@"fromDiskCache",
+                    @"fromServiceWorker",@"fromServiceWorker",
+                    @"encodedDataLength",@"encodedDataLength",
                     @"timing",@"timing",
+                    @"protocol",@"protocol",
                     nil];
     });
 
@@ -113,8 +122,13 @@
 @dynamic requestHeadersText;
 @dynamic connectionReused;
 @dynamic connectionId;
+@dynamic remoteIPAddress;
+@dynamic remotePort;
 @dynamic fromDiskCache;
+@dynamic fromServiceWorker;
+@dynamic encodedDataLength;
 @dynamic timing;
+@dynamic protocol;
  
 @end
 
@@ -126,7 +140,6 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                    @"requestKey3",@"requestKey3",
                     @"headers",@"headers",
                     nil];
     });
@@ -134,7 +147,6 @@
     return mappings;
 }
 
-@dynamic requestKey3;
 @dynamic headers;
  
 @end
@@ -150,7 +162,9 @@
                     @"status",@"status",
                     @"statusText",@"statusText",
                     @"headers",@"headers",
-                    @"challengeResponse",@"challengeResponse",
+                    @"headersText",@"headersText",
+                    @"requestHeaders",@"requestHeaders",
+                    @"requestHeadersText",@"requestHeadersText",
                     nil];
     });
 
@@ -160,7 +174,9 @@
 @dynamic status;
 @dynamic statusText;
 @dynamic headers;
-@dynamic challengeResponse;
+@dynamic headersText;
+@dynamic requestHeaders;
+@dynamic requestHeadersText;
  
 @end
 
@@ -224,6 +240,7 @@
                     @"stackTrace",@"stackTrace",
                     @"url",@"url",
                     @"lineNumber",@"lineNumber",
+                    @"asyncStackTrace",@"asyncStackTrace",
                     nil];
     });
 
@@ -234,6 +251,42 @@
 @dynamic stackTrace;
 @dynamic url;
 @dynamic lineNumber;
+@dynamic asyncStackTrace;
+ 
+@end
+
+@implementation PDNetworkCookie
+
++ (NSDictionary *)keysToEncode;
+{
+    static NSDictionary *mappings = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                    @"name",@"name",
+                    @"value",@"value",
+                    @"domain",@"domain",
+                    @"path",@"path",
+                    @"expires",@"expires",
+                    @"size",@"size",
+                    @"httpOnly",@"httpOnly",
+                    @"secure",@"secure",
+                    @"session",@"session",
+                    nil];
+    });
+
+    return mappings;
+}
+
+@dynamic name;
+@dynamic value;
+@dynamic domain;
+@dynamic path;
+@dynamic expires;
+@dynamic size;
+@dynamic httpOnly;
+@dynamic secure;
+@dynamic session;
  
 @end
 

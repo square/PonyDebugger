@@ -2,7 +2,7 @@
 //  PDProfilerDomain.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -13,9 +13,8 @@
 #import <PonyDebugger/PDDebugger.h>
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
-@class PDRuntimeRemoteObject;
-@class PDProfilerProfile;
-@class PDProfilerProfileHeader;
+@class PDDebuggerLocation;
+@class PDProfilerCPUProfile;
 
 @protocol PDProfilerCommandDelegate;
 
@@ -24,36 +23,28 @@
 @property (nonatomic, assign) id <PDProfilerCommandDelegate, PDCommandDelegate> delegate;
 
 // Events
-- (void)addProfileHeaderWithHeader:(PDProfilerProfileHeader *)header;
-- (void)addHeapSnapshotChunkWithUid:(NSNumber *)uid chunk:(NSString *)chunk;
-- (void)finishHeapSnapshotWithUid:(NSNumber *)uid;
-- (void)setRecordingProfileWithIsProfiling:(NSNumber *)isProfiling;
-- (void)resetProfiles;
-- (void)reportHeapSnapshotProgressWithDone:(NSNumber *)done total:(NSNumber *)total;
+
+// Sent when new profile recodring is started using console.profile() call.
+// Param location: Location of console.profile().
+// Param title: Profile title passed as argument to console.profile().
+- (void)consoleProfileStartedWithId:(NSString *)identifier location:(PDDebuggerLocation *)location title:(NSString *)title;
+// Param location: Location of console.profileEnd().
+// Param title: Profile title passed as argunet to console.profile().
+- (void)consoleProfileFinishedWithId:(NSString *)identifier location:(PDDebuggerLocation *)location profile:(PDProfilerCPUProfile *)profile title:(NSString *)title;
 
 @end
 
 @protocol PDProfilerCommandDelegate <PDCommandDelegate>
 @optional
-- (void)domain:(PDProfilerDomain *)domain causesRecompilationWithCallback:(void (^)(NSNumber *result, id error))callback;
-- (void)domain:(PDProfilerDomain *)domain isSamplingWithCallback:(void (^)(NSNumber *result, id error))callback;
-- (void)domain:(PDProfilerDomain *)domain hasHeapProfilerWithCallback:(void (^)(NSNumber *result, id error))callback;
 - (void)domain:(PDProfilerDomain *)domain enableWithCallback:(void (^)(id error))callback;
 - (void)domain:(PDProfilerDomain *)domain disableWithCallback:(void (^)(id error))callback;
+
+// Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
+// Param interval: New sampling interval in microseconds.
+- (void)domain:(PDProfilerDomain *)domain setSamplingIntervalWithInterval:(NSNumber *)interval callback:(void (^)(id error))callback;
 - (void)domain:(PDProfilerDomain *)domain startWithCallback:(void (^)(id error))callback;
-- (void)domain:(PDProfilerDomain *)domain stopWithCallback:(void (^)(id error))callback;
-- (void)domain:(PDProfilerDomain *)domain getProfileHeadersWithCallback:(void (^)(NSArray *headers, id error))callback;
-- (void)domain:(PDProfilerDomain *)domain getProfileWithType:(NSString *)type uid:(NSNumber *)uid callback:(void (^)(PDProfilerProfile *profile, id error))callback;
-- (void)domain:(PDProfilerDomain *)domain removeProfileWithType:(NSString *)type uid:(NSNumber *)uid callback:(void (^)(id error))callback;
-- (void)domain:(PDProfilerDomain *)domain clearProfilesWithCallback:(void (^)(id error))callback;
-- (void)domain:(PDProfilerDomain *)domain takeHeapSnapshotWithCallback:(void (^)(id error))callback;
-- (void)domain:(PDProfilerDomain *)domain collectGarbageWithCallback:(void (^)(id error))callback;
-// Param objectGroup: Symbolic group name that can be used to release multiple objects.
-// Callback Param result: Evaluation result.
-- (void)domain:(PDProfilerDomain *)domain getObjectByHeapObjectIdWithObjectId:(NSString *)objectId objectGroup:(NSString *)objectGroup callback:(void (^)(PDRuntimeRemoteObject *result, id error))callback;
-// Param objectId: Identifier of the object to get heap object id for.
-// Callback Param heapSnapshotObjectId: Id of the heap snapshot object corresponding to the passed remote object id.
-- (void)domain:(PDProfilerDomain *)domain getHeapObjectIdWithObjectId:(NSString *)objectId callback:(void (^)(NSString *heapSnapshotObjectId, id error))callback;
+// Callback Param profile: Recorded profile.
+- (void)domain:(PDProfilerDomain *)domain stopWithCallback:(void (^)(PDProfilerCPUProfile *profile, id error))callback;
 
 @end
 

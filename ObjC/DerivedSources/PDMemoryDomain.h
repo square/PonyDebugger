@@ -2,7 +2,7 @@
 //  PDMemoryDomain.h
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -13,8 +13,6 @@
 #import <PonyDebugger/PDDebugger.h>
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
-@class PDMemoryMemoryBlock;
-@class PDMemoryStringStatistics;
 
 @protocol PDMemoryCommandDelegate;
 
@@ -26,9 +24,7 @@
 
 @protocol PDMemoryCommandDelegate <PDCommandDelegate>
 @optional
-- (void)domain:(PDMemoryDomain *)domain getDOMNodeCountWithCallback:(void (^)(NSArray *domGroups, PDMemoryStringStatistics *strings, id error))callback;
-// Callback Param distribution: An object describing all memory allocated by the process
-- (void)domain:(PDMemoryDomain *)domain getProcessMemoryDistributionWithCallback:(void (^)(PDMemoryMemoryBlock *distribution, id error))callback;
+- (void)domain:(PDMemoryDomain *)domain getDOMCountersWithCallback:(void (^)(NSNumber *documents, NSNumber *nodes, NSNumber *jsEventListeners, id error))callback;
 
 @end
 

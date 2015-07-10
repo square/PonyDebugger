@@ -2,7 +2,7 @@
 //  PDProfilerTypes.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -11,7 +11,7 @@
 
 #import "PDProfilerTypes.h"
 
-@implementation PDProfilerProfileHeader
+@implementation PDProfilerCPUProfileNode
 
 + (NSDictionary *)keysToEncode;
 {
@@ -19,24 +19,38 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                    @"typeId",@"typeId",
-                    @"title",@"title",
-                    @"uid",@"uid",
-                    @"maxJSObjectId",@"maxJSObjectId",
+                    @"functionName",@"functionName",
+                    @"scriptId",@"scriptId",
+                    @"url",@"url",
+                    @"lineNumber",@"lineNumber",
+                    @"columnNumber",@"columnNumber",
+                    @"hitCount",@"hitCount",
+                    @"callUID",@"callUID",
+                    @"children",@"children",
+                    @"deoptReason",@"deoptReason",
+                    @"id",@"identifier",
+                    @"positionTicks",@"positionTicks",
                     nil];
     });
 
     return mappings;
 }
 
-@dynamic typeId;
-@dynamic title;
-@dynamic uid;
-@dynamic maxJSObjectId;
+@dynamic functionName;
+@dynamic scriptId;
+@dynamic url;
+@dynamic lineNumber;
+@dynamic columnNumber;
+@dynamic hitCount;
+@dynamic callUID;
+@dynamic children;
+@dynamic deoptReason;
+@dynamic identifier;
+@dynamic positionTicks;
  
 @end
 
-@implementation PDProfilerProfile
+@implementation PDProfilerCPUProfile
 
 + (NSDictionary *)keysToEncode;
 {
@@ -45,7 +59,10 @@
     dispatch_once(&onceToken, ^{
         mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
                     @"head",@"head",
-                    @"bottomUpHead",@"bottomUpHead",
+                    @"startTime",@"startTime",
+                    @"endTime",@"endTime",
+                    @"samples",@"samples",
+                    @"timestamps",@"timestamps",
                     nil];
     });
 
@@ -53,7 +70,31 @@
 }
 
 @dynamic head;
-@dynamic bottomUpHead;
+@dynamic startTime;
+@dynamic endTime;
+@dynamic samples;
+@dynamic timestamps;
+ 
+@end
+
+@implementation PDProfilerPositionTickInfo
+
++ (NSDictionary *)keysToEncode;
+{
+    static NSDictionary *mappings = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                    @"line",@"line",
+                    @"ticks",@"ticks",
+                    nil];
+    });
+
+    return mappings;
+}
+
+@dynamic line;
+@dynamic ticks;
  
 @end
 

@@ -2,7 +2,7 @@
 //  PDDOMDomain.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -36,6 +36,18 @@
 - (void)documentUpdated;
 {
     [self.debuggingServer sendEventWithName:@"DOM.documentUpdated" parameters:nil];
+}
+
+// Fired when the node should be inspected. This happens after call to <code>setInspectModeEnabled</code>.
+- (void)inspectNodeRequestedWithBackendNodeId:(NSNumber *)backendNodeId;
+{
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+    if (backendNodeId != nil) {
+        [params setObject:[backendNodeId PD_JSONObject] forKey:@"backendNodeId"];
+    }
+    
+    [self.debuggingServer sendEventWithName:@"DOM.inspectNodeRequested" parameters:params];
 }
 
 // Fired when backend wants to provide client with the missing DOM structure. This happens upon most of the calls requesting node ids.
@@ -191,11 +203,64 @@
     [self.debuggingServer sendEventWithName:@"DOM.shadowRootPopped" parameters:params];
 }
 
+// Called when a pseudo element is added to an element.
+- (void)pseudoElementAddedWithParentId:(NSNumber *)parentId pseudoElement:(PDDOMNode *)pseudoElement;
+{
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+
+    if (parentId != nil) {
+        [params setObject:[parentId PD_JSONObject] forKey:@"parentId"];
+    }
+    if (pseudoElement != nil) {
+        [params setObject:[pseudoElement PD_JSONObject] forKey:@"pseudoElement"];
+    }
+    
+    [self.debuggingServer sendEventWithName:@"DOM.pseudoElementAdded" parameters:params];
+}
+
+// Called when a pseudo element is removed from an element.
+- (void)pseudoElementRemovedWithParentId:(NSNumber *)parentId pseudoElementId:(NSNumber *)pseudoElementId;
+{
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+
+    if (parentId != nil) {
+        [params setObject:[parentId PD_JSONObject] forKey:@"parentId"];
+    }
+    if (pseudoElementId != nil) {
+        [params setObject:[pseudoElementId PD_JSONObject] forKey:@"pseudoElementId"];
+    }
+    
+    [self.debuggingServer sendEventWithName:@"DOM.pseudoElementRemoved" parameters:params];
+}
+
+// Called when distrubution is changed.
+- (void)distributedNodesUpdatedWithInsertionPointId:(NSNumber *)insertionPointId distributedNodes:(NSArray *)distributedNodes;
+{
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
+
+    if (insertionPointId != nil) {
+        [params setObject:[insertionPointId PD_JSONObject] forKey:@"insertionPointId"];
+    }
+    if (distributedNodes != nil) {
+        [params setObject:[distributedNodes PD_JSONObject] forKey:@"distributedNodes"];
+    }
+    
+    [self.debuggingServer sendEventWithName:@"DOM.distributedNodesUpdated" parameters:params];
+}
+
 
 
 - (void)handleMethodWithName:(NSString *)methodName parameters:(NSDictionary *)params responseCallback:(PDResponseCallback)responseCallback;
 {
-    if ([methodName isEqualToString:@"getDocument"] && [self.delegate respondsToSelector:@selector(domain:getDocumentWithCallback:)]) {
+    if ([methodName isEqualToString:@"enable"] && [self.delegate respondsToSelector:@selector(domain:enableWithCallback:)]) {
+        [self.delegate domain:self enableWithCallback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"disable"] && [self.delegate respondsToSelector:@selector(domain:disableWithCallback:)]) {
+        [self.delegate domain:self disableWithCallback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"getDocument"] && [self.delegate respondsToSelector:@selector(domain:getDocumentWithCallback:)]) {
         [self.delegate domain:self getDocumentWithCallback:^(PDDOMNode *root, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
@@ -205,8 +270,8 @@
 
             responseCallback(params, error);
         }];
-    } else if ([methodName isEqualToString:@"requestChildNodes"] && [self.delegate respondsToSelector:@selector(domain:requestChildNodesWithNodeId:callback:)]) {
-        [self.delegate domain:self requestChildNodesWithNodeId:[params objectForKey:@"nodeId"] callback:^(id error) {
+    } else if ([methodName isEqualToString:@"requestChildNodes"] && [self.delegate respondsToSelector:@selector(domain:requestChildNodesWithNodeId:depth:callback:)]) {
+        [self.delegate domain:self requestChildNodesWithNodeId:[params objectForKey:@"nodeId"] depth:[params objectForKey:@"depth"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else if ([methodName isEqualToString:@"querySelector"] && [self.delegate respondsToSelector:@selector(domain:querySelectorWithNodeId:selector:callback:)]) {
@@ -259,16 +324,6 @@
         [self.delegate domain:self removeAttributeWithNodeId:[params objectForKey:@"nodeId"] name:[params objectForKey:@"name"] callback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"getEventListenersForNode"] && [self.delegate respondsToSelector:@selector(domain:getEventListenersForNodeWithNodeId:callback:)]) {
-        [self.delegate domain:self getEventListenersForNodeWithNodeId:[params objectForKey:@"nodeId"] callback:^(NSArray *listeners, id error) {
-            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
-
-            if (listeners != nil) {
-                [params setObject:listeners forKey:@"listeners"];
-            }
-
-            responseCallback(params, error);
-        }];
     } else if ([methodName isEqualToString:@"getOuterHTML"] && [self.delegate respondsToSelector:@selector(domain:getOuterHTMLWithNodeId:callback:)]) {
         [self.delegate domain:self getOuterHTMLWithNodeId:[params objectForKey:@"nodeId"] callback:^(NSString *outerHTML, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
@@ -283,8 +338,8 @@
         [self.delegate domain:self setOuterHTMLWithNodeId:[params objectForKey:@"nodeId"] outerHTML:[params objectForKey:@"outerHTML"] callback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"performSearch"] && [self.delegate respondsToSelector:@selector(domain:performSearchWithQuery:callback:)]) {
-        [self.delegate domain:self performSearchWithQuery:[params objectForKey:@"query"] callback:^(NSString *searchId, NSNumber *resultCount, id error) {
+    } else if ([methodName isEqualToString:@"performSearch"] && [self.delegate respondsToSelector:@selector(domain:performSearchWithQuery:includeUserAgentShadowDOM:callback:)]) {
+        [self.delegate domain:self performSearchWithQuery:[params objectForKey:@"query"] includeUserAgentShadowDOM:[params objectForKey:@"includeUserAgentShadowDOM"] callback:^(NSString *searchId, NSNumber *resultCount, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:2];
 
             if (searchId != nil) {
@@ -320,16 +375,20 @@
 
             responseCallback(params, error);
         }];
-    } else if ([methodName isEqualToString:@"setInspectModeEnabled"] && [self.delegate respondsToSelector:@selector(domain:setInspectModeEnabledWithEnabled:highlightConfig:callback:)]) {
-        [self.delegate domain:self setInspectModeEnabledWithEnabled:[params objectForKey:@"enabled"] highlightConfig:[params objectForKey:@"highlightConfig"] callback:^(id error) {
+    } else if ([methodName isEqualToString:@"setInspectModeEnabled"] && [self.delegate respondsToSelector:@selector(domain:setInspectModeEnabledWithEnabled:inspectUAShadowDOM:highlightConfig:callback:)]) {
+        [self.delegate domain:self setInspectModeEnabledWithEnabled:[params objectForKey:@"enabled"] inspectUAShadowDOM:[params objectForKey:@"inspectUAShadowDOM"] highlightConfig:[params objectForKey:@"highlightConfig"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else if ([methodName isEqualToString:@"highlightRect"] && [self.delegate respondsToSelector:@selector(domain:highlightRectWithX:y:width:height:color:outlineColor:callback:)]) {
         [self.delegate domain:self highlightRectWithX:[params objectForKey:@"x"] y:[params objectForKey:@"y"] width:[params objectForKey:@"width"] height:[params objectForKey:@"height"] color:[params objectForKey:@"color"] outlineColor:[params objectForKey:@"outlineColor"] callback:^(id error) {
             responseCallback(nil, error);
         }];
-    } else if ([methodName isEqualToString:@"highlightNode"] && [self.delegate respondsToSelector:@selector(domain:highlightNodeWithNodeId:highlightConfig:callback:)]) {
-        [self.delegate domain:self highlightNodeWithNodeId:[params objectForKey:@"nodeId"] highlightConfig:[params objectForKey:@"highlightConfig"] callback:^(id error) {
+    } else if ([methodName isEqualToString:@"highlightQuad"] && [self.delegate respondsToSelector:@selector(domain:highlightQuadWithQuad:color:outlineColor:callback:)]) {
+        [self.delegate domain:self highlightQuadWithQuad:[params objectForKey:@"quad"] color:[params objectForKey:@"color"] outlineColor:[params objectForKey:@"outlineColor"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"highlightNode"] && [self.delegate respondsToSelector:@selector(domain:highlightNodeWithHighlightConfig:nodeId:backendNodeId:objectId:callback:)]) {
+        [self.delegate domain:self highlightNodeWithHighlightConfig:[params objectForKey:@"highlightConfig"] nodeId:[params objectForKey:@"nodeId"] backendNodeId:[params objectForKey:@"backendNodeId"] objectId:[params objectForKey:@"objectId"] callback:^(id error) {
             responseCallback(nil, error);
         }];
     } else if ([methodName isEqualToString:@"hideHighlight"] && [self.delegate respondsToSelector:@selector(domain:hideHighlightWithCallback:)]) {
@@ -350,6 +409,20 @@
 
             responseCallback(params, error);
         }];
+    } else if ([methodName isEqualToString:@"pushNodesByBackendIdsToFrontend"] && [self.delegate respondsToSelector:@selector(domain:pushNodesByBackendIdsToFrontendWithBackendNodeIds:callback:)]) {
+        [self.delegate domain:self pushNodesByBackendIdsToFrontendWithBackendNodeIds:[params objectForKey:@"backendNodeIds"] callback:^(NSArray *nodeIds, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (nodeIds != nil) {
+                [params setObject:nodeIds forKey:@"nodeIds"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"setInspectedNode"] && [self.delegate respondsToSelector:@selector(domain:setInspectedNodeWithNodeId:callback:)]) {
+        [self.delegate domain:self setInspectedNodeWithNodeId:[params objectForKey:@"nodeId"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
     } else if ([methodName isEqualToString:@"resolveNode"] && [self.delegate respondsToSelector:@selector(domain:resolveNodeWithNodeId:objectGroup:callback:)]) {
         [self.delegate domain:self resolveNodeWithNodeId:[params objectForKey:@"nodeId"] objectGroup:[params objectForKey:@"objectGroup"] callback:^(PDRuntimeRemoteObject *object, id error) {
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
@@ -366,6 +439,16 @@
 
             if (attributes != nil) {
                 [params setObject:attributes forKey:@"attributes"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"copyTo"] && [self.delegate respondsToSelector:@selector(domain:copyToWithNodeId:targetNodeId:insertBeforeNodeId:callback:)]) {
+        [self.delegate domain:self copyToWithNodeId:[params objectForKey:@"nodeId"] targetNodeId:[params objectForKey:@"targetNodeId"] insertBeforeNodeId:[params objectForKey:@"insertBeforeNodeId"] callback:^(NSNumber *nodeId, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (nodeId != nil) {
+                [params setObject:nodeId forKey:@"nodeId"];
             }
 
             responseCallback(params, error);
@@ -391,6 +474,54 @@
     } else if ([methodName isEqualToString:@"markUndoableState"] && [self.delegate respondsToSelector:@selector(domain:markUndoableStateWithCallback:)]) {
         [self.delegate domain:self markUndoableStateWithCallback:^(id error) {
             responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"focus"] && [self.delegate respondsToSelector:@selector(domain:focusWithNodeId:callback:)]) {
+        [self.delegate domain:self focusWithNodeId:[params objectForKey:@"nodeId"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"setFileInputFiles"] && [self.delegate respondsToSelector:@selector(domain:setFileInputFilesWithNodeId:files:callback:)]) {
+        [self.delegate domain:self setFileInputFilesWithNodeId:[params objectForKey:@"nodeId"] files:[params objectForKey:@"files"] callback:^(id error) {
+            responseCallback(nil, error);
+        }];
+    } else if ([methodName isEqualToString:@"getBoxModel"] && [self.delegate respondsToSelector:@selector(domain:getBoxModelWithNodeId:callback:)]) {
+        [self.delegate domain:self getBoxModelWithNodeId:[params objectForKey:@"nodeId"] callback:^(PDDOMBoxModel *model, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (model != nil) {
+                [params setObject:model forKey:@"model"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"getNodeForLocation"] && [self.delegate respondsToSelector:@selector(domain:getNodeForLocationWithX:y:callback:)]) {
+        [self.delegate domain:self getNodeForLocationWithX:[params objectForKey:@"x"] y:[params objectForKey:@"y"] callback:^(NSNumber *nodeId, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (nodeId != nil) {
+                [params setObject:nodeId forKey:@"nodeId"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"getRelayoutBoundary"] && [self.delegate respondsToSelector:@selector(domain:getRelayoutBoundaryWithNodeId:callback:)]) {
+        [self.delegate domain:self getRelayoutBoundaryWithNodeId:[params objectForKey:@"nodeId"] callback:^(NSNumber *nodeId, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (nodeId != nil) {
+                [params setObject:nodeId forKey:@"nodeId"];
+            }
+
+            responseCallback(params, error);
+        }];
+    } else if ([methodName isEqualToString:@"getHighlightObjectForTest"] && [self.delegate respondsToSelector:@selector(domain:getHighlightObjectForTestWithNodeId:callback:)]) {
+        [self.delegate domain:self getHighlightObjectForTestWithNodeId:[params objectForKey:@"nodeId"] callback:^(NSDictionary *highlight, id error) {
+            NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:1];
+
+            if (highlight != nil) {
+                [params setObject:highlight forKey:@"highlight"];
+            }
+
+            responseCallback(params, error);
         }];
     } else {
         [super handleMethodWithName:methodName parameters:params responseCallback:responseCallback];

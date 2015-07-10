@@ -2,7 +2,7 @@
 //  PDPageTypes.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -65,7 +65,7 @@
  
 @end
 
-@implementation PDPageSearchMatch
+@implementation PDPageNavigationEntry
 
 + (NSDictionary *)keysToEncode;
 {
@@ -73,43 +73,22 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                    @"lineNumber",@"lineNumber",
-                    @"lineContent",@"lineContent",
-                    nil];
-    });
-
-    return mappings;
-}
-
-@dynamic lineNumber;
-@dynamic lineContent;
- 
-@end
-
-@implementation PDPageSearchResult
-
-+ (NSDictionary *)keysToEncode;
-{
-    static NSDictionary *mappings = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                    @"id",@"identifier",
                     @"url",@"url",
-                    @"frameId",@"frameId",
-                    @"matchesCount",@"matchesCount",
+                    @"title",@"title",
                     nil];
     });
 
     return mappings;
 }
 
+@dynamic identifier;
 @dynamic url;
-@dynamic frameId;
-@dynamic matchesCount;
+@dynamic title;
  
 @end
 
-@implementation PDPageCookie
+@implementation PDPageScreencastFrameMetadata
 
 + (NSDictionary *)keysToEncode;
 {
@@ -117,30 +96,26 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                    @"name",@"name",
-                    @"value",@"value",
-                    @"domain",@"domain",
-                    @"path",@"path",
-                    @"expires",@"expires",
-                    @"size",@"size",
-                    @"httpOnly",@"httpOnly",
-                    @"secure",@"secure",
-                    @"session",@"session",
+                    @"offsetTop",@"offsetTop",
+                    @"pageScaleFactor",@"pageScaleFactor",
+                    @"deviceWidth",@"deviceWidth",
+                    @"deviceHeight",@"deviceHeight",
+                    @"scrollOffsetX",@"scrollOffsetX",
+                    @"scrollOffsetY",@"scrollOffsetY",
+                    @"timestamp",@"timestamp",
                     nil];
     });
 
     return mappings;
 }
 
-@dynamic name;
-@dynamic value;
-@dynamic domain;
-@dynamic path;
-@dynamic expires;
-@dynamic size;
-@dynamic httpOnly;
-@dynamic secure;
-@dynamic session;
+@dynamic offsetTop;
+@dynamic pageScaleFactor;
+@dynamic deviceWidth;
+@dynamic deviceHeight;
+@dynamic scrollOffsetX;
+@dynamic scrollOffsetY;
+@dynamic timestamp;
  
 @end
 

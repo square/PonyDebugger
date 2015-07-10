@@ -2,7 +2,7 @@
 //  PDDOMStorageTypes.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -11,7 +11,7 @@
 
 #import "PDDOMStorageTypes.h"
 
-@implementation PDDOMStorageEntry
+@implementation PDDOMStorageStorageId
 
 + (NSDictionary *)keysToEncode;
 {
@@ -19,18 +19,16 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                    @"origin",@"origin",
+                    @"securityOrigin",@"securityOrigin",
                     @"isLocalStorage",@"isLocalStorage",
-                    @"id",@"identifier",
                     nil];
     });
 
     return mappings;
 }
 
-@dynamic origin;
+@dynamic securityOrigin;
 @dynamic isLocalStorage;
-@dynamic identifier;
  
 @end
 

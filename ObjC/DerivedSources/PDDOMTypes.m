@@ -2,7 +2,7 @@
 //  PDDOMTypes.m
 //  PonyDebuggerDerivedSources
 //
-//  Generated on 8/23/12
+//  Generated on 7/10/15
 //
 //  Licensed to Square, Inc. under one or more contributor license agreements.
 //  See the LICENSE file distributed with this work for the terms under
@@ -10,6 +10,29 @@
 //
 
 #import "PDDOMTypes.h"
+
+@implementation PDDOMBackendNode
+
++ (NSDictionary *)keysToEncode;
+{
+    static NSDictionary *mappings = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                    @"nodeType",@"nodeType",
+                    @"nodeName",@"nodeName",
+                    @"backendNodeId",@"backendNodeId",
+                    nil];
+    });
+
+    return mappings;
+}
+
+@dynamic nodeType;
+@dynamic nodeName;
+@dynamic backendNodeId;
+ 
+@end
 
 @implementation PDDOMNode
 
@@ -28,14 +51,22 @@
                     @"children",@"children",
                     @"attributes",@"attributes",
                     @"documentURL",@"documentURL",
+                    @"baseURL",@"baseURL",
                     @"publicId",@"publicId",
                     @"systemId",@"systemId",
                     @"internalSubset",@"internalSubset",
                     @"xmlVersion",@"xmlVersion",
                     @"name",@"name",
                     @"value",@"value",
+                    @"pseudoType",@"pseudoType",
+                    @"shadowRootType",@"shadowRootType",
+                    @"frameId",@"frameId",
                     @"contentDocument",@"contentDocument",
                     @"shadowRoots",@"shadowRoots",
+                    @"templateContent",@"templateContent",
+                    @"pseudoElements",@"pseudoElements",
+                    @"importedDocument",@"importedDocument",
+                    @"distributedNodes",@"distributedNodes",
                     nil];
     });
 
@@ -51,43 +82,22 @@
 @dynamic children;
 @dynamic attributes;
 @dynamic documentURL;
+@dynamic baseURL;
 @dynamic publicId;
 @dynamic systemId;
 @dynamic internalSubset;
 @dynamic xmlVersion;
 @dynamic name;
 @dynamic value;
+@dynamic pseudoType;
+@dynamic shadowRootType;
+@dynamic frameId;
 @dynamic contentDocument;
 @dynamic shadowRoots;
- 
-@end
-
-@implementation PDDOMEventListener
-
-+ (NSDictionary *)keysToEncode;
-{
-    static NSDictionary *mappings = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
-                    @"type",@"type",
-                    @"useCapture",@"useCapture",
-                    @"isAttribute",@"isAttribute",
-                    @"nodeId",@"nodeId",
-                    @"handlerBody",@"handlerBody",
-                    @"location",@"location",
-                    nil];
-    });
-
-    return mappings;
-}
-
-@dynamic type;
-@dynamic useCapture;
-@dynamic isAttribute;
-@dynamic nodeId;
-@dynamic handlerBody;
-@dynamic location;
+@dynamic templateContent;
+@dynamic pseudoElements;
+@dynamic importedDocument;
+@dynamic distributedNodes;
  
 @end
 
@@ -116,6 +126,85 @@
  
 @end
 
+@implementation PDDOMBoxModel
+
++ (NSDictionary *)keysToEncode;
+{
+    static NSDictionary *mappings = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                    @"content",@"content",
+                    @"padding",@"padding",
+                    @"border",@"border",
+                    @"margin",@"margin",
+                    @"width",@"width",
+                    @"height",@"height",
+                    @"shapeOutside",@"shapeOutside",
+                    nil];
+    });
+
+    return mappings;
+}
+
+@dynamic content;
+@dynamic padding;
+@dynamic border;
+@dynamic margin;
+@dynamic width;
+@dynamic height;
+@dynamic shapeOutside;
+ 
+@end
+
+@implementation PDDOMShapeOutsideInfo
+
++ (NSDictionary *)keysToEncode;
+{
+    static NSDictionary *mappings = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                    @"bounds",@"bounds",
+                    @"shape",@"shape",
+                    @"marginShape",@"marginShape",
+                    nil];
+    });
+
+    return mappings;
+}
+
+@dynamic bounds;
+@dynamic shape;
+@dynamic marginShape;
+ 
+@end
+
+@implementation PDDOMRect
+
++ (NSDictionary *)keysToEncode;
+{
+    static NSDictionary *mappings = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
+                    @"x",@"x",
+                    @"y",@"y",
+                    @"width",@"width",
+                    @"height",@"height",
+                    nil];
+    });
+
+    return mappings;
+}
+
+@dynamic x;
+@dynamic y;
+@dynamic width;
+@dynamic height;
+ 
+@end
+
 @implementation PDDOMHighlightConfig
 
 + (NSDictionary *)keysToEncode;
@@ -125,10 +214,16 @@
     dispatch_once(&onceToken, ^{
         mappings = [[NSDictionary alloc] initWithObjectsAndKeys:
                     @"showInfo",@"showInfo",
+                    @"showRulers",@"showRulers",
+                    @"showExtensionLines",@"showExtensionLines",
+                    @"showLayoutEditor",@"showLayoutEditor",
                     @"contentColor",@"contentColor",
                     @"paddingColor",@"paddingColor",
                     @"borderColor",@"borderColor",
                     @"marginColor",@"marginColor",
+                    @"eventTargetColor",@"eventTargetColor",
+                    @"shapeColor",@"shapeColor",
+                    @"shapeMarginColor",@"shapeMarginColor",
                     nil];
     });
 
@@ -136,10 +231,16 @@
 }
 
 @dynamic showInfo;
+@dynamic showRulers;
+@dynamic showExtensionLines;
+@dynamic showLayoutEditor;
 @dynamic contentColor;
 @dynamic paddingColor;
 @dynamic borderColor;
 @dynamic marginColor;
+@dynamic eventTargetColor;
+@dynamic shapeColor;
+@dynamic shapeMarginColor;
  
 @end
 
