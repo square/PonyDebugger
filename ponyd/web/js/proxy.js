@@ -10,7 +10,10 @@ $(function() {
     },
 
     debuggerURL: function() {
-      return "devtools/devtools.html?host=" + document.location.host + "&page=" + this.get('page');
+      return "devtools/inspector.html?ws="
+          + document.location.host
+          + "/devtools/page/"
+          + this.get('page');
     }
   });
 
@@ -51,7 +54,7 @@ $(function() {
       this.devices = this.$("#device-list");
       this.noDevices = this.$("#no-devices");
       this.connectionStatus = this.$("#connection-status");
-      
+
       Devices.bind('add', this.addOne, this);
       Devices.bind('reset', this.addAll, this);
       Devices.bind('all', this.render, this);
