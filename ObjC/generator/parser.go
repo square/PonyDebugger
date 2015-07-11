@@ -1,458 +1,451 @@
 package main
 
 import (
-    "io"
-    "os"
-    "strings"
-    "text/template"
-    "fmt"
-    "time"
+	"fmt"
+	"io"
+	"os"
+	"strings"
+	"text/template"
+	"time"
 )
 
 var TypeLookup map[string]string = map[string]string{
-    "any":     "id ",
-    "string":  "NSString *",
-    "integer": "NSNumber *",
-    "number":  "NSNumber *",
-    "boolean": "NSNumber *",
-    "array":   "NSArray *",
-    "object":  "NSDictionary *",
+	"any":     "id ",
+	"string":  "NSString *",
+	"integer": "NSNumber *",
+	"number":  "NSNumber *",
+	"boolean": "NSNumber *",
+	"array":   "NSArray *",
+	"object":  "NSDictionary *",
 }
 
 var AttributeTypeLookup map[string]string = map[string]string{
-    "any":     "NSTransformableAttributeType",
-    "string":  "NSStringAttributeType",
-    "integer": "NSInteger64AttributeType",
-    "number":  "NSDoubleAttributeType",
-    "boolean": "NSBooleanAttributeType",
-    "array":   "NSTransformableAttributeType",
-    "object":  "NSTransformableAttributeType",
+	"any":     "NSTransformableAttributeType",
+	"string":  "NSStringAttributeType",
+	"integer": "NSInteger64AttributeType",
+	"number":  "NSDoubleAttributeType",
+	"boolean": "NSBooleanAttributeType",
+	"array":   "NSTransformableAttributeType",
+	"object":  "NSTransformableAttributeType",
 }
 
 var PropertyNameMappings map[string]string = map[string]string{
-    "id":          "identifier",
-    "description": "objectDescription",
-    "deleted":     "objectDeleted",
-    "className":   "classNameString",
+	"id":          "identifier",
+	"description": "objectDescription",
+	"deleted":     "objectDeleted",
+	"className":   "classNameString",
 }
 
 func MapPropertyName(origName string) string {
-    newName, found := PropertyNameMappings[origName]
+	newName, found := PropertyNameMappings[origName]
 
-    if found {
-        return newName
-    }
+	if found {
+		return newName
+	}
 
-    return origName
+	return origName
 }
 
 func (s *SchemaDomain) CurDate() (date string) {
-    time := time.Now()
-    return time.Format("1/2/06")
+	time := time.Now()
+	return time.Format("1/2/06")
 }
 
 func QualifyName(domainName string, refString string) (typeDomain string, typeId string) {
-    splittedRef := strings.Split(refString, ".")
+	splittedRef := strings.Split(refString, ".")
 
-    typeId = splittedRef[len(splittedRef)-1]
+	typeId = splittedRef[len(splittedRef)-1]
 
-    if len(splittedRef) == 2 {
-        typeDomain = splittedRef[0]
-    } else {
-        typeDomain = domainName
-    }
+	if len(splittedRef) == 2 {
+		typeDomain = splittedRef[0]
+	} else {
+		typeDomain = domainName
+	}
 
-    return
+	return
 }
 
 func (s *SchemaType) ResolveType() *SchemaType {
-    if s.Ref != "" {
-        domain, typeId := QualifyName(s.domain.Name, s.Ref)
-        return s.domain.root.domainsByName[domain].typesById[typeId].ResolveType()
-    }
-    return s
+	if s.Ref != "" {
+		domain, typeId := QualifyName(s.domain.Name, s.Ref)
+		return s.domain.root.domainsByName[domain].typesById[typeId].ResolveType()
+	}
+	return s
 }
 
 func (s *SchemaType) EntityName() string {
-    return s.domain.Name + s.Id
+	return s.domain.Name + s.Id
 }
 
 func (s *SchemaType) ClassName() string {
-    return Prefix + s.EntityName()
+	return Prefix + s.EntityName()
 }
 
 func (s *SchemaType) PropertyName() (name string) {
-    return MapPropertyName(s.Name)
+	return MapPropertyName(s.Name)
 }
 
 func (s *SchemaType) PropertyType() (typeString string) {
-    t := s.ResolveType()
+	t := s.ResolveType()
 
-    if t.IsClass() {
-        typeString = t.ClassName() + " *"
-    } else {
-        var found bool
-        typeString, found = TypeLookup[t.Type]
-        if !found {
-            panic("Type " + t.Type + " in " + t.Id + " Not found")
-        }
-    }
-    return
+	if t.IsClass() {
+		typeString = t.ClassName() + " *"
+	} else {
+		var found bool
+		typeString, found = TypeLookup[t.Type]
+		if !found {
+			panic("Type " + t.Type + " in " + t.Id + " Not found")
+		}
+	}
+	return
 }
 
 func (s *SchemaType) AttributeType() (typeString string) {
-    if s.IsClass() {
-        panic("Can only be called by attributes, not refs")
-    }
+	if s.IsClass() {
+		panic("Can only be called by attributes, not refs")
+	}
 
-    return AttributeTypeLookup[s.ResolveType().Type]
+	return AttributeTypeLookup[s.ResolveType().Type]
 }
 
-
 func (s *SchemaCommand) IsNotSpecial() bool {
-    return s.Name != "disable" && s.Name != "enable"
+	return s.Name != "disable" && s.Name != "enable"
 }
 
 func (s *SchemaCommand) ReturnsCallbackType() string {
-    args := make([]string, len(s.Returns) + 1)
+	args := make([]string, len(s.Returns)+1)
 
-    for i, r := range s.Returns {
-        args[i] = r.PropertyType() + r.PropertyName()
-    }
+	for i, r := range s.Returns {
+		args[i] = r.PropertyType() + r.PropertyName()
+	}
 
-    args[len(args) - 1] = "id error"
+	args[len(args)-1] = "id error"
 
-    return "void (^)(" + strings.Join(args, ", ") + ")"
+	return "void (^)(" + strings.Join(args, ", ") + ")"
 }
 
-
 func (s *SchemaCommand) ReturnsCallbackSignature() string {
-    args := make([]string, len(s.Returns) + 1)
+	args := make([]string, len(s.Returns)+1)
 
-    for i, r := range s.Returns {
-        args[i] = r.PropertyType() + r.PropertyName()
-    }
+	for i, r := range s.Returns {
+		args[i] = r.PropertyType() + r.PropertyName()
+	}
 
-    args[len(args) - 1] = "id error"
+	args[len(args)-1] = "id error"
 
-    return "^(" + strings.Join(args, ", ") + ")"
+	return "^(" + strings.Join(args, ", ") + ")"
 }
 
 // This method is gross.  SHould be done with templating
 func (s *SchemaCommand) ReturnsCallbackWrapper() (ret string) {
-    ret = s.ReturnsCallbackSignature() + " {"
+	ret = s.ReturnsCallbackSignature() + " {"
 
-    if len(s.Returns) > 0 {
-        ret += fmt.Sprintf(`
+	if len(s.Returns) > 0 {
+		ret += fmt.Sprintf(`
             NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithCapacity:%d];
 
 `, len(s.Returns))
 
-        for _, p := range s.Returns {
-            ret += "            if (" + p.PropertyName() + ` != nil) {
+		for _, p := range s.Returns {
+			ret += "            if (" + p.PropertyName() + ` != nil) {
                 [params setObject:` + p.PropertyName() + ` forKey:@"` + p.Name + `"];
             }
 `
-        }
-        ret += `
+		}
+		ret += `
             responseCallback(params, error);
         }`
-    } else {
-        ret += `
+	} else {
+		ret += `
             responseCallback(nil, error);
         }`
-    }
-    return
+	}
+	return
 }
 
-
 type SelectorPart struct {
-    partName string
-    argName string
-    typeName string
-    arg string
+	partName string
+	argName  string
+	typeName string
+	arg      string
 }
 
 type Method struct {
-    parts []SelectorPart
-    returnType string
+	parts      []SelectorPart
+	returnType string
 }
 
 func (m *Method) Selector() (ret string) {
-    ret = "@selector("
+	ret = "@selector("
 
-    for _, part := range m.parts {
-        ret += part.partName
-    }
+	for _, part := range m.parts {
+		ret += part.partName
+	}
 
-    ret += ")"
+	ret += ")"
 
-    return
+	return
 }
 
 func (m *Method) Signature() (ret string) {
-    ret = "- (" + m.returnType + ")"
+	ret = "- (" + m.returnType + ")"
 
-    for i, part := range m.parts {
-        ret += part.partName + "(" + part.typeName + ")" + part.argName
-        if i != len(m.parts) - 1 {
-            ret += " "
-        }
-    }
+	for i, part := range m.parts {
+		ret += part.partName + "(" + part.typeName + ")" + part.argName
+		if i != len(m.parts)-1 {
+			ret += " "
+		}
+	}
 
-    return
+	return
 }
 
 func (m *Method) CallFromDict(receiver string) (ret string) {
-    ret = "[" + receiver + " "
+	ret = "[" + receiver + " "
 
-    for i, part := range m.parts {
-        ret += part.partName + part.arg
-        if i != len(m.parts) - 1 {
-            ret += " "
-        }
-    }
+	for i, part := range m.parts {
+		ret += part.partName + part.arg
+		if i != len(m.parts)-1 {
+			ret += " "
+		}
+	}
 
-    ret += "]"
+	ret += "]"
 
-    return
+	return
 }
 
 func (s *SchemaCommand) DelegateMethod() (ret *Method) {
 
-    ret = &Method{make([]SelectorPart, len(s.Parameters) + 2), "void"}
+	ret = &Method{make([]SelectorPart, len(s.Parameters)+2), "void"}
 
+	ret.parts[0] = SelectorPart{"domain:", "domain", s.domain.ClassName() + " *", "self"}
 
-    ret.parts[0] = SelectorPart{"domain:", "domain", s.domain.ClassName() + " *", "self"}
+	for i, p := range s.Parameters {
+		segmentName := p.Name
+		if i == 0 {
+			segmentName = s.Name + "With" + strings.ToUpper(segmentName[:1]) + segmentName[1:]
+		}
 
-    for i, p := range s.Parameters {
-        segmentName := p.Name
-        if i == 0 {
-            segmentName = s.Name + "With" + strings.ToUpper(segmentName[:1]) + segmentName[1:]
-        }
+		ret.parts[i+1] = SelectorPart{segmentName + ":", p.PropertyName(), p.PropertyType(), `[params objectForKey:@"` + p.Name + `"]`}
+	}
 
-        ret.parts[i + 1] = SelectorPart{segmentName + ":", p.PropertyName(), p.PropertyType(), `[params objectForKey:@"` + p.Name + `"]`}
-    }
+	callbackPart := "callback:"
 
+	if len(s.Parameters) == 0 {
+		callbackPart = s.Name + "WithCallback:"
+	}
+	ret.parts[len(ret.parts)-1] = SelectorPart{callbackPart, "callback", s.ReturnsCallbackType(), s.ReturnsCallbackWrapper()}
 
-    callbackPart := "callback:"
-
-    if len(s.Parameters) == 0 {
-        callbackPart = s.Name + "WithCallback:"
-    }
-    ret.parts[len(ret.parts) - 1] = SelectorPart{callbackPart, "callback", s.ReturnsCallbackType(), s.ReturnsCallbackWrapper()}
-
-    return
+	return
 }
 
 func (s *SchemaEvent) Signature() string {
-    ret := "- (void)" + s.Name
-    for i, p := range s.Parameters {
-        segmentName := p.Name
-        if i == 0 {
-            segmentName = "With" + strings.ToUpper(segmentName[:1]) + segmentName[1:]
-        }
+	ret := "- (void)" + s.Name
+	for i, p := range s.Parameters {
+		segmentName := p.Name
+		if i == 0 {
+			segmentName = "With" + strings.ToUpper(segmentName[:1]) + segmentName[1:]
+		}
 
-        ret += segmentName + ":(" + p.PropertyType() + ")" + p.PropertyName()
+		ret += segmentName + ":(" + p.PropertyType() + ")" + p.PropertyName()
 
-        if i != len(s.Parameters) - 1 {
-            ret += " "
-        }
-    }
-    return ret
+		if i != len(s.Parameters)-1 {
+			ret += " "
+		}
+	}
+	return ret
 }
 
 func (s *SchemaEvent) QualifiedName() string {
-    return s.domain.Name + "." + s.Name
+	return s.domain.Name + "." + s.Name
 }
 
 func (s *SchemaType) IsClass() bool {
-    return (s.Type == "object" || s.Type == "") && len(s.Properties) > 0
+	return (s.Type == "object" || s.Type == "") && len(s.Properties) > 0
 }
 
 // Things we need to forward declare
 func (s *SchemaType) ClassDependencies() (deps []string) {
-    dependencies := make(map[string]int)
+	dependencies := make(map[string]int)
 
-    for _, p := range s.Properties {
-        t := p.ResolveType()
-        if t.IsClass() {
-            dependencies[t.ClassName()] = 1
-        }
-    }
+	for _, p := range s.Properties {
+		t := p.ResolveType()
+		if t.IsClass() {
+			dependencies[t.ClassName()] = 1
+		}
+	}
 
-    deps = make([]string, len(dependencies))
+	deps = make([]string, len(dependencies))
 
-    i := 0
-    for d := range dependencies {
-        deps[i] = d
-        i++
-    }
+	i := 0
+	for d := range dependencies {
+		deps[i] = d
+		i++
+	}
 
-    return
+	return
 }
 
 func (s *SchemaDomain) HasEvents() bool {
-    return len(s.Events) > 0
+	return len(s.Events) > 0
 }
 
 func (s *SchemaDomain) HasCommands() bool {
-    return len(s.Commands) > 0
+	return len(s.Commands) > 0
 }
 
 func (s *SchemaDomain) HasClasses() bool {
-    for _, t := range s.Types {
-        if t.IsClass() {
-            return true
-        }
-    }
+	for _, t := range s.Types {
+		if t.IsClass() {
+			return true
+		}
+	}
 
-    return false
+	return false
 }
 
 func (s *SchemaDomain) Classes() []*SchemaType {
-    ret := make([]*SchemaType, 0, len(s.Types))
-    for _, t := range s.Types {
-        if !t.IsClass() {
-            continue
-        }
+	ret := make([]*SchemaType, 0, len(s.Types))
+	for _, t := range s.Types {
+		if !t.IsClass() {
+			continue
+		}
 
-        ret = append(ret, t)
-    }
+		ret = append(ret, t)
+	}
 
-    return ret
+	return ret
 }
 
 func (s *SchemaDomain) NeededForwardDeclarationsForType() (deps []string) {
-    seen := make(map[string]int, len(s.Types))
+	seen := make(map[string]int, len(s.Types))
 
-    needed := make(map[string]int)
+	needed := make(map[string]int)
 
-    for _, t := range s.Types {
-        if !t.IsClass() {
-            continue
-        }
-        seen[t.ClassName()] = 1
+	for _, t := range s.Types {
+		if !t.IsClass() {
+			continue
+		}
+		seen[t.ClassName()] = 1
 
-        for _, dep := range t.ClassDependencies() {
-            if _, found := seen[dep]; !found {
-                needed[dep] = 1
-            }
-        }
-    }
+		for _, dep := range t.ClassDependencies() {
+			if _, found := seen[dep]; !found {
+				needed[dep] = 1
+			}
+		}
+	}
 
-    deps = make([]string, len(needed))
+	deps = make([]string, len(needed))
 
-    i := 0
-    for d := range needed {
-        deps[i] = d
-        i++
-    }
+	i := 0
+	for d := range needed {
+		deps[i] = d
+		i++
+	}
 
-    return
+	return
 }
 
 func (s *SchemaDomain) NeededForwardDeclarationsForEvents() (deps []string) {
-    needed := make(map[string]int)
+	needed := make(map[string]int)
 
-    for _, e := range s.Events {
-        for _, p := range e.Parameters {
-            t := p.ResolveType()
-            if !t.IsClass() {
-                continue
-            }
+	for _, e := range s.Events {
+		for _, p := range e.Parameters {
+			t := p.ResolveType()
+			if !t.IsClass() {
+				continue
+			}
 
-            needed[t.ClassName()] = 1
-        }
-    }
-    for _, e := range s.Commands {
-        for _, p := range append(e.Parameters, e.Returns...) {
-            t := p.ResolveType()
-            if !t.IsClass() {
-                continue
-            }
+			needed[t.ClassName()] = 1
+		}
+	}
+	for _, e := range s.Commands {
+		for _, p := range append(e.Parameters, e.Returns...) {
+			t := p.ResolveType()
+			if !t.IsClass() {
+				continue
+			}
 
-            needed[t.ClassName()] = 1
-        }
-    }
+			needed[t.ClassName()] = 1
+		}
+	}
 
-    deps = make([]string, len(needed))
+	deps = make([]string, len(needed))
 
-    i := 0
-    for d := range needed {
-        deps[i] = d
-        i++
-    }
+	i := 0
+	for d := range needed {
+		deps[i] = d
+		i++
+	}
 
-    return
+	return
 }
 
 func (s *SchemaDomain) NeededImportsForEvents() (deps []string) {
-    needed := make(map[string]int)
+	needed := make(map[string]int)
 
-    for _, e := range s.Events {
-        for _, p := range e.Parameters {
-            t := p.ResolveType()
-            if !t.IsClass() {
-                continue
-            }
+	for _, e := range s.Events {
+		for _, p := range e.Parameters {
+			t := p.ResolveType()
+			if !t.IsClass() {
+				continue
+			}
 
-            needed[t.domain.TypesFileName()] = 1
-        }
-    }
-    for _, e := range s.Commands {
-        for _, p := range append(e.Parameters, e.Returns...) {
-            t := p.ResolveType()
-            if !t.IsClass() {
-                continue
-            }
+			needed[t.domain.TypesFileName()] = 1
+		}
+	}
+	for _, e := range s.Commands {
+		for _, p := range append(e.Parameters, e.Returns...) {
+			t := p.ResolveType()
+			if !t.IsClass() {
+				continue
+			}
 
-            needed[t.domain.TypesFileName()] = 1
-        }
-    }
+			needed[t.domain.TypesFileName()] = 1
+		}
+	}
 
-    deps = make([]string, len(needed))
+	deps = make([]string, len(needed))
 
-    i := 0
-    for d := range needed {
-        deps[i] = d
-        i++
-    }
+	i := 0
+	for d := range needed {
+		deps[i] = d
+		i++
+	}
 
-    return
+	return
 }
 
-
-
 func (s *SchemaDomain) CommandDelegateName() string {
-    return Prefix + s.Name + "CommandDelegate"
+	return Prefix + s.Name + "CommandDelegate"
 }
 
 func (s *SchemaDomain) ClassName() string {
-    return Prefix + s.Name + "Domain"
+	return Prefix + s.Name + "Domain"
 }
 
 func (s *SchemaDomain) PropertyName() (name string) {
-    // Only downcase if second char is downcased
-    if strings.ToLower(s.Name[1:2]) == s.Name[1:2] {
-        name = strings.ToLower(s.Name[:1]) + s.Name[1:] + "Domain"
-    } else {
-        name = s.Name + "Domain"
-    }
+	// Only downcase if second char is downcased
+	if strings.ToLower(s.Name[1:2]) == s.Name[1:2] {
+		name = strings.ToLower(s.Name[:1]) + s.Name[1:] + "Domain"
+	} else {
+		name = s.Name + "Domain"
+	}
 
-    return
+	return
 }
 
 func (s *SchemaDomain) TypesFileName() string {
-    return Prefix + s.Name + "Types"
+	return Prefix + s.Name + "Types"
 }
 
 func (s *SchemaDomain) DomainFileName() string {
-    return s.ClassName()
+	return s.ClassName()
 }
 
 func (s *SchemaDomain) WriteTypesHeader(wr io.Writer) {
-    tmpl, err := template.New("test").Parse(`//    
+	tmpl, err := template.New("test").Parse(`//    
 //  {{.TypesFileName}}.h
 //  PonyDebuggerDerivedSources
 //
@@ -471,30 +464,30 @@ func (s *SchemaDomain) WriteTypesHeader(wr io.Writer) {
 {{range .NeededForwardDeclarationsForType}}@class {{.}};
 {{end}}
 {{end}}{{range .Classes}}
-{{if .Description}}// {{.Description}}
+{{if .Description}}/// {{.Description}}
 {{end}}@interface {{.ClassName}} : PDObject
 {{range .Properties}}
-{{if .Description}}// {{.Description}}
-{{end}}{{if .Type}}// Type: {{.Type}}
+{{if .Description}}/// {{.Description}}
+{{end}}{{if .Type}}/// Type: {{.Type}}
 {{end}}@property (nonatomic, strong) {{.PropertyType}}{{.PropertyName}};
 {{end}}
 @end
 
 {{end}}
 `)
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 
-    _ = tmpl
-    err = tmpl.Execute(wr, s)
-    if err != nil {
-        panic(err)
-    }
+	_ = tmpl
+	err = tmpl.Execute(wr, s)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (s *SchemaDomain) WriteTypesImplementation(wr io.Writer) {
-    tmpl, err := template.New("test").Parse(`//
+	tmpl, err := template.New("test").Parse(`//
 //  {{.TypesFileName}}.m
 //  PonyDebuggerDerivedSources
 //
@@ -510,11 +503,11 @@ func (s *SchemaDomain) WriteTypesImplementation(wr io.Writer) {
 {{template "implementation" .}}
 {{end}}
 `)
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 
-    impl, err := tmpl.New("implementation").Parse(`@implementation {{.ClassName}}
+	impl, err := tmpl.New("implementation").Parse(`@implementation {{.ClassName}}
 
 {{template "keysToEncode" .}}
 
@@ -522,7 +515,7 @@ func (s *SchemaDomain) WriteTypesImplementation(wr io.Writer) {
 {{end}} 
 @end`)
 
-    _, err = impl.New("keysToEncode").Parse(`+ (NSDictionary *)keysToEncode;
+	_, err = impl.New("keysToEncode").Parse(`+ (NSDictionary *)keysToEncode;
 {
     static NSDictionary *mappings = nil;
     static dispatch_once_t onceToken;
@@ -535,17 +528,17 @@ func (s *SchemaDomain) WriteTypesImplementation(wr io.Writer) {
     return mappings;
 }`)
 
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 
-    if err = tmpl.Execute(wr, s); err != nil {
-        panic(err)
-    }
+	if err = tmpl.Execute(wr, s); err != nil {
+		panic(err)
+	}
 }
 
 func (s *SchemaDomain) WriteDomainHeader(wr io.Writer) {
-    tmpl, err := template.New("test").Parse(`//
+	tmpl, err := template.New("test").Parse(`//
 //  {{.ClassName}}.h
 //  PonyDebuggerDerivedSources
 //
@@ -580,7 +573,7 @@ func (s *SchemaDomain) WriteDomainHeader(wr io.Writer) {
 @protocol {{.CommandDelegateName}} <PDCommandDelegate>
 @optional
 {{range .Commands}}{{if .Description}}
-// {{.Description}}
+/// {{.Description}}
 {{end}}{{range .Parameters}}{{if .Description}}// Param {{.Name}}: {{.Description}}
 {{end}}{{end}}{{range .Returns}}{{if .Description}}// Callback Param {{.Name}}: {{.Description}}
 {{end}}{{end}}{{.DelegateMethod.Signature}};
@@ -593,14 +586,14 @@ func (s *SchemaDomain) WriteDomainHeader(wr io.Writer) {
 
 @end
 `)
-    if err = tmpl.Execute(wr, s); err != nil {
-        panic(err)
-    }
+	if err = tmpl.Execute(wr, s); err != nil {
+		panic(err)
+	}
 }
 
 func (s *SchemaDomain) WriteDomainImplementation(wr io.Writer) {
 
-    tmpl, err := template.New("test").Parse(`//
+	tmpl, err := template.New("test").Parse(`//
 //  {{.ClassName}}.m
 //  PonyDebuggerDerivedSources
 //
@@ -670,9 +663,9 @@ func (s *SchemaDomain) WriteDomainImplementation(wr io.Writer) {
 
 @end
 `)
-    if err = tmpl.Execute(wr, s); err != nil {
-        panic(err)
-    }
+	if err = tmpl.Execute(wr, s); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -680,35 +673,35 @@ const Prefix = "PD"
 const PathPrefix = "../DerivedSources/"
 
 func main() {
-    dec := NewSchemaDecoder(os.Stdin)
+	dec := NewSchemaDecoder(os.Stdin)
 
-    root := dec.ReadSchema()
+	root := dec.ReadSchema()
 
-    for _, domain := range root.Domains {
-        // Types
-        if domain.HasClasses() {
-            headerName := (PathPrefix + domain.TypesFileName() + ".h")
-            headerFile, _ := os.Create(headerName)
-            domain.WriteTypesHeader(headerFile)
-            headerFile.Close()
+	for _, domain := range root.Domains {
+		// Types
+		if domain.HasClasses() {
+			headerName := (PathPrefix + domain.TypesFileName() + ".h")
+			headerFile, _ := os.Create(headerName)
+			domain.WriteTypesHeader(headerFile)
+			headerFile.Close()
 
-            implementationName := PathPrefix + domain.TypesFileName() + ".m"
-            implementationFile, _ := os.Create(implementationName)
-            domain.WriteTypesImplementation(implementationFile)
-            implementationFile.Close()
-        }
-    }
+			implementationName := PathPrefix + domain.TypesFileName() + ".m"
+			implementationFile, _ := os.Create(implementationName)
+			domain.WriteTypesImplementation(implementationFile)
+			implementationFile.Close()
+		}
+	}
 
-    for _, domain := range root.Domains {
-        if domain.HasEvents() || domain.HasCommands() {
-            headerName := (PathPrefix + domain.DomainFileName() + ".h")
-            headerFile, _ := os.Create(headerName)
-            domain.WriteDomainHeader(headerFile)
+	for _, domain := range root.Domains {
+		if domain.HasEvents() || domain.HasCommands() {
+			headerName := (PathPrefix + domain.DomainFileName() + ".h")
+			headerFile, _ := os.Create(headerName)
+			domain.WriteDomainHeader(headerFile)
 
-            implementationName := PathPrefix + domain.DomainFileName() + ".m"
-            implementationFile, _ := os.Create(implementationName)
-            domain.WriteDomainImplementation(implementationFile)
-            implementationFile.Close()
-        }
-    }
+			implementationName := PathPrefix + domain.DomainFileName() + ".m"
+			implementationFile, _ := os.Create(implementationName)
+			domain.WriteDomainImplementation(implementationFile)
+			implementationFile.Close()
+		}
+	}
 }

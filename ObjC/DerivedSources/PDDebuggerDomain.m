@@ -12,8 +12,8 @@
 #import <PonyDebugger/PDObject.h>
 #import <PonyDebugger/PDDebuggerDomain.h>
 #import <PonyDebugger/PDObject.h>
-#import <PonyDebugger/PDRuntimeTypes.h>
 #import <PonyDebugger/PDDebuggerTypes.h>
+#import <PonyDebugger/PDRuntimeTypes.h>
 
 
 @interface PDDebuggerDomain ()

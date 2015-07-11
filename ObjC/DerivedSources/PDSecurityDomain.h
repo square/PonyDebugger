@@ -33,10 +33,10 @@
 @protocol PDSecurityCommandDelegate <PDCommandDelegate>
 @optional
 
-// Enables tracking security state changes.
+/// Enables tracking security state changes.
 - (void)domain:(PDSecurityDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Disables tracking security state changes.
+/// Disables tracking security state changes.
 - (void)domain:(PDSecurityDomain *)domain disableWithCallback:(void (^)(id error))callback;
 
 @end

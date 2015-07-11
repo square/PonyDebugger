@@ -33,10 +33,10 @@
 @protocol PDDOMStorageCommandDelegate <PDCommandDelegate>
 @optional
 
-// Enables storage tracking, storage events will now be delivered to the client.
+/// Enables storage tracking, storage events will now be delivered to the client.
 - (void)domain:(PDDOMStorageDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Disables storage tracking, prevents storage events from being sent to the client.
+/// Disables storage tracking, prevents storage events from being sent to the client.
 - (void)domain:(PDDOMStorageDomain *)domain disableWithCallback:(void (^)(id error))callback;
 - (void)domain:(PDDOMStorageDomain *)domain getDOMStorageItemsWithStorageId:(PDDOMStorageStorageId *)storageId callback:(void (^)(NSArray *entries, id error))callback;
 - (void)domain:(PDDOMStorageDomain *)domain setDOMStorageItemWithStorageId:(PDDOMStorageStorageId *)storageId key:(NSString *)key value:(NSString *)value callback:(void (^)(id error))callback;

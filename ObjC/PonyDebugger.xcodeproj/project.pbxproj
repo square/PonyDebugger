@@ -49,8 +49,6 @@
 		2516717D15E61023002F2F95 /* PDInspectorDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516713715E61023002F2F95 /* PDInspectorDomain.m */; };
 		2516717E15E61023002F2F95 /* PDMemoryDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = 2516713815E61023002F2F95 /* PDMemoryDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2516717F15E61023002F2F95 /* PDMemoryDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516713915E61023002F2F95 /* PDMemoryDomain.m */; };
-		2516718015E61023002F2F95 /* PDMemoryTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 2516713A15E61023002F2F95 /* PDMemoryTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2516718115E61023002F2F95 /* PDMemoryTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516713B15E61023002F2F95 /* PDMemoryTypes.m */; };
 		2516718215E61023002F2F95 /* PDNetworkDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = 2516713C15E61023002F2F95 /* PDNetworkDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2516718315E61023002F2F95 /* PDNetworkDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516713D15E61023002F2F95 /* PDNetworkDomain.m */; };
 		2516718415E61023002F2F95 /* PDNetworkTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 2516713E15E61023002F2F95 /* PDNetworkTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -71,10 +69,6 @@
 		2516719315E61023002F2F95 /* PDTimelineDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516714D15E61023002F2F95 /* PDTimelineDomain.m */; };
 		2516719415E61023002F2F95 /* PDTimelineTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 2516714E15E61023002F2F95 /* PDTimelineTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2516719515E61023002F2F95 /* PDTimelineTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516714F15E61023002F2F95 /* PDTimelineTypes.m */; };
-		2516719615E61023002F2F95 /* PDWebGLDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = 2516715015E61023002F2F95 /* PDWebGLDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2516719715E61023002F2F95 /* PDWebGLDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516715115E61023002F2F95 /* PDWebGLDomain.m */; };
-		2516719815E61023002F2F95 /* PDWebGLTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 2516715215E61023002F2F95 /* PDWebGLTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2516719915E61023002F2F95 /* PDWebGLTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516715315E61023002F2F95 /* PDWebGLTypes.m */; };
 		2516719A15E61023002F2F95 /* PDWorkerDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = 2516715415E61023002F2F95 /* PDWorkerDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2516719B15E61023002F2F95 /* PDWorkerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2516715515E61023002F2F95 /* PDWorkerDomain.m */; };
 		2560D50F16BE4C06001BAE89 /* NSArray+PDRuntimePropertyDescriptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 2560D50D16BE4C06001BAE89 /* NSArray+PDRuntimePropertyDescriptor.h */; };
@@ -130,6 +124,54 @@
 		E8D8B39316E00C9600081F80 /* PDPrettyStringPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = E8D8B39116E00C9600081F80 /* PDPrettyStringPrinter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E8D8B39416E00C9600081F80 /* PDPrettyStringPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D8B39216E00C9600081F80 /* PDPrettyStringPrinter.m */; };
 		F683ADB014FC1B4D008EBBA7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */; };
+		F6BAFDC01B509407009CEBBD /* PDAccessibilityDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFD901B509407009CEBBD /* PDAccessibilityDomain.h */; };
+		F6BAFDC11B509407009CEBBD /* PDAccessibilityDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFD911B509407009CEBBD /* PDAccessibilityDomain.m */; };
+		F6BAFDC21B509407009CEBBD /* PDAnimationDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFD921B509407009CEBBD /* PDAnimationDomain.h */; };
+		F6BAFDC31B509407009CEBBD /* PDAnimationDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFD931B509407009CEBBD /* PDAnimationDomain.m */; };
+		F6BAFDC41B509407009CEBBD /* PDDeviceOrientationDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFD941B509407009CEBBD /* PDDeviceOrientationDomain.h */; };
+		F6BAFDC51B509407009CEBBD /* PDDeviceOrientationDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFD951B509407009CEBBD /* PDDeviceOrientationDomain.m */; };
+		F6BAFDC61B509407009CEBBD /* PDHeapProfilerDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFD961B509407009CEBBD /* PDHeapProfilerDomain.h */; };
+		F6BAFDC71B509407009CEBBD /* PDHeapProfilerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFD971B509407009CEBBD /* PDHeapProfilerDomain.m */; };
+		F6BAFDC81B509407009CEBBD /* PDInputDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFD981B509407009CEBBD /* PDInputDomain.h */; };
+		F6BAFDC91B509407009CEBBD /* PDInputDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFD991B509407009CEBBD /* PDInputDomain.m */; };
+		F6BAFDCA1B509407009CEBBD /* PDLayerTreeDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFD9A1B509407009CEBBD /* PDLayerTreeDomain.h */; };
+		F6BAFDCB1B509407009CEBBD /* PDLayerTreeDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFD9B1B509407009CEBBD /* PDLayerTreeDomain.m */; };
+		F6BAFDCC1B509407009CEBBD /* PDPowerDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFD9C1B509407009CEBBD /* PDPowerDomain.h */; };
+		F6BAFDCD1B509407009CEBBD /* PDPowerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFD9D1B509407009CEBBD /* PDPowerDomain.m */; };
+		F6BAFDCE1B509407009CEBBD /* PDScreenOrientationDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFD9E1B509407009CEBBD /* PDScreenOrientationDomain.h */; };
+		F6BAFDCF1B509407009CEBBD /* PDScreenOrientationDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFD9F1B509407009CEBBD /* PDScreenOrientationDomain.m */; };
+		F6BAFDD01B509407009CEBBD /* PDSecurityDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDA01B509407009CEBBD /* PDSecurityDomain.h */; };
+		F6BAFDD11B509407009CEBBD /* PDSecurityDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDA11B509407009CEBBD /* PDSecurityDomain.m */; };
+		F6BAFDD21B509407009CEBBD /* PDServiceWorkerDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDA21B509407009CEBBD /* PDServiceWorkerDomain.h */; };
+		F6BAFDD31B509407009CEBBD /* PDServiceWorkerDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDA31B509407009CEBBD /* PDServiceWorkerDomain.m */; };
+		F6BAFDD41B509407009CEBBD /* PDTracingDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDA41B509407009CEBBD /* PDTracingDomain.h */; };
+		F6BAFDD51B509407009CEBBD /* PDTracingDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDA51B509407009CEBBD /* PDTracingDomain.m */; };
+		F6BAFDD61B509407009CEBBD /* PDAccessibilityTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDA61B509407009CEBBD /* PDAccessibilityTypes.h */; };
+		F6BAFDD71B509407009CEBBD /* PDAccessibilityTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDA71B509407009CEBBD /* PDAccessibilityTypes.m */; };
+		F6BAFDD81B509407009CEBBD /* PDAnimationTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDA81B509407009CEBBD /* PDAnimationTypes.h */; };
+		F6BAFDD91B509407009CEBBD /* PDAnimationTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDA91B509407009CEBBD /* PDAnimationTypes.m */; };
+		F6BAFDDA1B509407009CEBBD /* PDCacheStorageDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDAA1B509407009CEBBD /* PDCacheStorageDomain.h */; };
+		F6BAFDDB1B509407009CEBBD /* PDCacheStorageDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDAB1B509407009CEBBD /* PDCacheStorageDomain.m */; };
+		F6BAFDDC1B509407009CEBBD /* PDCacheStorageTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDAC1B509407009CEBBD /* PDCacheStorageTypes.h */; };
+		F6BAFDDD1B509407009CEBBD /* PDCacheStorageTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDAD1B509407009CEBBD /* PDCacheStorageTypes.m */; };
+		F6BAFDDE1B509407009CEBBD /* PDDOMDebuggerTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDAE1B509407009CEBBD /* PDDOMDebuggerTypes.h */; };
+		F6BAFDDF1B509407009CEBBD /* PDDOMDebuggerTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDAF1B509407009CEBBD /* PDDOMDebuggerTypes.m */; };
+		F6BAFDE01B509407009CEBBD /* PDEmulationDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDB01B509407009CEBBD /* PDEmulationDomain.h */; };
+		F6BAFDE11B509407009CEBBD /* PDEmulationDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDB11B509407009CEBBD /* PDEmulationDomain.m */; };
+		F6BAFDE21B509407009CEBBD /* PDEmulationTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDB21B509407009CEBBD /* PDEmulationTypes.h */; };
+		F6BAFDE31B509407009CEBBD /* PDEmulationTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDB31B509407009CEBBD /* PDEmulationTypes.m */; };
+		F6BAFDE41B509407009CEBBD /* PDInputTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDB41B509407009CEBBD /* PDInputTypes.h */; };
+		F6BAFDE51B509407009CEBBD /* PDInputTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDB51B509407009CEBBD /* PDInputTypes.m */; };
+		F6BAFDE61B509407009CEBBD /* PDLayerTreeTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDB61B509407009CEBBD /* PDLayerTreeTypes.h */; };
+		F6BAFDE71B509407009CEBBD /* PDLayerTreeTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDB71B509407009CEBBD /* PDLayerTreeTypes.m */; };
+		F6BAFDE81B509407009CEBBD /* PDPowerTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDB81B509407009CEBBD /* PDPowerTypes.h */; };
+		F6BAFDE91B509407009CEBBD /* PDPowerTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDB91B509407009CEBBD /* PDPowerTypes.m */; };
+		F6BAFDEA1B509407009CEBBD /* PDRenderingDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDBA1B509407009CEBBD /* PDRenderingDomain.h */; };
+		F6BAFDEB1B509407009CEBBD /* PDRenderingDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDBB1B509407009CEBBD /* PDRenderingDomain.m */; };
+		F6BAFDEC1B509407009CEBBD /* PDSecurityTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDBC1B509407009CEBBD /* PDSecurityTypes.h */; };
+		F6BAFDED1B509407009CEBBD /* PDSecurityTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDBD1B509407009CEBBD /* PDSecurityTypes.m */; };
+		F6BAFDEE1B509407009CEBBD /* PDServiceWorkerTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F6BAFDBE1B509407009CEBBD /* PDServiceWorkerTypes.h */; };
+		F6BAFDEF1B509407009CEBBD /* PDServiceWorkerTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BAFDBF1B509407009CEBBD /* PDServiceWorkerTypes.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -213,8 +255,6 @@
 		2516713715E61023002F2F95 /* PDInspectorDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDInspectorDomain.m; sourceTree = "<group>"; };
 		2516713815E61023002F2F95 /* PDMemoryDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDMemoryDomain.h; sourceTree = "<group>"; };
 		2516713915E61023002F2F95 /* PDMemoryDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDMemoryDomain.m; sourceTree = "<group>"; };
-		2516713A15E61023002F2F95 /* PDMemoryTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDMemoryTypes.h; sourceTree = "<group>"; };
-		2516713B15E61023002F2F95 /* PDMemoryTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDMemoryTypes.m; sourceTree = "<group>"; };
 		2516713C15E61023002F2F95 /* PDNetworkDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDNetworkDomain.h; sourceTree = "<group>"; };
 		2516713D15E61023002F2F95 /* PDNetworkDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDNetworkDomain.m; sourceTree = "<group>"; };
 		2516713E15E61023002F2F95 /* PDNetworkTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDNetworkTypes.h; sourceTree = "<group>"; };
@@ -235,10 +275,6 @@
 		2516714D15E61023002F2F95 /* PDTimelineDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDTimelineDomain.m; sourceTree = "<group>"; };
 		2516714E15E61023002F2F95 /* PDTimelineTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDTimelineTypes.h; sourceTree = "<group>"; };
 		2516714F15E61023002F2F95 /* PDTimelineTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDTimelineTypes.m; sourceTree = "<group>"; };
-		2516715015E61023002F2F95 /* PDWebGLDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDWebGLDomain.h; sourceTree = "<group>"; };
-		2516715115E61023002F2F95 /* PDWebGLDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDWebGLDomain.m; sourceTree = "<group>"; };
-		2516715215E61023002F2F95 /* PDWebGLTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDWebGLTypes.h; sourceTree = "<group>"; };
-		2516715315E61023002F2F95 /* PDWebGLTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDWebGLTypes.m; sourceTree = "<group>"; };
 		2516715415E61023002F2F95 /* PDWorkerDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDWorkerDomain.h; sourceTree = "<group>"; };
 		2516715515E61023002F2F95 /* PDWorkerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDWorkerDomain.m; sourceTree = "<group>"; };
 		2560D50D16BE4C06001BAE89 /* NSArray+PDRuntimePropertyDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+PDRuntimePropertyDescriptor.h"; sourceTree = "<group>"; };
@@ -302,6 +338,54 @@
 		F66E1ED214FC7CF0000E0707 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F683ADAC14FC1B4C008EBBA7 /* libPonyDebugger.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPonyDebugger.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F683ADAF14FC1B4D008EBBA7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		F6BAFD901B509407009CEBBD /* PDAccessibilityDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDAccessibilityDomain.h; sourceTree = "<group>"; };
+		F6BAFD911B509407009CEBBD /* PDAccessibilityDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDAccessibilityDomain.m; sourceTree = "<group>"; };
+		F6BAFD921B509407009CEBBD /* PDAnimationDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDAnimationDomain.h; sourceTree = "<group>"; };
+		F6BAFD931B509407009CEBBD /* PDAnimationDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDAnimationDomain.m; sourceTree = "<group>"; };
+		F6BAFD941B509407009CEBBD /* PDDeviceOrientationDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDeviceOrientationDomain.h; sourceTree = "<group>"; };
+		F6BAFD951B509407009CEBBD /* PDDeviceOrientationDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDeviceOrientationDomain.m; sourceTree = "<group>"; };
+		F6BAFD961B509407009CEBBD /* PDHeapProfilerDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDHeapProfilerDomain.h; sourceTree = "<group>"; };
+		F6BAFD971B509407009CEBBD /* PDHeapProfilerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDHeapProfilerDomain.m; sourceTree = "<group>"; };
+		F6BAFD981B509407009CEBBD /* PDInputDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDInputDomain.h; sourceTree = "<group>"; };
+		F6BAFD991B509407009CEBBD /* PDInputDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDInputDomain.m; sourceTree = "<group>"; };
+		F6BAFD9A1B509407009CEBBD /* PDLayerTreeDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDLayerTreeDomain.h; sourceTree = "<group>"; };
+		F6BAFD9B1B509407009CEBBD /* PDLayerTreeDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDLayerTreeDomain.m; sourceTree = "<group>"; };
+		F6BAFD9C1B509407009CEBBD /* PDPowerDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDPowerDomain.h; sourceTree = "<group>"; };
+		F6BAFD9D1B509407009CEBBD /* PDPowerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDPowerDomain.m; sourceTree = "<group>"; };
+		F6BAFD9E1B509407009CEBBD /* PDScreenOrientationDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDScreenOrientationDomain.h; sourceTree = "<group>"; };
+		F6BAFD9F1B509407009CEBBD /* PDScreenOrientationDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDScreenOrientationDomain.m; sourceTree = "<group>"; };
+		F6BAFDA01B509407009CEBBD /* PDSecurityDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDSecurityDomain.h; sourceTree = "<group>"; };
+		F6BAFDA11B509407009CEBBD /* PDSecurityDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDSecurityDomain.m; sourceTree = "<group>"; };
+		F6BAFDA21B509407009CEBBD /* PDServiceWorkerDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDServiceWorkerDomain.h; sourceTree = "<group>"; };
+		F6BAFDA31B509407009CEBBD /* PDServiceWorkerDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDServiceWorkerDomain.m; sourceTree = "<group>"; };
+		F6BAFDA41B509407009CEBBD /* PDTracingDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDTracingDomain.h; sourceTree = "<group>"; };
+		F6BAFDA51B509407009CEBBD /* PDTracingDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDTracingDomain.m; sourceTree = "<group>"; };
+		F6BAFDA61B509407009CEBBD /* PDAccessibilityTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDAccessibilityTypes.h; sourceTree = "<group>"; };
+		F6BAFDA71B509407009CEBBD /* PDAccessibilityTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDAccessibilityTypes.m; sourceTree = "<group>"; };
+		F6BAFDA81B509407009CEBBD /* PDAnimationTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDAnimationTypes.h; sourceTree = "<group>"; };
+		F6BAFDA91B509407009CEBBD /* PDAnimationTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDAnimationTypes.m; sourceTree = "<group>"; };
+		F6BAFDAA1B509407009CEBBD /* PDCacheStorageDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDCacheStorageDomain.h; sourceTree = "<group>"; };
+		F6BAFDAB1B509407009CEBBD /* PDCacheStorageDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDCacheStorageDomain.m; sourceTree = "<group>"; };
+		F6BAFDAC1B509407009CEBBD /* PDCacheStorageTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDCacheStorageTypes.h; sourceTree = "<group>"; };
+		F6BAFDAD1B509407009CEBBD /* PDCacheStorageTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDCacheStorageTypes.m; sourceTree = "<group>"; };
+		F6BAFDAE1B509407009CEBBD /* PDDOMDebuggerTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDOMDebuggerTypes.h; sourceTree = "<group>"; };
+		F6BAFDAF1B509407009CEBBD /* PDDOMDebuggerTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDOMDebuggerTypes.m; sourceTree = "<group>"; };
+		F6BAFDB01B509407009CEBBD /* PDEmulationDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDEmulationDomain.h; sourceTree = "<group>"; };
+		F6BAFDB11B509407009CEBBD /* PDEmulationDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDEmulationDomain.m; sourceTree = "<group>"; };
+		F6BAFDB21B509407009CEBBD /* PDEmulationTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDEmulationTypes.h; sourceTree = "<group>"; };
+		F6BAFDB31B509407009CEBBD /* PDEmulationTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDEmulationTypes.m; sourceTree = "<group>"; };
+		F6BAFDB41B509407009CEBBD /* PDInputTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDInputTypes.h; sourceTree = "<group>"; };
+		F6BAFDB51B509407009CEBBD /* PDInputTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDInputTypes.m; sourceTree = "<group>"; };
+		F6BAFDB61B509407009CEBBD /* PDLayerTreeTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDLayerTreeTypes.h; sourceTree = "<group>"; };
+		F6BAFDB71B509407009CEBBD /* PDLayerTreeTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDLayerTreeTypes.m; sourceTree = "<group>"; };
+		F6BAFDB81B509407009CEBBD /* PDPowerTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDPowerTypes.h; sourceTree = "<group>"; };
+		F6BAFDB91B509407009CEBBD /* PDPowerTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDPowerTypes.m; sourceTree = "<group>"; };
+		F6BAFDBA1B509407009CEBBD /* PDRenderingDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDRenderingDomain.h; sourceTree = "<group>"; };
+		F6BAFDBB1B509407009CEBBD /* PDRenderingDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDRenderingDomain.m; sourceTree = "<group>"; };
+		F6BAFDBC1B509407009CEBBD /* PDSecurityTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDSecurityTypes.h; sourceTree = "<group>"; };
+		F6BAFDBD1B509407009CEBBD /* PDSecurityTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDSecurityTypes.m; sourceTree = "<group>"; };
+		F6BAFDBE1B509407009CEBBD /* PDServiceWorkerTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDServiceWorkerTypes.h; sourceTree = "<group>"; };
+		F6BAFDBF1B509407009CEBBD /* PDServiceWorkerTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDServiceWorkerTypes.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -319,6 +403,54 @@
 		2516710F15E61023002F2F95 /* DerivedSources */ = {
 			isa = PBXGroup;
 			children = (
+				F6BAFD901B509407009CEBBD /* PDAccessibilityDomain.h */,
+				F6BAFD911B509407009CEBBD /* PDAccessibilityDomain.m */,
+				F6BAFD921B509407009CEBBD /* PDAnimationDomain.h */,
+				F6BAFD931B509407009CEBBD /* PDAnimationDomain.m */,
+				F6BAFD941B509407009CEBBD /* PDDeviceOrientationDomain.h */,
+				F6BAFD951B509407009CEBBD /* PDDeviceOrientationDomain.m */,
+				F6BAFD961B509407009CEBBD /* PDHeapProfilerDomain.h */,
+				F6BAFD971B509407009CEBBD /* PDHeapProfilerDomain.m */,
+				F6BAFD981B509407009CEBBD /* PDInputDomain.h */,
+				F6BAFD991B509407009CEBBD /* PDInputDomain.m */,
+				F6BAFD9A1B509407009CEBBD /* PDLayerTreeDomain.h */,
+				F6BAFD9B1B509407009CEBBD /* PDLayerTreeDomain.m */,
+				F6BAFD9C1B509407009CEBBD /* PDPowerDomain.h */,
+				F6BAFD9D1B509407009CEBBD /* PDPowerDomain.m */,
+				F6BAFD9E1B509407009CEBBD /* PDScreenOrientationDomain.h */,
+				F6BAFD9F1B509407009CEBBD /* PDScreenOrientationDomain.m */,
+				F6BAFDA01B509407009CEBBD /* PDSecurityDomain.h */,
+				F6BAFDA11B509407009CEBBD /* PDSecurityDomain.m */,
+				F6BAFDA21B509407009CEBBD /* PDServiceWorkerDomain.h */,
+				F6BAFDA31B509407009CEBBD /* PDServiceWorkerDomain.m */,
+				F6BAFDA41B509407009CEBBD /* PDTracingDomain.h */,
+				F6BAFDA51B509407009CEBBD /* PDTracingDomain.m */,
+				F6BAFDA61B509407009CEBBD /* PDAccessibilityTypes.h */,
+				F6BAFDA71B509407009CEBBD /* PDAccessibilityTypes.m */,
+				F6BAFDA81B509407009CEBBD /* PDAnimationTypes.h */,
+				F6BAFDA91B509407009CEBBD /* PDAnimationTypes.m */,
+				F6BAFDAA1B509407009CEBBD /* PDCacheStorageDomain.h */,
+				F6BAFDAB1B509407009CEBBD /* PDCacheStorageDomain.m */,
+				F6BAFDAC1B509407009CEBBD /* PDCacheStorageTypes.h */,
+				F6BAFDAD1B509407009CEBBD /* PDCacheStorageTypes.m */,
+				F6BAFDAE1B509407009CEBBD /* PDDOMDebuggerTypes.h */,
+				F6BAFDAF1B509407009CEBBD /* PDDOMDebuggerTypes.m */,
+				F6BAFDB01B509407009CEBBD /* PDEmulationDomain.h */,
+				F6BAFDB11B509407009CEBBD /* PDEmulationDomain.m */,
+				F6BAFDB21B509407009CEBBD /* PDEmulationTypes.h */,
+				F6BAFDB31B509407009CEBBD /* PDEmulationTypes.m */,
+				F6BAFDB41B509407009CEBBD /* PDInputTypes.h */,
+				F6BAFDB51B509407009CEBBD /* PDInputTypes.m */,
+				F6BAFDB61B509407009CEBBD /* PDLayerTreeTypes.h */,
+				F6BAFDB71B509407009CEBBD /* PDLayerTreeTypes.m */,
+				F6BAFDB81B509407009CEBBD /* PDPowerTypes.h */,
+				F6BAFDB91B509407009CEBBD /* PDPowerTypes.m */,
+				F6BAFDBA1B509407009CEBBD /* PDRenderingDomain.h */,
+				F6BAFDBB1B509407009CEBBD /* PDRenderingDomain.m */,
+				F6BAFDBC1B509407009CEBBD /* PDSecurityTypes.h */,
+				F6BAFDBD1B509407009CEBBD /* PDSecurityTypes.m */,
+				F6BAFDBE1B509407009CEBBD /* PDServiceWorkerTypes.h */,
+				F6BAFDBF1B509407009CEBBD /* PDServiceWorkerTypes.m */,
 				2516711015E61023002F2F95 /* PDApplicationCacheDomain.h */,
 				2516711115E61023002F2F95 /* PDApplicationCacheDomain.m */,
 				2516711215E61023002F2F95 /* PDApplicationCacheTypes.h */,
@@ -361,8 +493,6 @@
 				2516713715E61023002F2F95 /* PDInspectorDomain.m */,
 				2516713815E61023002F2F95 /* PDMemoryDomain.h */,
 				2516713915E61023002F2F95 /* PDMemoryDomain.m */,
-				2516713A15E61023002F2F95 /* PDMemoryTypes.h */,
-				2516713B15E61023002F2F95 /* PDMemoryTypes.m */,
 				2516713C15E61023002F2F95 /* PDNetworkDomain.h */,
 				2516713D15E61023002F2F95 /* PDNetworkDomain.m */,
 				2516713E15E61023002F2F95 /* PDNetworkTypes.h */,
@@ -383,10 +513,6 @@
 				2516714D15E61023002F2F95 /* PDTimelineDomain.m */,
 				2516714E15E61023002F2F95 /* PDTimelineTypes.h */,
 				2516714F15E61023002F2F95 /* PDTimelineTypes.m */,
-				2516715015E61023002F2F95 /* PDWebGLDomain.h */,
-				2516715115E61023002F2F95 /* PDWebGLDomain.m */,
-				2516715215E61023002F2F95 /* PDWebGLTypes.h */,
-				2516715315E61023002F2F95 /* PDWebGLTypes.m */,
 				2516715415E61023002F2F95 /* PDWorkerDomain.h */,
 				2516715515E61023002F2F95 /* PDWorkerDomain.m */,
 			);
@@ -554,13 +680,18 @@
 			files = (
 				3DE2290F15D5874C0035A508 /* NSArray+PD_JSONObject.h in Headers */,
 				3DE2291115D5874C0035A508 /* NSDate+PD_JSONObject.h in Headers */,
+				F6BAFDE61B509407009CEBBD /* PDLayerTreeTypes.h in Headers */,
+				F6BAFDD41B509407009CEBBD /* PDTracingDomain.h in Headers */,
 				3DE2291315D5874C0035A508 /* NSError+PD_JSONObject.h in Headers */,
 				3DE2291515D5874C0035A508 /* NSManagedObject+PDRuntimePropertyDescriptor.h in Headers */,
 				3DE2291715D5874C0035A508 /* NSObject+PDRuntimePropertyDescriptor.h in Headers */,
 				3DE2291D15D5874C0035A508 /* PDDebugger.h in Headers */,
+				F6BAFDEE1B509407009CEBBD /* PDServiceWorkerTypes.h in Headers */,
 				3DE2291F15D5874C0035A508 /* PDDefinitions.h in Headers */,
 				3DE2292315D5874C0035A508 /* PDDomainController.h in Headers */,
+				F6BAFDEC1B509407009CEBBD /* PDSecurityTypes.h in Headers */,
 				3DE2292515D5874C0035A508 /* PDDynamicDebuggerDomain.h in Headers */,
+				F6BAFDCE1B509407009CEBBD /* PDScreenOrientationDomain.h in Headers */,
 				3DE2292715D5874C0035A508 /* PDIndexedDBDomainController.h in Headers */,
 				3DE2292915D5874C0035A508 /* PDNetworkDomainController.h in Headers */,
 				3DE2292B15D5874C0035A508 /* PDObject.h in Headers */,
@@ -576,44 +707,60 @@
 				2516716015E61023002F2F95 /* PDCSSTypes.h in Headers */,
 				2516716215E61023002F2F95 /* PDDatabaseDomain.h in Headers */,
 				2516716415E61023002F2F95 /* PDDatabaseTypes.h in Headers */,
+				F6BAFDEA1B509407009CEBBD /* PDRenderingDomain.h in Headers */,
 				2516716615E61023002F2F95 /* PDDebuggerDomain.h in Headers */,
 				2516716815E61023002F2F95 /* PDDebuggerTypes.h in Headers */,
 				2516716A15E61023002F2F95 /* PDDOMDebuggerDomain.h in Headers */,
+				F6BAFDE81B509407009CEBBD /* PDPowerTypes.h in Headers */,
 				2516716C15E61023002F2F95 /* PDDOMDomain.h in Headers */,
 				2516716E15E61023002F2F95 /* PDDOMStorageDomain.h in Headers */,
 				2516717015E61023002F2F95 /* PDDOMStorageTypes.h in Headers */,
 				2516717215E61023002F2F95 /* PDDOMTypes.h in Headers */,
 				2516717415E61023002F2F95 /* PDFileSystemDomain.h in Headers */,
+				F6BAFDCC1B509407009CEBBD /* PDPowerDomain.h in Headers */,
 				2516717615E61023002F2F95 /* PDFileSystemTypes.h in Headers */,
 				2516717815E61023002F2F95 /* PDIndexedDBDomain.h in Headers */,
 				2516717A15E61023002F2F95 /* PDIndexedDBTypes.h in Headers */,
 				2516717C15E61023002F2F95 /* PDInspectorDomain.h in Headers */,
 				2516717E15E61023002F2F95 /* PDMemoryDomain.h in Headers */,
-				2516718015E61023002F2F95 /* PDMemoryTypes.h in Headers */,
+				F6BAFDC41B509407009CEBBD /* PDDeviceOrientationDomain.h in Headers */,
 				2516718215E61023002F2F95 /* PDNetworkDomain.h in Headers */,
 				2516718415E61023002F2F95 /* PDNetworkTypes.h in Headers */,
 				2516718615E61023002F2F95 /* PDPageDomain.h in Headers */,
+				F6BAFDCA1B509407009CEBBD /* PDLayerTreeDomain.h in Headers */,
+				F6BAFDD81B509407009CEBBD /* PDAnimationTypes.h in Headers */,
 				E8D8B39316E00C9600081F80 /* PDPrettyStringPrinter.h in Headers */,
+				F6BAFDC81B509407009CEBBD /* PDInputDomain.h in Headers */,
 				2516718815E61023002F2F95 /* PDPageTypes.h in Headers */,
 				2516718A15E61023002F2F95 /* PDProfilerDomain.h in Headers */,
 				2516718C15E61023002F2F95 /* PDProfilerTypes.h in Headers */,
 				2516718E15E61023002F2F95 /* PDRuntimeDomain.h in Headers */,
 				2516719015E61023002F2F95 /* PDRuntimeTypes.h in Headers */,
+				F6BAFDD21B509407009CEBBD /* PDServiceWorkerDomain.h in Headers */,
 				2516719215E61023002F2F95 /* PDTimelineDomain.h in Headers */,
+				F6BAFDC61B509407009CEBBD /* PDHeapProfilerDomain.h in Headers */,
+				F6BAFDDC1B509407009CEBBD /* PDCacheStorageTypes.h in Headers */,
 				2516719415E61023002F2F95 /* PDTimelineTypes.h in Headers */,
-				2516719615E61023002F2F95 /* PDWebGLDomain.h in Headers */,
-				2516719815E61023002F2F95 /* PDWebGLTypes.h in Headers */,
+				F6BAFDDE1B509407009CEBBD /* PDDOMDebuggerTypes.h in Headers */,
 				2516719A15E61023002F2F95 /* PDWorkerDomain.h in Headers */,
 				943D444D160A73810091CA77 /* PDDOMDomainController.h in Headers */,
+				F6BAFDE01B509407009CEBBD /* PDEmulationDomain.h in Headers */,
+				F6BAFDE41B509407009CEBBD /* PDInputTypes.h in Headers */,
+				F6BAFDC21B509407009CEBBD /* PDAnimationDomain.h in Headers */,
+				F6BAFDD01B509407009CEBBD /* PDSecurityDomain.h in Headers */,
 				947CE06F163CA24E0035FB90 /* PDInspectorDomainController.h in Headers */,
+				F6BAFDDA1B509407009CEBBD /* PDCacheStorageDomain.h in Headers */,
+				F6BAFDC01B509407009CEBBD /* PDAccessibilityDomain.h in Headers */,
 				25E5BCD916B9205200152A45 /* PDConsoleDomainController.h in Headers */,
 				25E5BCE616BA41EA00152A45 /* NSDate+PDDebugger.h in Headers */,
 				25E5BCEB16BE3F1C00152A45 /* NSDictionary+PDRuntimePropertyDescriptor.h in Headers */,
 				2560D50F16BE4C06001BAE89 /* NSArray+PDRuntimePropertyDescriptor.h in Headers */,
+				F6BAFDD61B509407009CEBBD /* PDAccessibilityTypes.h in Headers */,
 				2560D51616BE53EB001BAE89 /* NSSet+PDRuntimePropertyDescriptor.h in Headers */,
 				2560D51A16BE56BF001BAE89 /* NSOrderedSet+PDRuntimePropertyDescriptor.h in Headers */,
 				25F6AADA172DD5E100515EF7 /* PDContainerIndex.h in Headers */,
 				2EE444DD1F0668F2F356527F /* NSData+PDDebugger.h in Headers */,
+				F6BAFDE21B509407009CEBBD /* PDEmulationTypes.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -644,7 +791,7 @@
 		F683ADA314FC1B4C008EBBA7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = F683ADA614FC1B4C008EBBA7 /* Build configuration list for PBXProject "PonyDebugger" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -705,66 +852,87 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6BAFDEB1B509407009CEBBD /* PDRenderingDomain.m in Sources */,
 				3DE2291015D5874C0035A508 /* NSArray+PD_JSONObject.m in Sources */,
 				3DE2291215D5874C0035A508 /* NSDate+PD_JSONObject.m in Sources */,
+				F6BAFDCF1B509407009CEBBD /* PDScreenOrientationDomain.m in Sources */,
 				3DE2291415D5874C0035A508 /* NSError+PD_JSONObject.m in Sources */,
 				3DE2291615D5874C0035A508 /* NSManagedObject+PDRuntimePropertyDescriptor.m in Sources */,
 				3DE2291815D5874C0035A508 /* NSObject+PDRuntimePropertyDescriptor.m in Sources */,
 				3DE2291E15D5874C0035A508 /* PDDebugger.m in Sources */,
 				3DE2292015D5874C0035A508 /* PDDefinitions.m in Sources */,
 				3DE2292415D5874C0035A508 /* PDDomainController.m in Sources */,
+				F6BAFDDD1B509407009CEBBD /* PDCacheStorageTypes.m in Sources */,
 				3DE2292615D5874C0035A508 /* PDDynamicDebuggerDomain.m in Sources */,
 				3DE2292815D5874C0035A508 /* PDIndexedDBDomainController.m in Sources */,
 				3DE2292A15D5874C0035A508 /* PDNetworkDomainController.m in Sources */,
+				F6BAFDCB1B509407009CEBBD /* PDLayerTreeDomain.m in Sources */,
 				3DE2292C15D5874C0035A508 /* PDObject.m in Sources */,
 				3DE2292E15D5874C0035A508 /* PDPageDomainController.m in Sources */,
+				F6BAFDC91B509407009CEBBD /* PDInputDomain.m in Sources */,
 				3DE2293015D5874C0035A508 /* PDRuntimeDomainController.m in Sources */,
 				2516715715E61023002F2F95 /* PDApplicationCacheDomain.m in Sources */,
+				F6BAFDE71B509407009CEBBD /* PDLayerTreeTypes.m in Sources */,
+				F6BAFDEF1B509407009CEBBD /* PDServiceWorkerTypes.m in Sources */,
 				2516715915E61023002F2F95 /* PDApplicationCacheTypes.m in Sources */,
 				2516715B15E61023002F2F95 /* PDConsoleDomain.m in Sources */,
 				2516715D15E61023002F2F95 /* PDConsoleTypes.m in Sources */,
 				2516715F15E61023002F2F95 /* PDCSSDomain.m in Sources */,
 				2516716115E61023002F2F95 /* PDCSSTypes.m in Sources */,
 				2516716315E61023002F2F95 /* PDDatabaseDomain.m in Sources */,
+				F6BAFDDB1B509407009CEBBD /* PDCacheStorageDomain.m in Sources */,
+				F6BAFDE31B509407009CEBBD /* PDEmulationTypes.m in Sources */,
+				F6BAFDD11B509407009CEBBD /* PDSecurityDomain.m in Sources */,
 				2516716515E61023002F2F95 /* PDDatabaseTypes.m in Sources */,
+				F6BAFDE51B509407009CEBBD /* PDInputTypes.m in Sources */,
 				2516716715E61023002F2F95 /* PDDebuggerDomain.m in Sources */,
 				2516716915E61023002F2F95 /* PDDebuggerTypes.m in Sources */,
 				2516716B15E61023002F2F95 /* PDDOMDebuggerDomain.m in Sources */,
 				2516716D15E61023002F2F95 /* PDDOMDomain.m in Sources */,
 				2516716F15E61023002F2F95 /* PDDOMStorageDomain.m in Sources */,
+				F6BAFDDF1B509407009CEBBD /* PDDOMDebuggerTypes.m in Sources */,
 				2516717115E61023002F2F95 /* PDDOMStorageTypes.m in Sources */,
 				2516717315E61023002F2F95 /* PDDOMTypes.m in Sources */,
+				F6BAFDC51B509407009CEBBD /* PDDeviceOrientationDomain.m in Sources */,
+				F6BAFDC71B509407009CEBBD /* PDHeapProfilerDomain.m in Sources */,
 				2516717515E61023002F2F95 /* PDFileSystemDomain.m in Sources */,
+				F6BAFDD91B509407009CEBBD /* PDAnimationTypes.m in Sources */,
 				2516717715E61023002F2F95 /* PDFileSystemTypes.m in Sources */,
 				2516717915E61023002F2F95 /* PDIndexedDBDomain.m in Sources */,
 				2516717B15E61023002F2F95 /* PDIndexedDBTypes.m in Sources */,
 				2516717D15E61023002F2F95 /* PDInspectorDomain.m in Sources */,
 				2516717F15E61023002F2F95 /* PDMemoryDomain.m in Sources */,
-				2516718115E61023002F2F95 /* PDMemoryTypes.m in Sources */,
 				2516718315E61023002F2F95 /* PDNetworkDomain.m in Sources */,
+				F6BAFDCD1B509407009CEBBD /* PDPowerDomain.m in Sources */,
 				2516718515E61023002F2F95 /* PDNetworkTypes.m in Sources */,
+				F6BAFDED1B509407009CEBBD /* PDSecurityTypes.m in Sources */,
 				2516718715E61023002F2F95 /* PDPageDomain.m in Sources */,
 				2516718915E61023002F2F95 /* PDPageTypes.m in Sources */,
 				2516718B15E61023002F2F95 /* PDProfilerDomain.m in Sources */,
 				2516718D15E61023002F2F95 /* PDProfilerTypes.m in Sources */,
+				F6BAFDD51B509407009CEBBD /* PDTracingDomain.m in Sources */,
 				2516718F15E61023002F2F95 /* PDRuntimeDomain.m in Sources */,
 				2516719115E61023002F2F95 /* PDRuntimeTypes.m in Sources */,
 				2516719315E61023002F2F95 /* PDTimelineDomain.m in Sources */,
 				2516719515E61023002F2F95 /* PDTimelineTypes.m in Sources */,
-				2516719715E61023002F2F95 /* PDWebGLDomain.m in Sources */,
-				2516719915E61023002F2F95 /* PDWebGLTypes.m in Sources */,
 				2516719B15E61023002F2F95 /* PDWorkerDomain.m in Sources */,
 				943D444E160A73810091CA77 /* PDDOMDomainController.m in Sources */,
 				947CE070163CA24E0035FB90 /* PDInspectorDomainController.m in Sources */,
 				25E5BCDA16B9205200152A45 /* PDConsoleDomainController.m in Sources */,
+				F6BAFDE91B509407009CEBBD /* PDPowerTypes.m in Sources */,
+				F6BAFDC11B509407009CEBBD /* PDAccessibilityDomain.m in Sources */,
 				25E5BCE716BA41EA00152A45 /* NSDate+PDDebugger.m in Sources */,
+				F6BAFDC31B509407009CEBBD /* PDAnimationDomain.m in Sources */,
 				25E5BCEC16BE3F1C00152A45 /* NSDictionary+PDRuntimePropertyDescriptor.m in Sources */,
 				2560D51016BE4C06001BAE89 /* NSArray+PDRuntimePropertyDescriptor.m in Sources */,
 				2560D51716BE53EB001BAE89 /* NSSet+PDRuntimePropertyDescriptor.m in Sources */,
+				F6BAFDD71B509407009CEBBD /* PDAccessibilityTypes.m in Sources */,
 				2560D51B16BE56BF001BAE89 /* NSOrderedSet+PDRuntimePropertyDescriptor.m in Sources */,
 				E8D8B39416E00C9600081F80 /* PDPrettyStringPrinter.m in Sources */,
 				25F6AADB172DD5E100515EF7 /* PDContainerIndex.m in Sources */,
+				F6BAFDE11B509407009CEBBD /* PDEmulationDomain.m in Sources */,
 				2EE4493CE303EA19811912CD /* NSData+PDDebugger.m in Sources */,
+				F6BAFDD31B509407009CEBBD /* PDServiceWorkerDomain.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -793,6 +961,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -810,7 +979,7 @@
 					"\"$(CONFIGURATION_BUILD_DIR)/usr/local/include\"",
 					./SocketRocket,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SDKROOT = iphoneos;
@@ -846,7 +1015,7 @@
 					"\"$(CONFIGURATION_BUILD_DIR)/usr/local/include\"",
 					./SocketRocket,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

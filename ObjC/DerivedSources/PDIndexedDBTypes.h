@@ -17,147 +17,147 @@
 @class PDIndexedDBKeyPath;
 
 
-// Database with an array of object stores.
+/// Database with an array of object stores.
 @interface PDIndexedDBDatabaseWithObjectStores : PDObject
 
-// Database name.
-// Type: string
+/// Database name.
+/// Type: string
 @property (nonatomic, strong) NSString *name;
 
-// Deprecated string database version.
-// Type: string
+/// Deprecated string database version.
+/// Type: string
 @property (nonatomic, strong) NSString *version;
 
-// Integer database version.
-// Type: integer
+/// Integer database version.
+/// Type: integer
 @property (nonatomic, strong) NSNumber *intVersion;
 
-// Object stores in this database.
-// Type: array
+/// Object stores in this database.
+/// Type: array
 @property (nonatomic, strong) NSArray *objectStores;
 
 @end
 
 
-// Object store.
+/// Object store.
 @interface PDIndexedDBObjectStore : PDObject
 
-// Object store name.
-// Type: string
+/// Object store name.
+/// Type: string
 @property (nonatomic, strong) NSString *name;
 
-// Object store key path.
+/// Object store key path.
 @property (nonatomic, strong) PDIndexedDBKeyPath *keyPath;
 
-// If true, object store has auto increment flag set.
-// Type: boolean
+/// If true, object store has auto increment flag set.
+/// Type: boolean
 @property (nonatomic, strong) NSNumber *autoIncrement;
 
-// Indexes in this object store.
-// Type: array
+/// Indexes in this object store.
+/// Type: array
 @property (nonatomic, strong) NSArray *indexes;
 
 @end
 
 
-// Object store index.
+/// Object store index.
 @interface PDIndexedDBObjectStoreIndex : PDObject
 
-// Index name.
-// Type: string
+/// Index name.
+/// Type: string
 @property (nonatomic, strong) NSString *name;
 
-// Index key path.
+/// Index key path.
 @property (nonatomic, strong) PDIndexedDBKeyPath *keyPath;
 
-// If true, index is unique.
-// Type: boolean
+/// If true, index is unique.
+/// Type: boolean
 @property (nonatomic, strong) NSNumber *unique;
 
-// If true, index allows multiple entries for a key.
-// Type: boolean
+/// If true, index allows multiple entries for a key.
+/// Type: boolean
 @property (nonatomic, strong) NSNumber *multiEntry;
 
 @end
 
 
-// Key.
+/// Key.
 @interface PDIndexedDBKey : PDObject
 
-// Key type.
-// Type: string
+/// Key type.
+/// Type: string
 @property (nonatomic, strong) NSString *type;
 
-// Number value.
-// Type: number
+/// Number value.
+/// Type: number
 @property (nonatomic, strong) NSNumber *number;
 
-// String value.
-// Type: string
+/// String value.
+/// Type: string
 @property (nonatomic, strong) NSString *string;
 
-// Date value.
-// Type: number
+/// Date value.
+/// Type: number
 @property (nonatomic, strong) NSNumber *date;
 
-// Array value.
-// Type: array
+/// Array value.
+/// Type: array
 @property (nonatomic, strong) NSArray *array;
 
 @end
 
 
-// Key range.
+/// Key range.
 @interface PDIndexedDBKeyRange : PDObject
 
-// Lower bound.
+/// Lower bound.
 @property (nonatomic, strong) PDIndexedDBKey *lower;
 
-// Upper bound.
+/// Upper bound.
 @property (nonatomic, strong) PDIndexedDBKey *upper;
 
-// If true lower bound is open.
-// Type: boolean
+/// If true lower bound is open.
+/// Type: boolean
 @property (nonatomic, strong) NSNumber *lowerOpen;
 
-// If true upper bound is open.
-// Type: boolean
+/// If true upper bound is open.
+/// Type: boolean
 @property (nonatomic, strong) NSNumber *upperOpen;
 
 @end
 
 
-// Data entry.
+/// Data entry.
 @interface PDIndexedDBDataEntry : PDObject
 
-// JSON-stringified key object.
-// Type: string
+/// JSON-stringified key object.
+/// Type: string
 @property (nonatomic, strong) NSString *key;
 
-// JSON-stringified primary key object.
-// Type: string
+/// JSON-stringified primary key object.
+/// Type: string
 @property (nonatomic, strong) NSString *primaryKey;
 
-// JSON-stringified value object.
-// Type: string
+/// JSON-stringified value object.
+/// Type: string
 @property (nonatomic, strong) NSString *value;
 
 @end
 
 
-// Key path.
+/// Key path.
 @interface PDIndexedDBKeyPath : PDObject
 
-// Key path type.
-// Type: string
+/// Key path type.
+/// Type: string
 @property (nonatomic, strong) NSString *type;
 
-// String value.
-// Type: string
+/// String value.
+/// Type: string
 @property (nonatomic, strong) NSString *string;
 
-// Array value.
-// Type: array
+/// Array value.
+/// Type: array
 @property (nonatomic, strong) NSArray *array;
 
 @end

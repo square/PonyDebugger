@@ -33,7 +33,7 @@
 @protocol PDEmulationCommandDelegate <PDCommandDelegate>
 @optional
 
-// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
+/// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
 // Param width: Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
 // Param height: Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.
 // Param deviceScaleFactor: Overriding device scale factor value. 0 disables the override.
@@ -48,39 +48,39 @@
 // Param positionY: Overriding view Y position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|.
 - (void)domain:(PDEmulationDomain *)domain setDeviceMetricsOverrideWithWidth:(NSNumber *)width height:(NSNumber *)height deviceScaleFactor:(NSNumber *)deviceScaleFactor mobile:(NSNumber *)mobile fitWindow:(NSNumber *)fitWindow scale:(NSNumber *)scale offsetX:(NSNumber *)offsetX offsetY:(NSNumber *)offsetY screenWidth:(NSNumber *)screenWidth screenHeight:(NSNumber *)screenHeight positionX:(NSNumber *)positionX positionY:(NSNumber *)positionY callback:(void (^)(id error))callback;
 
-// Clears the overriden device metrics.
+/// Clears the overriden device metrics.
 - (void)domain:(PDEmulationDomain *)domain clearDeviceMetricsOverrideWithCallback:(void (^)(id error))callback;
 
-// Requests that scroll offsets and page scale factor are reset to initial values.
+/// Requests that scroll offsets and page scale factor are reset to initial values.
 - (void)domain:(PDEmulationDomain *)domain resetScrollAndPageScaleFactorWithCallback:(void (^)(id error))callback;
 
-// Sets a specified page scale factor.
+/// Sets a specified page scale factor.
 // Param pageScaleFactor: Page scale factor.
 - (void)domain:(PDEmulationDomain *)domain setPageScaleFactorWithPageScaleFactor:(NSNumber *)pageScaleFactor callback:(void (^)(id error))callback;
 
-// Switches script execution in the page.
+/// Switches script execution in the page.
 // Param value: Whether script execution should be disabled in the page.
 - (void)domain:(PDEmulationDomain *)domain setScriptExecutionDisabledWithValue:(NSNumber *)value callback:(void (^)(id error))callback;
 
-// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.
+/// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.
 // Param latitude: Mock latitude
 // Param longitude: Mock longitude
 // Param accuracy: Mock accuracy
 - (void)domain:(PDEmulationDomain *)domain setGeolocationOverrideWithLatitude:(NSNumber *)latitude longitude:(NSNumber *)longitude accuracy:(NSNumber *)accuracy callback:(void (^)(id error))callback;
 
-// Clears the overriden Geolocation Position and Error.
+/// Clears the overriden Geolocation Position and Error.
 - (void)domain:(PDEmulationDomain *)domain clearGeolocationOverrideWithCallback:(void (^)(id error))callback;
 
-// Toggles mouse event-based touch event emulation.
+/// Toggles mouse event-based touch event emulation.
 // Param enabled: Whether the touch event emulation should be enabled.
 // Param configuration: Touch/gesture events configuration. Default: current platform.
 - (void)domain:(PDEmulationDomain *)domain setTouchEmulationEnabledWithEnabled:(NSNumber *)enabled configuration:(NSString *)configuration callback:(void (^)(id error))callback;
 
-// Emulates the given media for CSS media queries.
+/// Emulates the given media for CSS media queries.
 // Param media: Media type to emulate. Empty string disables the override.
 - (void)domain:(PDEmulationDomain *)domain setEmulatedMediaWithMedia:(NSString *)media callback:(void (^)(id error))callback;
 
-// Tells whether emulation is supported.
+/// Tells whether emulation is supported.
 // Callback Param result: True if emulation is supported.
 - (void)domain:(PDEmulationDomain *)domain canEmulateWithCallback:(void (^)(NSNumber *result, id error))callback;
 

@@ -37,25 +37,25 @@
 @protocol PDAnimationCommandDelegate <PDCommandDelegate>
 @optional
 
-// Enables animation domain notifications.
+/// Enables animation domain notifications.
 - (void)domain:(PDAnimationDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Disables animation domain notifications.
+/// Disables animation domain notifications.
 - (void)domain:(PDAnimationDomain *)domain disableWithCallback:(void (^)(id error))callback;
 
-// Gets the playback rate of the document timeline.
+/// Gets the playback rate of the document timeline.
 // Callback Param playbackRate: Playback rate for animations on page.
 - (void)domain:(PDAnimationDomain *)domain getPlaybackRateWithCallback:(void (^)(NSNumber *playbackRate, id error))callback;
 
-// Sets the playback rate of the document timeline.
+/// Sets the playback rate of the document timeline.
 // Param playbackRate: Playback rate for animations on page
 - (void)domain:(PDAnimationDomain *)domain setPlaybackRateWithPlaybackRate:(NSNumber *)playbackRate callback:(void (^)(id error))callback;
 
-// Sets the current time of the document timeline.
+/// Sets the current time of the document timeline.
 // Param currentTime: Current time for the page animation timeline
 - (void)domain:(PDAnimationDomain *)domain setCurrentTimeWithCurrentTime:(NSNumber *)currentTime callback:(void (^)(id error))callback;
 
-// Sets the timing of an animation node.
+/// Sets the timing of an animation node.
 // Param playerId: AnimationPlayer id.
 // Param duration: Duration of the animation.
 // Param delay: Delay of the animation.

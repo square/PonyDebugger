@@ -14,35 +14,35 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 
-// Visible page viewport
+/// Visible page viewport
 @interface PDEmulationViewport : PDObject
 
-// X scroll offset in CSS pixels.
-// Type: number
+/// X scroll offset in CSS pixels.
+/// Type: number
 @property (nonatomic, strong) NSNumber *scrollX;
 
-// Y scroll offset in CSS pixels.
-// Type: number
+/// Y scroll offset in CSS pixels.
+/// Type: number
 @property (nonatomic, strong) NSNumber *scrollY;
 
-// Contents width in CSS pixels.
-// Type: number
+/// Contents width in CSS pixels.
+/// Type: number
 @property (nonatomic, strong) NSNumber *contentsWidth;
 
-// Contents height in CSS pixels.
-// Type: number
+/// Contents height in CSS pixels.
+/// Type: number
 @property (nonatomic, strong) NSNumber *contentsHeight;
 
-// Page scale factor.
-// Type: number
+/// Page scale factor.
+/// Type: number
 @property (nonatomic, strong) NSNumber *pageScaleFactor;
 
-// Minimum page scale factor.
-// Type: number
+/// Minimum page scale factor.
+/// Type: number
 @property (nonatomic, strong) NSNumber *minimumPageScaleFactor;
 
-// Maximum page scale factor.
-// Type: number
+/// Maximum page scale factor.
+/// Type: number
 @property (nonatomic, strong) NSNumber *maximumPageScaleFactor;
 
 @end

@@ -14,36 +14,36 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 
-// Database object.
+/// Database object.
 @interface PDDatabaseDatabase : PDObject
 
-// Database ID.
+/// Database ID.
 @property (nonatomic, strong) NSString *identifier;
 
-// Database domain.
-// Type: string
+/// Database domain.
+/// Type: string
 @property (nonatomic, strong) NSString *domain;
 
-// Database name.
-// Type: string
+/// Database name.
+/// Type: string
 @property (nonatomic, strong) NSString *name;
 
-// Database version.
-// Type: string
+/// Database version.
+/// Type: string
 @property (nonatomic, strong) NSString *version;
 
 @end
 
 
-// Database error.
+/// Database error.
 @interface PDDatabaseError : PDObject
 
-// Error message.
-// Type: string
+/// Error message.
+/// Type: string
 @property (nonatomic, strong) NSString *message;
 
-// Error code.
-// Type: integer
+/// Error code.
+/// Type: integer
 @property (nonatomic, strong) NSNumber *code;
 
 @end

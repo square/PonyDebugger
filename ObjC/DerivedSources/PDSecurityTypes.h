@@ -14,18 +14,18 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 
-// An explanation of an factor contributing to the security state.
+/// An explanation of an factor contributing to the security state.
 @interface PDSecuritySecurityStateExplanation : PDObject
 
-// Security state representing the severity of the factor being explained.
+/// Security state representing the severity of the factor being explained.
 @property (nonatomic, strong) NSString *securityState;
 
-// Short phrase describing the type of factor.
-// Type: string
+/// Short phrase describing the type of factor.
+/// Type: string
 @property (nonatomic, strong) NSString *summary;
 
-// Full text explanation of the factor.
-// Type: string
+/// Full text explanation of the factor.
+/// Type: string
 @property (nonatomic, strong) NSString *objectDescription;
 
 @end

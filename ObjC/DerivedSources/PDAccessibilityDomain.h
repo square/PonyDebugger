@@ -26,7 +26,7 @@
 @protocol PDAccessibilityCommandDelegate <PDCommandDelegate>
 @optional
 
-// Fetches the accessibility node for this DOM node, if it exists.
+/// Fetches the accessibility node for this DOM node, if it exists.
 // Param nodeId: ID of node to get accessibility node for.
 // Callback Param accessibilityNode: The <code>Accessibility.AXNode</code> for this DOM node, if it exists.
 - (void)domain:(PDAccessibilityDomain *)domain getAXNodeWithNodeId:(NSNumber *)nodeId callback:(void (^)(PDAccessibilityAXNode *accessibilityNode, id error))callback;

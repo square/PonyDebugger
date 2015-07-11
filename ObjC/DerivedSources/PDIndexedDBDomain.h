@@ -13,8 +13,8 @@
 #import <PonyDebugger/PDDebugger.h>
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
-@class PDIndexedDBDatabaseWithObjectStores;
 @class PDIndexedDBKeyRange;
+@class PDIndexedDBDatabaseWithObjectStores;
 
 @protocol PDIndexedDBCommandDelegate;
 
@@ -27,24 +27,24 @@
 @protocol PDIndexedDBCommandDelegate <PDCommandDelegate>
 @optional
 
-// Enables events from backend.
+/// Enables events from backend.
 - (void)domain:(PDIndexedDBDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Disables events from backend.
+/// Disables events from backend.
 - (void)domain:(PDIndexedDBDomain *)domain disableWithCallback:(void (^)(id error))callback;
 
-// Requests database names for given security origin.
+/// Requests database names for given security origin.
 // Param securityOrigin: Security origin.
 // Callback Param databaseNames: Database names for origin.
 - (void)domain:(PDIndexedDBDomain *)domain requestDatabaseNamesWithSecurityOrigin:(NSString *)securityOrigin callback:(void (^)(NSArray *databaseNames, id error))callback;
 
-// Requests database with given name in given frame.
+/// Requests database with given name in given frame.
 // Param securityOrigin: Security origin.
 // Param databaseName: Database name.
 // Callback Param databaseWithObjectStores: Database with an array of object stores.
 - (void)domain:(PDIndexedDBDomain *)domain requestDatabaseWithSecurityOrigin:(NSString *)securityOrigin databaseName:(NSString *)databaseName callback:(void (^)(PDIndexedDBDatabaseWithObjectStores *databaseWithObjectStores, id error))callback;
 
-// Requests data from object store or index.
+/// Requests data from object store or index.
 // Param securityOrigin: Security origin.
 // Param databaseName: Database name.
 // Param objectStoreName: Object store name.
@@ -56,7 +56,7 @@
 // Callback Param hasMore: If true, there are more entries to fetch in the given range.
 - (void)domain:(PDIndexedDBDomain *)domain requestDataWithSecurityOrigin:(NSString *)securityOrigin databaseName:(NSString *)databaseName objectStoreName:(NSString *)objectStoreName indexName:(NSString *)indexName skipCount:(NSNumber *)skipCount pageSize:(NSNumber *)pageSize keyRange:(PDIndexedDBKeyRange *)keyRange callback:(void (^)(NSArray *objectStoreDataEntries, NSNumber *hasMore, id error))callback;
 
-// Clears all entries from an object store.
+/// Clears all entries from an object store.
 // Param securityOrigin: Security origin.
 // Param databaseName: Database name.
 // Param objectStoreName: Object store name.

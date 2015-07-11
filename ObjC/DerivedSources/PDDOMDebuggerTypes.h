@@ -18,21 +18,21 @@
 @class PDRuntimeRemoteObject;
 
 
-// Object event listener.
+/// Object event listener.
 @interface PDDOMDebuggerEventListener : PDObject
 
-// <code>EventListener</code>'s type.
-// Type: string
+/// <code>EventListener</code>'s type.
+/// Type: string
 @property (nonatomic, strong) NSString *type;
 
-// <code>EventListener</code>'s useCapture.
-// Type: boolean
+/// <code>EventListener</code>'s useCapture.
+/// Type: boolean
 @property (nonatomic, strong) NSNumber *useCapture;
 
-// Handler code location.
+/// Handler code location.
 @property (nonatomic, strong) PDDebuggerLocation *location;
 
-// Event handler function value.
+/// Event handler function value.
 @property (nonatomic, strong) PDRuntimeRemoteObject *handler;
 
 @end

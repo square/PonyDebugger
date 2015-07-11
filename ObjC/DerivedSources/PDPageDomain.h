@@ -94,55 +94,55 @@
 @protocol PDPageCommandDelegate <PDCommandDelegate>
 @optional
 
-// Enables page domain notifications.
+/// Enables page domain notifications.
 - (void)domain:(PDPageDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Disables page domain notifications.
+/// Disables page domain notifications.
 - (void)domain:(PDPageDomain *)domain disableWithCallback:(void (^)(id error))callback;
 // Callback Param identifier: Identifier of the added script.
 - (void)domain:(PDPageDomain *)domain addScriptToEvaluateOnLoadWithScriptSource:(NSString *)scriptSource callback:(void (^)(NSString *identifier, id error))callback;
 - (void)domain:(PDPageDomain *)domain removeScriptToEvaluateOnLoadWithIdentifier:(NSString *)identifier callback:(void (^)(id error))callback;
 
-// Reloads given page optionally ignoring the cache.
+/// Reloads given page optionally ignoring the cache.
 // Param ignoreCache: If true, browser cache is ignored (as if the user pressed Shift+refresh).
 // Param scriptToEvaluateOnLoad: If set, the script will be injected into all frames of the inspected page after reload.
 - (void)domain:(PDPageDomain *)domain reloadWithIgnoreCache:(NSNumber *)ignoreCache scriptToEvaluateOnLoad:(NSString *)scriptToEvaluateOnLoad callback:(void (^)(id error))callback;
 
-// Navigates current page to the given URL.
+/// Navigates current page to the given URL.
 // Param url: URL to navigate the page to.
 // Callback Param frameId: Frame id that will be navigated.
 - (void)domain:(PDPageDomain *)domain navigateWithUrl:(NSString *)url callback:(void (^)(NSString *frameId, id error))callback;
 
-// Returns navigation history for the current page.
+/// Returns navigation history for the current page.
 // Callback Param currentIndex: Index of the current navigation history entry.
 // Callback Param entries: Array of navigation history entries.
 - (void)domain:(PDPageDomain *)domain getNavigationHistoryWithCallback:(void (^)(NSNumber *currentIndex, NSArray *entries, id error))callback;
 
-// Navigates current page to the given history entry.
+/// Navigates current page to the given history entry.
 // Param entryId: Unique id of the entry to navigate to.
 - (void)domain:(PDPageDomain *)domain navigateToHistoryEntryWithEntryId:(NSNumber *)entryId callback:(void (^)(id error))callback;
 
-// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field.
+/// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field.
 // Callback Param cookies: Array of cookie objects.
 - (void)domain:(PDPageDomain *)domain getCookiesWithCallback:(void (^)(NSArray *cookies, id error))callback;
 
-// Deletes browser cookie with given name, domain and path.
+/// Deletes browser cookie with given name, domain and path.
 // Param cookieName: Name of the cookie to remove.
 // Param url: URL to match cooke domain and path.
 - (void)domain:(PDPageDomain *)domain deleteCookieWithCookieName:(NSString *)cookieName url:(NSString *)url callback:(void (^)(id error))callback;
 
-// Returns present frame / resource tree structure.
+/// Returns present frame / resource tree structure.
 // Callback Param frameTree: Present frame / resource tree structure.
 - (void)domain:(PDPageDomain *)domain getResourceTreeWithCallback:(void (^)(PDPageFrameResourceTree *frameTree, id error))callback;
 
-// Returns content of the given resource.
+/// Returns content of the given resource.
 // Param frameId: Frame id to get resource for.
 // Param url: URL of the resource to get content for.
 // Callback Param content: Resource content.
 // Callback Param base64Encoded: True, if content was served as base64.
 - (void)domain:(PDPageDomain *)domain getResourceContentWithFrameId:(NSString *)frameId url:(NSString *)url callback:(void (^)(NSString *content, NSNumber *base64Encoded, id error))callback;
 
-// Searches for given string in resource content.
+/// Searches for given string in resource content.
 // Param frameId: Frame id for resource to search in.
 // Param url: URL of the resource to search in.
 // Param query: String to search for.
@@ -151,12 +151,12 @@
 // Callback Param result: List of search matches.
 - (void)domain:(PDPageDomain *)domain searchInResourceWithFrameId:(NSString *)frameId url:(NSString *)url query:(NSString *)query caseSensitive:(NSNumber *)caseSensitive isRegex:(NSNumber *)isRegex callback:(void (^)(NSArray *result, id error))callback;
 
-// Sets given markup as the document's HTML.
+/// Sets given markup as the document's HTML.
 // Param frameId: Frame id to set HTML for.
 // Param html: HTML content to set.
 - (void)domain:(PDPageDomain *)domain setDocumentContentWithFrameId:(NSString *)frameId html:(NSString *)html callback:(void (^)(id error))callback;
 
-// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
+/// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
 // Param width: Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
 // Param height: Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.
 // Param deviceScaleFactor: Overriding device scale factor value. 0 disables the override.
@@ -171,69 +171,69 @@
 // Param positionY: Overriding view Y position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|.
 - (void)domain:(PDPageDomain *)domain setDeviceMetricsOverrideWithWidth:(NSNumber *)width height:(NSNumber *)height deviceScaleFactor:(NSNumber *)deviceScaleFactor mobile:(NSNumber *)mobile fitWindow:(NSNumber *)fitWindow scale:(NSNumber *)scale offsetX:(NSNumber *)offsetX offsetY:(NSNumber *)offsetY screenWidth:(NSNumber *)screenWidth screenHeight:(NSNumber *)screenHeight positionX:(NSNumber *)positionX positionY:(NSNumber *)positionY callback:(void (^)(id error))callback;
 
-// Clears the overriden device metrics.
+/// Clears the overriden device metrics.
 - (void)domain:(PDPageDomain *)domain clearDeviceMetricsOverrideWithCallback:(void (^)(id error))callback;
 
-// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.
+/// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.
 // Param latitude: Mock latitude
 // Param longitude: Mock longitude
 // Param accuracy: Mock accuracy
 - (void)domain:(PDPageDomain *)domain setGeolocationOverrideWithLatitude:(NSNumber *)latitude longitude:(NSNumber *)longitude accuracy:(NSNumber *)accuracy callback:(void (^)(id error))callback;
 
-// Clears the overriden Geolocation Position and Error.
+/// Clears the overriden Geolocation Position and Error.
 - (void)domain:(PDPageDomain *)domain clearGeolocationOverrideWithCallback:(void (^)(id error))callback;
 
-// Overrides the Device Orientation.
+/// Overrides the Device Orientation.
 // Param alpha: Mock alpha
 // Param beta: Mock beta
 // Param gamma: Mock gamma
 - (void)domain:(PDPageDomain *)domain setDeviceOrientationOverrideWithAlpha:(NSNumber *)alpha beta:(NSNumber *)beta gamma:(NSNumber *)gamma callback:(void (^)(id error))callback;
 
-// Clears the overridden Device Orientation.
+/// Clears the overridden Device Orientation.
 - (void)domain:(PDPageDomain *)domain clearDeviceOrientationOverrideWithCallback:(void (^)(id error))callback;
 
-// Toggles mouse event-based touch event emulation.
+/// Toggles mouse event-based touch event emulation.
 // Param enabled: Whether the touch event emulation should be enabled.
 // Param configuration: Touch/gesture events configuration. Default: current platform.
 - (void)domain:(PDPageDomain *)domain setTouchEmulationEnabledWithEnabled:(NSNumber *)enabled configuration:(NSString *)configuration callback:(void (^)(id error))callback;
 
-// Capture page screenshot.
+/// Capture page screenshot.
 // Callback Param data: Base64-encoded image data (PNG).
 - (void)domain:(PDPageDomain *)domain captureScreenshotWithCallback:(void (^)(NSString *data, id error))callback;
 
-// Tells whether screencast is supported.
+/// Tells whether screencast is supported.
 // Callback Param result: True if screencast is supported.
 - (void)domain:(PDPageDomain *)domain canScreencastWithCallback:(void (^)(NSNumber *result, id error))callback;
 
-// Starts sending each frame using the <code>screencastFrame</code> event.
+/// Starts sending each frame using the <code>screencastFrame</code> event.
 // Param format: Image compression format.
 // Param quality: Compression quality from range [0..100].
 // Param maxWidth: Maximum screenshot width.
 // Param maxHeight: Maximum screenshot height.
 - (void)domain:(PDPageDomain *)domain startScreencastWithFormat:(NSString *)format quality:(NSNumber *)quality maxWidth:(NSNumber *)maxWidth maxHeight:(NSNumber *)maxHeight callback:(void (^)(id error))callback;
 
-// Stops sending each frame in the <code>screencastFrame</code>.
+/// Stops sending each frame in the <code>screencastFrame</code>.
 - (void)domain:(PDPageDomain *)domain stopScreencastWithCallback:(void (^)(id error))callback;
 
-// Acknowledges that a screencast frame has been received by the frontend.
+/// Acknowledges that a screencast frame has been received by the frontend.
 // Param frameNumber: Frame number.
 - (void)domain:(PDPageDomain *)domain screencastFrameAckWithFrameNumber:(NSNumber *)frameNumber callback:(void (^)(id error))callback;
 
-// Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
+/// Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
 // Param accept: Whether to accept or dismiss the dialog.
 // Param promptText: The text to enter into the dialog prompt before accepting. Used only if this is a prompt dialog.
 - (void)domain:(PDPageDomain *)domain handleJavaScriptDialogWithAccept:(NSNumber *)accept promptText:(NSString *)promptText callback:(void (^)(id error))callback;
 
-// Paints viewport size upon main frame resize.
+/// Paints viewport size upon main frame resize.
 // Param show: Whether to paint size or not.
 // Param showGrid: Whether to paint grid as well.
 - (void)domain:(PDPageDomain *)domain setShowViewportSizeOnResizeWithShow:(NSNumber *)show showGrid:(NSNumber *)showGrid callback:(void (^)(id error))callback;
 
-// Shows / hides color picker
+/// Shows / hides color picker
 // Param enabled: Shows / hides color picker
 - (void)domain:(PDPageDomain *)domain setColorPickerEnabledWithEnabled:(NSNumber *)enabled callback:(void (^)(id error))callback;
 
-// Sets overlay message.
+/// Sets overlay message.
 // Param message: Overlay message to display when paused in debugger.
 - (void)domain:(PDPageDomain *)domain setOverlayMessageWithMessage:(NSString *)message callback:(void (^)(id error))callback;
 

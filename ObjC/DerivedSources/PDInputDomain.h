@@ -25,7 +25,7 @@
 @protocol PDInputCommandDelegate <PDCommandDelegate>
 @optional
 
-// Dispatches a key event to the page.
+/// Dispatches a key event to the page.
 // Param type: Type of the key event.
 // Param modifiers: Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8 (default: 0).
 // Param timestamp: Time at which the event occurred. Measured in UTC time in seconds since January 1, 1970 (default: current time).
@@ -41,7 +41,7 @@
 // Param isSystemKey: Whether the event was a system key event (default: false).
 - (void)domain:(PDInputDomain *)domain dispatchKeyEventWithType:(NSString *)type modifiers:(NSNumber *)modifiers timestamp:(NSNumber *)timestamp text:(NSString *)text unmodifiedText:(NSString *)unmodifiedText keyIdentifier:(NSString *)keyIdentifier code:(NSString *)code key:(NSString *)key windowsVirtualKeyCode:(NSNumber *)windowsVirtualKeyCode nativeVirtualKeyCode:(NSNumber *)nativeVirtualKeyCode autoRepeat:(NSNumber *)autoRepeat isKeypad:(NSNumber *)isKeypad isSystemKey:(NSNumber *)isSystemKey callback:(void (^)(id error))callback;
 
-// Dispatches a mouse event to the page.
+/// Dispatches a mouse event to the page.
 // Param type: Type of the mouse event.
 // Param x: X coordinate of the event relative to the main frame's viewport.
 // Param y: Y coordinate of the event relative to the main frame's viewport. 0 refers to the top of the viewport and Y increases as it proceeds towards the bottom of the viewport.
@@ -51,14 +51,14 @@
 // Param clickCount: Number of times the mouse button was clicked (default: 0).
 - (void)domain:(PDInputDomain *)domain dispatchMouseEventWithType:(NSString *)type x:(NSNumber *)x y:(NSNumber *)y modifiers:(NSNumber *)modifiers timestamp:(NSNumber *)timestamp button:(NSString *)button clickCount:(NSNumber *)clickCount callback:(void (^)(id error))callback;
 
-// Dispatches a touch event to the page.
+/// Dispatches a touch event to the page.
 // Param type: Type of the touch event.
 // Param touchPoints: Touch points.
 // Param modifiers: Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8 (default: 0).
 // Param timestamp: Time at which the event occurred. Measured in UTC time in seconds since January 1, 1970 (default: current time).
 - (void)domain:(PDInputDomain *)domain dispatchTouchEventWithType:(NSString *)type touchPoints:(NSArray *)touchPoints modifiers:(NSNumber *)modifiers timestamp:(NSNumber *)timestamp callback:(void (^)(id error))callback;
 
-// Emulates touch event from the mouse event parameters.
+/// Emulates touch event from the mouse event parameters.
 // Param type: Type of the mouse event.
 // Param x: X coordinate of the mouse pointer in DIP.
 // Param y: Y coordinate of the mouse pointer in DIP.
@@ -70,7 +70,7 @@
 // Param clickCount: Number of times the mouse button was clicked (default: 0).
 - (void)domain:(PDInputDomain *)domain emulateTouchFromMouseEventWithType:(NSString *)type x:(NSNumber *)x y:(NSNumber *)y timestamp:(NSNumber *)timestamp button:(NSString *)button deltaX:(NSNumber *)deltaX deltaY:(NSNumber *)deltaY modifiers:(NSNumber *)modifiers clickCount:(NSNumber *)clickCount callback:(void (^)(id error))callback;
 
-// Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
+/// Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
 // Param x: X coordinate of the start of the gesture in CSS pixels.
 // Param y: Y coordinate of the start of the gesture in CSS pixels.
 // Param scaleFactor: Relative scale factor after zooming (>1.0 zooms in, <1.0 zooms out).
@@ -78,7 +78,7 @@
 // Param gestureSourceType: Which type of input events to be generated (default: 'default', which queries the platform for the preferred input type).
 - (void)domain:(PDInputDomain *)domain synthesizePinchGestureWithX:(NSNumber *)x y:(NSNumber *)y scaleFactor:(NSNumber *)scaleFactor relativeSpeed:(NSNumber *)relativeSpeed gestureSourceType:(NSString *)gestureSourceType callback:(void (^)(id error))callback;
 
-// Synthesizes a scroll gesture over a time period by issuing appropriate touch events.
+/// Synthesizes a scroll gesture over a time period by issuing appropriate touch events.
 // Param x: X coordinate of the start of the gesture in CSS pixels.
 // Param y: Y coordinate of the start of the gesture in CSS pixels.
 // Param xDistance: The distance to scroll along the X axis (positive to scroll left).
@@ -90,7 +90,7 @@
 // Param gestureSourceType: Which type of input events to be generated (default: 'default', which queries the platform for the preferred input type).
 - (void)domain:(PDInputDomain *)domain synthesizeScrollGestureWithX:(NSNumber *)x y:(NSNumber *)y xDistance:(NSNumber *)xDistance yDistance:(NSNumber *)yDistance xOverscroll:(NSNumber *)xOverscroll yOverscroll:(NSNumber *)yOverscroll preventFling:(NSNumber *)preventFling speed:(NSNumber *)speed gestureSourceType:(NSString *)gestureSourceType callback:(void (^)(id error))callback;
 
-// Synthesizes a tap gesture over a time period by issuing appropriate touch events.
+/// Synthesizes a tap gesture over a time period by issuing appropriate touch events.
 // Param x: X coordinate of the start of the gesture in CSS pixels.
 // Param y: Y coordinate of the start of the gesture in CSS pixels.
 // Param duration: Duration between touchdown and touchup events in ms (default: 50).

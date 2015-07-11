@@ -37,10 +37,10 @@
 @protocol PDInspectorCommandDelegate <PDCommandDelegate>
 @optional
 
-// Enables inspector domain notifications.
+/// Enables inspector domain notifications.
 - (void)domain:(PDInspectorDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Disables inspector domain notifications.
+/// Disables inspector domain notifications.
 - (void)domain:(PDInspectorDomain *)domain disableWithCallback:(void (^)(id error))callback;
 
 @end

@@ -41,13 +41,13 @@
 @protocol PDConsoleCommandDelegate <PDCommandDelegate>
 @optional
 
-// Enables console domain, sends the messages collected so far to the client by means of the <code>messageAdded</code> notification.
+/// Enables console domain, sends the messages collected so far to the client by means of the <code>messageAdded</code> notification.
 - (void)domain:(PDConsoleDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Disables console domain, prevents further console messages from being reported to the client.
+/// Disables console domain, prevents further console messages from being reported to the client.
 - (void)domain:(PDConsoleDomain *)domain disableWithCallback:(void (^)(id error))callback;
 
-// Clears console messages collected in the browser.
+/// Clears console messages collected in the browser.
 - (void)domain:(PDConsoleDomain *)domain clearMessagesWithCallback:(void (^)(id error))callback;
 
 @end

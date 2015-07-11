@@ -42,7 +42,7 @@
 @protocol PDRuntimeCommandDelegate <PDCommandDelegate>
 @optional
 
-// Evaluates expression on global object.
+/// Evaluates expression on global object.
 // Param expression: Expression to evaluate.
 // Param objectGroup: Symbolic group name that can be used to release multiple objects.
 // Param includeCommandLineAPI: Determines whether Command Line API should be available during the evaluation.
@@ -55,7 +55,7 @@
 // Callback Param exceptionDetails: Exception details.
 - (void)domain:(PDRuntimeDomain *)domain evaluateWithExpression:(NSString *)expression objectGroup:(NSString *)objectGroup includeCommandLineAPI:(NSNumber *)includeCommandLineAPI doNotPauseOnExceptionsAndMuteConsole:(NSNumber *)doNotPauseOnExceptionsAndMuteConsole contextId:(NSNumber *)contextId returnByValue:(NSNumber *)returnByValue generatePreview:(NSNumber *)generatePreview callback:(void (^)(PDRuntimeRemoteObject *result, NSNumber *wasThrown, PDDebuggerExceptionDetails *exceptionDetails, id error))callback;
 
-// Calls function with given declaration on the given object. Object group of the result is inherited from the target object.
+/// Calls function with given declaration on the given object. Object group of the result is inherited from the target object.
 // Param objectId: Identifier of the object to call function on.
 // Param functionDeclaration: Declaration of the function to call.
 // Param arguments: Call arguments. All call arguments must belong to the same JavaScript world as the target object.
@@ -66,7 +66,7 @@
 // Callback Param wasThrown: True if the result was thrown during the evaluation.
 - (void)domain:(PDRuntimeDomain *)domain callFunctionOnWithObjectId:(NSString *)objectId functionDeclaration:(NSString *)functionDeclaration arguments:(NSArray *)arguments doNotPauseOnExceptionsAndMuteConsole:(NSNumber *)doNotPauseOnExceptionsAndMuteConsole returnByValue:(NSNumber *)returnByValue generatePreview:(NSNumber *)generatePreview callback:(void (^)(PDRuntimeRemoteObject *result, NSNumber *wasThrown, id error))callback;
 
-// Returns properties of a given object. Object group of the result is inherited from the target object.
+/// Returns properties of a given object. Object group of the result is inherited from the target object.
 // Param objectId: Identifier of the object to return properties for.
 // Param ownProperties: If true, returns properties belonging only to the element itself, not to its prototype chain.
 // Param accessorPropertiesOnly: If true, returns accessor properties (with getter/setter) only; internal properties are not returned either.
@@ -76,21 +76,21 @@
 // Callback Param exceptionDetails: Exception details.
 - (void)domain:(PDRuntimeDomain *)domain getPropertiesWithObjectId:(NSString *)objectId ownProperties:(NSNumber *)ownProperties accessorPropertiesOnly:(NSNumber *)accessorPropertiesOnly generatePreview:(NSNumber *)generatePreview callback:(void (^)(NSArray *result, NSArray *internalProperties, PDDebuggerExceptionDetails *exceptionDetails, id error))callback;
 
-// Releases remote object with given id.
+/// Releases remote object with given id.
 // Param objectId: Identifier of the object to release.
 - (void)domain:(PDRuntimeDomain *)domain releaseObjectWithObjectId:(NSString *)objectId callback:(void (^)(id error))callback;
 
-// Releases all remote objects that belong to a given group.
+/// Releases all remote objects that belong to a given group.
 // Param objectGroup: Symbolic object group name.
 - (void)domain:(PDRuntimeDomain *)domain releaseObjectGroupWithObjectGroup:(NSString *)objectGroup callback:(void (^)(id error))callback;
 
-// Tells inspected instance(worker or page) that it can run in case it was started paused.
+/// Tells inspected instance(worker or page) that it can run in case it was started paused.
 - (void)domain:(PDRuntimeDomain *)domain runWithCallback:(void (^)(id error))callback;
 
-// Enables reporting of execution contexts creation by means of <code>executionContextCreated</code> event. When the reporting gets enabled the event will be sent immediately for each existing execution context.
+/// Enables reporting of execution contexts creation by means of <code>executionContextCreated</code> event. When the reporting gets enabled the event will be sent immediately for each existing execution context.
 - (void)domain:(PDRuntimeDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Disables reporting of execution contexts creation.
+/// Disables reporting of execution contexts creation.
 - (void)domain:(PDRuntimeDomain *)domain disableWithCallback:(void (^)(id error))callback;
 // Callback Param result: True if the Runtime is in paused on start state.
 - (void)domain:(PDRuntimeDomain *)domain isRunRequiredWithCallback:(void (^)(NSNumber *result, id error))callback;

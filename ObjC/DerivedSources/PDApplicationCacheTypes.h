@@ -14,62 +14,62 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 
-// Detailed application cache resource information.
+/// Detailed application cache resource information.
 @interface PDApplicationCacheApplicationCacheResource : PDObject
 
-// Resource url.
-// Type: string
+/// Resource url.
+/// Type: string
 @property (nonatomic, strong) NSString *url;
 
-// Resource size.
-// Type: integer
+/// Resource size.
+/// Type: integer
 @property (nonatomic, strong) NSNumber *size;
 
-// Resource type.
-// Type: string
+/// Resource type.
+/// Type: string
 @property (nonatomic, strong) NSString *type;
 
 @end
 
 
-// Detailed application cache information.
+/// Detailed application cache information.
 @interface PDApplicationCacheApplicationCache : PDObject
 
-// Manifest URL.
-// Type: string
+/// Manifest URL.
+/// Type: string
 @property (nonatomic, strong) NSString *manifestURL;
 
-// Application cache size.
-// Type: number
+/// Application cache size.
+/// Type: number
 @property (nonatomic, strong) NSNumber *size;
 
-// Application cache creation time.
-// Type: number
+/// Application cache creation time.
+/// Type: number
 @property (nonatomic, strong) NSNumber *creationTime;
 
-// Application cache update time.
-// Type: number
+/// Application cache update time.
+/// Type: number
 @property (nonatomic, strong) NSNumber *updateTime;
 
-// Application cache resources.
-// Type: array
+/// Application cache resources.
+/// Type: array
 @property (nonatomic, strong) NSArray *resources;
 
 @end
 
 
-// Frame identifier - manifest URL pair.
+/// Frame identifier - manifest URL pair.
 @interface PDApplicationCacheFrameWithManifest : PDObject
 
-// Frame identifier.
+/// Frame identifier.
 @property (nonatomic, strong) NSString *frameId;
 
-// Manifest URL.
-// Type: string
+/// Manifest URL.
+/// Type: string
 @property (nonatomic, strong) NSString *manifestURL;
 
-// Application cache status.
-// Type: integer
+/// Application cache status.
+/// Type: integer
 @property (nonatomic, strong) NSNumber *status;
 
 @end

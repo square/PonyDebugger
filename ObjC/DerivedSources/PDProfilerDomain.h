@@ -39,7 +39,7 @@
 - (void)domain:(PDProfilerDomain *)domain enableWithCallback:(void (^)(id error))callback;
 - (void)domain:(PDProfilerDomain *)domain disableWithCallback:(void (^)(id error))callback;
 
-// Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
+/// Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
 // Param interval: New sampling interval in microseconds.
 - (void)domain:(PDProfilerDomain *)domain setSamplingIntervalWithInterval:(NSNumber *)interval callback:(void (^)(id error))callback;
 - (void)domain:(PDProfilerDomain *)domain startWithCallback:(void (^)(id error))callback;

@@ -14,15 +14,15 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 
-// DOM Storage identifier.
+/// DOM Storage identifier.
 @interface PDDOMStorageStorageId : PDObject
 
-// Security origin for the storage.
-// Type: string
+/// Security origin for the storage.
+/// Type: string
 @property (nonatomic, strong) NSString *securityOrigin;
 
-// Whether the storage is local storage (not session storage).
-// Type: boolean
+/// Whether the storage is local storage (not session storage).
+/// Type: boolean
 @property (nonatomic, strong) NSNumber *isLocalStorage;
 
 @end

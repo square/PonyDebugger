@@ -23,12 +23,9 @@ static NSString *const PDManagedObjectContextNameUserInfoKey = @"PDManagedObject
 @interface PDIndexedDBDomainController ()
 
 @property (nonatomic, strong) NSMutableArray *managedObjectContexts;
-@property (nonatomic, strong) NSNumber *rootFrameRequestID;
 
 - (NSManagedObjectContext *)_managedObjectContextForName:(NSString *)name;
 - (NSString *)_databaseNameForManagedObjectContext:(NSManagedObjectContext *)context;
-- (void)_broadcastDatabaseNames;
-- (void)_broadcastDatabase:(NSManagedObjectContext *)context requestID:(NSNumber *)requestID;
 
 @end
 
@@ -38,7 +35,6 @@ static NSString *const PDManagedObjectContextNameUserInfoKey = @"PDManagedObject
 @dynamic domain;
 
 @synthesize managedObjectContexts = _managedObjectContexts;
-@synthesize rootFrameRequestID = _rootFrameRequestID;
 
 #pragma mark - Statics
 
@@ -73,40 +69,42 @@ static NSString *const PDManagedObjectContextNameUserInfoKey = @"PDManagedObject
 - (void)dealloc;
 {
     self.managedObjectContexts = nil;
-    self.rootFrameRequestID = nil;
 }
 
 #pragma mark - PDIndexedDBCommandDelegate
 
-- (void)domain:(PDIndexedDBDomain *)domain requestDatabaseNamesForFrameWithRequestId:(NSNumber *)requestId frameId:(NSString *)frameId callback:(void (^)(id))callback;
+
+- (void)domain:(PDIndexedDBDomain *)domain requestDatabaseNamesWithSecurityOrigin:(NSString *)securityOrigin callback:(void (^)(NSArray *, id))callback;
 {
-    callback(nil);
-    
-    self.rootFrameRequestID = requestId;
-    [self _broadcastDatabaseNames];
+    callback(self._databaseNames, nil);
 }
 
-- (void)domain:(PDIndexedDBDomain *)domain requestDatabaseWithRequestId:(NSNumber *)requestId frameId:(NSString *)frameId databaseName:(NSString *)databaseName callback:(void (^)(id))callback;
+/// Since NSJSONSerialization doesn't allow root objects to be strings, we're going to be lazy and put it in an array then trim it
+- (NSString *)_escapeJSONString:(NSString *)unescapedString;
 {
-    callback(nil);
-    
-    [self _broadcastDatabase:[self _managedObjectContextForName:databaseName] requestID:requestId];
+    static NSCharacterSet *characterSet = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        characterSet = [NSCharacterSet characterSetWithCharactersInString:@"[] "];
+    });
+    NSString *str =  [[NSString alloc]
+            initWithData:[NSJSONSerialization dataWithJSONObject:@[unescapedString] options:0 error:NULL]
+            encoding:NSUTF8StringEncoding];
+    return [str stringByTrimmingCharactersInSet:characterSet];
 }
 
-- (void)domain:(PDIndexedDBDomain *)domain requestDataWithRequestId:(NSNumber *)requestId frameId:(NSString *)frameId databaseName:(NSString *)databaseName objectStoreName:(NSString *)objectStoreName indexName:(NSString *)indexName skipCount:(NSNumber *)skipCount pageSize:(NSNumber *)pageSize keyRange:(PDIndexedDBKeyRange *)keyRange callback:(void (^)(id))callback;
+- (void)domain:(PDIndexedDBDomain *)domain requestDataWithSecurityOrigin:(NSString *)securityOrigin databaseName:(NSString *)databaseName objectStoreName:(NSString *)objectStoreName indexName:(NSString *)indexName skipCount:(NSNumber *)skipCount pageSize:(NSNumber *)pageSize keyRange:(PDIndexedDBKeyRange *)keyRange callback:(void (^)(NSArray *objectStoreDataEntries, NSNumber *hasMore, id error))callback;
 {
-    callback(nil);
-    
     NSManagedObjectContext *context = [self _managedObjectContextForName:databaseName];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:objectStoreName];
-
+    
     // Don't show subentities if it's not an abstract entity.
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:objectStoreName inManagedObjectContext:context];
     if (![entityDescription isAbstract]) {
         fetchRequest.includesSubentities = NO;
     }
-
+    
     NSInteger totalCount = [context countForFetchRequest:fetchRequest error:NULL];
     
     fetchRequest.fetchOffset = [skipCount integerValue];
@@ -118,18 +116,13 @@ static NSString *const PDManagedObjectContextNameUserInfoKey = @"PDManagedObject
     for (NSManagedObject *object in results) {
         PDIndexedDBDataEntry *dataEntry = [[PDIndexedDBDataEntry alloc] init];
         
-        PDIndexedDBKey *primaryKey = [[PDIndexedDBKey alloc] init];
-        primaryKey.type = @"string";
-        primaryKey.string = [[object.objectID URIRepresentation] absoluteString];
-        dataEntry.primaryKey = primaryKey;
+        
+        dataEntry.primaryKey = [self _escapeJSONString:object.objectID.URIRepresentation.absoluteString];
         
         if (indexName.length > 0) {
-            PDIndexedDBKey *key = [[PDIndexedDBKey alloc] init];
-            key.type = @"string";
-            key.string = [object valueForKey:indexName];
-            dataEntry.key = key;
+            dataEntry.key = [object valueForKey:indexName];
         } else {
-            dataEntry.key = primaryKey;
+            dataEntry.key = dataEntry.primaryKey;
         }
         
         PDRuntimeRemoteObject *remoteObject = [[PDRuntimeRemoteObject alloc] init];
@@ -137,17 +130,51 @@ static NSString *const PDManagedObjectContextNameUserInfoKey = @"PDManagedObject
         remoteObject.type = @"object";
         remoteObject.classNameString = remoteObject.objectDescription = objectStoreName;
         
-        dataEntry.value = remoteObject;
+        NSMutableDictionary *values = [NSMutableDictionary new];
+        
+        for (NSPropertyDescription *propertyDescription in object.entity.properties) {
+
+            id val = [object valueForKey:propertyDescription.name];
+
+            if (val) {
+                if ([propertyDescription isKindOfClass:[NSAttributeDescription class]]) {
+                    values[propertyDescription.name] = [val PD_JSONObject];
+                } else if ([propertyDescription isKindOfClass:[NSRelationshipDescription class]]) {
+                    NSRelationshipDescription *rel = (id)propertyDescription;
+
+                    if (rel.isToMany) {
+                        NSMutableArray *newVals = [NSMutableArray new];
+                        for (NSManagedObject *element in (NSSet *)val) {
+                            values[propertyDescription.name] = [element objectID].URIRepresentation.absoluteString;
+                        }
+                    } else {
+                        values[propertyDescription.name] = [val objectID].URIRepresentation.absoluteString;
+                    }
+                }
+            } else {
+                values[propertyDescription.name] = [NSNull null];
+            }
+
+        }
+        
+        dataEntry.value = [[NSString alloc]
+                           initWithData:[NSJSONSerialization dataWithJSONObject:values options:0 error:NULL]
+                           encoding:NSUTF8StringEncoding];
         
         [dataEntries addObject:dataEntry];
     }
     
-    NSNumber *hasMore = [NSNumber numberWithBool:YES];
+    NSNumber *hasMore = @(fetchRequest.fetchOffset + results.count < totalCount);
     if (fetchRequest.fetchOffset + results.count >= totalCount) {
         hasMore = [NSNumber numberWithBool:NO];
     }
     
-    [self.domain objectStoreDataLoadedWithRequestId:requestId objectStoreDataEntries:dataEntries hasMore:hasMore];
+    callback(dataEntries, hasMore, nil);
+}
+
+- (void)domain:(PDIndexedDBDomain *)domain requestDatabaseWithSecurityOrigin:(NSString *)securityOrigin databaseName:(NSString *)databaseName callback:(void (^)(PDIndexedDBDatabaseWithObjectStores *, id))callback;
+{
+    callback([self _databaseInContext:[self _managedObjectContextForName:databaseName]], nil);
 }
 
 #pragma mark - Public Methods
@@ -162,15 +189,11 @@ static NSString *const PDManagedObjectContextNameUserInfoKey = @"PDManagedObject
 {
     [context.userInfo setObject:name forKey:PDManagedObjectContextNameUserInfoKey];
     [_managedObjectContexts addObject:context];
-    
-    [self _broadcastDatabaseNames];
 }
 
 - (void)removeManagedObjectContext:(NSManagedObjectContext *)context;
 {
     [self.managedObjectContexts removeObject:context];
-    
-    [self _broadcastDatabaseNames];
 }
 
 #pragma mark - Private Methods
@@ -200,24 +223,18 @@ static NSString *const PDManagedObjectContextNameUserInfoKey = @"PDManagedObject
     return [paths componentsJoinedByString:@":"];
 }
 
-- (void)_broadcastDatabaseNames;
+- (NSArray *)_databaseNames;
 {
     NSMutableArray *dbNames = [[NSMutableArray alloc] initWithCapacity:_managedObjectContexts.count];
 
-    PDIndexedDBSecurityOriginWithDatabaseNames *databaseNames =  [[PDIndexedDBSecurityOriginWithDatabaseNames alloc] init];
-    
-    databaseNames.databaseNames = dbNames;
-    [self.managedObjectContexts enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSManagedObjectContext *context = obj;
-        [dbNames addObject:[context.userInfo objectForKey:PDManagedObjectContextNameUserInfoKey]];
+    [self.managedObjectContexts enumerateObjectsUsingBlock:^(NSManagedObjectContext *context, NSUInteger idx, BOOL *stop) {
+        [dbNames addObject:context.userInfo[PDManagedObjectContextNameUserInfoKey]];
     }];
     
-    databaseNames.securityOrigin = [[NSBundle mainBundle] bundleIdentifier];
-    
-    [self.domain databaseNamesLoadedWithRequestId:_rootFrameRequestID securityOriginWithDatabaseNames:databaseNames];
+    return dbNames;
 }
 
-- (void)_broadcastDatabase:(NSManagedObjectContext *)context requestID:(NSNumber *)requestID;
+- (PDIndexedDBDatabaseWithObjectStores *)_databaseInContext:(NSManagedObjectContext *)context;
 {
     NSMutableArray *objectStores = [[NSMutableArray alloc] init];
     
@@ -261,7 +278,7 @@ static NSString *const PDManagedObjectContextNameUserInfoKey = @"PDManagedObject
     db.version = @"N/A";
     db.objectStores = objectStores;
     
-    [self.domain databaseLoadedWithRequestId:requestID databaseWithObjectStores:db];
+    return db;
 }
 
 @end

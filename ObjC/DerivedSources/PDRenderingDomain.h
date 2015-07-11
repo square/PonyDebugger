@@ -26,23 +26,23 @@
 @protocol PDRenderingCommandDelegate <PDCommandDelegate>
 @optional
 
-// Requests that backend shows paint rectangles
+/// Requests that backend shows paint rectangles
 // Param result: True for showing paint rectangles
 - (void)domain:(PDRenderingDomain *)domain setShowPaintRectsWithResult:(NSNumber *)result callback:(void (^)(id error))callback;
 
-// Requests that backend shows debug borders on layers
+/// Requests that backend shows debug borders on layers
 // Param show: True for showing debug borders
 - (void)domain:(PDRenderingDomain *)domain setShowDebugBordersWithShow:(NSNumber *)show callback:(void (^)(id error))callback;
 
-// Requests that backend shows the FPS counter
+/// Requests that backend shows the FPS counter
 // Param show: True for showing the FPS counter
 - (void)domain:(PDRenderingDomain *)domain setShowFPSCounterWithShow:(NSNumber *)show callback:(void (^)(id error))callback;
 
-// Requests that backend enables continuous painting
+/// Requests that backend enables continuous painting
 // Param enabled: True for enabling cointinuous painting
 - (void)domain:(PDRenderingDomain *)domain setContinuousPaintingEnabledWithEnabled:(NSNumber *)enabled callback:(void (^)(id error))callback;
 
-// Requests that backend shows scroll bottleneck rects
+/// Requests that backend shows scroll bottleneck rects
 // Param show: True for showing scroll bottleneck rects
 - (void)domain:(PDRenderingDomain *)domain setShowScrollBottleneckRectsWithShow:(NSNumber *)show callback:(void (^)(id error))callback;
 

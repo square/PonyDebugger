@@ -530,13 +530,6 @@ static NSArray *prettyStringPrinters = nil;
     return self;
 }
 
-- (void)dealloc;
-{
-    if (_queue) {
-        dispatch_release(_queue);
-    }
-}
-
 #pragma mark - PDNetworkCommandDelegate
 
 - (void)domain:(PDNetworkDomain *)domain canClearBrowserCacheWithCallback:(void (^)(NSNumber *, id))callback;
@@ -559,6 +552,11 @@ static NSArray *prettyStringPrinters = nil;
 {
     NSDictionary *response = [_responseCache objectForKey:requestId];
     callback([response objectForKey:@"body"], [response objectForKey:@"base64Encoded"], nil);
+}
+
+- (void)domain:(PDNetworkDomain *)domain canEmulateNetworkConditionsWithCallback:(void (^)(NSNumber *, id))callback;
+{
+    callback(@NO, nil);
 }
 
 
@@ -737,14 +735,18 @@ static NSArray *prettyStringPrinters = nil;
         PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
         PDNetworkResponse *networkRedirectResponse = response ? [[PDNetworkResponse alloc] initWithURLResponse:response request:request] : nil;
         
-        [self.domain requestWillBeSentWithRequestId:[self requestIDForConnection:connection]
-                                            frameId:@""
-                                           loaderId:@""
-                                        documentURL:[request.URL absoluteString]
-                                            request:networkRequest
-                                          timestamp:[NSDate PD_timestamp]
-                                          initiator:nil
-                                   redirectResponse:networkRedirectResponse];
+        
+        [self.domain
+         requestWillBeSentWithRequestId:[self requestIDForConnection:connection]
+         frameId:@""
+         loaderId:@""
+         documentURL:request.URL.absoluteString
+         request:networkRequest
+         timestamp:NSDate.PD_timestamp
+         wallTime:NSDate.PD_timestamp
+         initiator:nil
+         redirectResponse:networkRedirectResponse
+         type:response.PD_responseType];
     }];
 }
 
@@ -765,14 +767,19 @@ static NSArray *prettyStringPrinters = nil;
                 [self setRequest:request forConnection:connection];
 
                 PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
-                [self.domain requestWillBeSentWithRequestId:[self requestIDForConnection:connection]
-                                                    frameId:@""
-                                                   loaderId:@""
-                                                documentURL:[request.URL absoluteString]
-                                                    request:networkRequest
-                                                  timestamp:[NSDate PD_timestamp]
-                                                  initiator:nil
-                                           redirectResponse:nil];
+                
+                [self.domain
+                 requestWillBeSentWithRequestId:[self requestIDForConnection:connection]
+                 frameId:@""
+                 loaderId:@""
+                 documentURL:request.URL.absoluteString
+                 request:networkRequest
+                 timestamp:NSDate.PD_timestamp
+                 wallTime:NSDate.PD_timestamp
+                 initiator:nil
+                 redirectResponse:nil
+                 type:response.PD_responseType];
+
             }
         
             [self setResponse:response forConnection:connection];
@@ -833,7 +840,9 @@ static NSArray *prettyStringPrinters = nil;
                   request:[self requestForConnection:connection]];
         
         [self.domain loadingFinishedWithRequestId:requestID
-                                        timestamp:[NSDate PD_timestamp]];
+                                        timestamp:[NSDate PD_timestamp]
+                                encodedDataLength:@(response.expectedContentLength)]; // This is a lie. We don't actually know the size on the wire
+
         
         [self connectionFinished:connection];
     }];
@@ -842,10 +851,12 @@ static NSArray *prettyStringPrinters = nil;
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
 {
     [self performBlock:^{
-        [self.domain loadingFailedWithRequestId:[self requestIDForConnection:connection]
-                                      timestamp:[NSDate PD_timestamp]
-                                      errorText:[error localizedDescription]
-                                       canceled:[NSNumber numberWithBool:NO]];
+        [self.domain
+         loadingFailedWithRequestId:[self requestIDForConnection:connection]
+         timestamp:NSDate.PD_timestamp
+         type:nil
+         errorText:error.localizedDescription
+         canceled:@NO];
         
         [self connectionFinished:connection];
     }];
@@ -870,14 +881,17 @@ static NSArray *prettyStringPrinters = nil;
         PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
         PDNetworkResponse *networkRedirectResponse = response ? [[PDNetworkResponse alloc] initWithURLResponse:response request:request] : nil;
 
-        [self.domain requestWillBeSentWithRequestId:[self requestIDForTask:task]
-                                            frameId:@""
-                                           loaderId:@""
-                                        documentURL:[request.URL absoluteString]
-                                            request:networkRequest
-                                          timestamp:[NSDate PD_timestamp]
-                                          initiator:nil
-                                   redirectResponse:networkRedirectResponse];
+        [self.domain
+         requestWillBeSentWithRequestId:[self requestIDForTask:task]
+         frameId:@""
+         loaderId:@""
+         documentURL:request.URL.absoluteString
+         request:networkRequest
+         timestamp:NSDate.PD_timestamp
+         wallTime:NSDate.PD_timestamp
+         initiator:nil
+         redirectResponse:networkRedirectResponse
+         type:[response PD_responseType]];
     }];
 }
 
@@ -911,14 +925,20 @@ static NSArray *prettyStringPrinters = nil;
             [self setRequest:request forTask:dataTask];
 
             PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
-            [self.domain requestWillBeSentWithRequestId:[self requestIDForTask:dataTask]
-                                                frameId:@""
-                                               loaderId:@""
-                                            documentURL:[request.URL absoluteString]
-                                                request:networkRequest
-                                              timestamp:[NSDate PD_timestamp]
-                                              initiator:nil
-                                       redirectResponse:nil];
+            
+            
+            [self.domain
+             requestWillBeSentWithRequestId:[self requestIDForTask:dataTask]
+             frameId:@""
+             loaderId:@""
+             documentURL:request.URL.absoluteString
+             request:networkRequest
+             timestamp:NSDate.PD_timestamp
+             wallTime:NSDate.PD_timestamp
+             initiator:nil
+             redirectResponse:nil
+             type:response.PD_responseType];
+
         }
 
         [self setResponse:response forTask:dataTask];
@@ -972,19 +992,24 @@ static NSArray *prettyStringPrinters = nil;
         NSData *accumulatedData = [self accumulatedDataForTask:task];
 
         if (error) {
-            [self.domain loadingFailedWithRequestId:[self requestIDForTask:task]
-                                          timestamp:[NSDate PD_timestamp]
-                                          errorText:[error localizedDescription]
-                                           canceled:[NSNumber numberWithBool:NO]];
+            [self.domain
+             loadingFailedWithRequestId:[self requestIDForTask:task]
+             timestamp:[NSDate PD_timestamp]
+             type:response.PD_responseType
+             errorText:error.localizedDescription
+             canceled:@NO];
         } else {
-            [self setResponse:accumulatedData
-                 forRequestID:requestID
-                     response:response
-                      request:[self requestForTask:task]];
+            [self
+             setResponse:accumulatedData
+             forRequestID:requestID
+             response:response
+             request:[self requestForTask:task]];
         }
 
         [self.domain loadingFinishedWithRequestId:requestID
-                                        timestamp:[NSDate PD_timestamp]];
+                                        timestamp:[NSDate PD_timestamp]
+                                encodedDataLength:@(response.expectedContentLength)];
+        
 
         [self taskFinished:task];
     }];

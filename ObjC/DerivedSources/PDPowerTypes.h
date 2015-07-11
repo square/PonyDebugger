@@ -14,19 +14,19 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 
-// PowerEvent item
+/// PowerEvent item
 @interface PDPowerPowerEvent : PDObject
 
-// Power Event Type.
-// Type: string
+/// Power Event Type.
+/// Type: string
 @property (nonatomic, strong) NSString *type;
 
-// Power Event Time, in milliseconds.
-// Type: number
+/// Power Event Time, in milliseconds.
+/// Type: number
 @property (nonatomic, strong) NSNumber *timestamp;
 
-// Power Event Value.
-// Type: number
+/// Power Event Value.
+/// Type: number
 @property (nonatomic, strong) NSNumber *value;
 
 @end

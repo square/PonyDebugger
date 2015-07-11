@@ -49,7 +49,7 @@
 // Callback Param result: Evaluation result.
 - (void)domain:(PDHeapProfilerDomain *)domain getObjectByHeapObjectIdWithObjectId:(NSString *)objectId objectGroup:(NSString *)objectGroup callback:(void (^)(PDRuntimeRemoteObject *result, id error))callback;
 
-// Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions).
+/// Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions).
 // Param heapObjectId: Heap snapshot object id to be accessible by means of $x command line API.
 - (void)domain:(PDHeapProfilerDomain *)domain addInspectedHeapObjectWithHeapObjectId:(NSString *)heapObjectId callback:(void (^)(id error))callback;
 // Param objectId: Identifier of the object to get heap object id for.

@@ -55,6 +55,12 @@
     
     PDPageFrameResourceTree *resourceTree = [[PDPageFrameResourceTree alloc] init];
     resourceTree.frame = frame;
+    resourceTree.resources = @[@{
+        @"url": [NSBundle mainBundle].bundleURL.absoluteString,
+        @"type": @"Document",
+        @"mimeType": @"",
+        
+    }];
     
     callback(resourceTree, nil);
 }
@@ -62,6 +68,16 @@
 - (void)domain:(PDPageDomain *)domain reloadWithIgnoreCache:(NSNumber *)ignoreCache scriptToEvaluateOnLoad:(NSString *)scriptToEvaluateOnLoad callback:(void (^)(id))callback;
 {
     callback(nil);
+}
+
+- (void)domain:(PDPageDomain *)domain canScreencastWithCallback:(void (^)(NSNumber *, id))callback;
+{
+    callback(@NO, nil);
+}
+
+- (void)domain:(PDPageDomain *)domain getResourceContentWithFrameId:(NSString *)frameId url:(NSString *)url callback:(void (^)(NSString *content, NSNumber *base64Encoded, id error))callback;
+{
+    callback(@"", nil, nil);
 }
 
 @end

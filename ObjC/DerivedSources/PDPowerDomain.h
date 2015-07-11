@@ -29,17 +29,17 @@
 @protocol PDPowerCommandDelegate <PDCommandDelegate>
 @optional
 
-// Start power events collection.
+/// Start power events collection.
 - (void)domain:(PDPowerDomain *)domain startWithCallback:(void (^)(id error))callback;
 
-// Stop power events collection.
+/// Stop power events collection.
 - (void)domain:(PDPowerDomain *)domain endWithCallback:(void (^)(id error))callback;
 
-// Tells whether power profiling is supported.
+/// Tells whether power profiling is supported.
 // Callback Param result: True if power profiling is supported.
 - (void)domain:(PDPowerDomain *)domain canProfilePowerWithCallback:(void (^)(NSNumber *result, id error))callback;
 
-// Describes the accuracy level of the data provider.
+/// Describes the accuracy level of the data provider.
 - (void)domain:(PDPowerDomain *)domain getAccuracyLevelWithCallback:(void (^)(NSString *result, id error))callback;
 
 @end

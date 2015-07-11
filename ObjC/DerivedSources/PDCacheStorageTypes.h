@@ -14,32 +14,32 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 
-// Data entry.
+/// Data entry.
 @interface PDCacheStorageDataEntry : PDObject
 
-// Request url spec.
-// Type: string
+/// Request url spec.
+/// Type: string
 @property (nonatomic, strong) NSString *request;
 
-// Response stataus text.
-// Type: string
+/// Response stataus text.
+/// Type: string
 @property (nonatomic, strong) NSString *response;
 
 @end
 
 
-// Cache identifier.
+/// Cache identifier.
 @interface PDCacheStorageCache : PDObject
 
-// An opaque unique id of the cache.
+/// An opaque unique id of the cache.
 @property (nonatomic, strong) NSString *cacheId;
 
-// Security origin of the cache.
-// Type: string
+/// Security origin of the cache.
+/// Type: string
 @property (nonatomic, strong) NSString *securityOrigin;
 
-// The name of the cache.
-// Type: string
+/// The name of the cache.
+/// Type: string
 @property (nonatomic, strong) NSString *cacheName;
 
 @end

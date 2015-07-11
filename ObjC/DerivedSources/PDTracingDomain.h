@@ -37,16 +37,16 @@
 @protocol PDTracingCommandDelegate <PDCommandDelegate>
 @optional
 
-// Start trace events collection.
+/// Start trace events collection.
 // Param categories: Category/tag filter
 // Param options: Tracing options
 // Param bufferUsageReportingInterval: If set, the agent will issue bufferUsage events at this interval, specified in milliseconds
 - (void)domain:(PDTracingDomain *)domain startWithCategories:(NSString *)categories options:(NSString *)options bufferUsageReportingInterval:(NSNumber *)bufferUsageReportingInterval callback:(void (^)(id error))callback;
 
-// Stop trace events collection.
+/// Stop trace events collection.
 - (void)domain:(PDTracingDomain *)domain endWithCallback:(void (^)(id error))callback;
 
-// Gets supported tracing categories.
+/// Gets supported tracing categories.
 // Callback Param categories: A list of supported tracing categories.
 - (void)domain:(PDTracingDomain *)domain getCategoriesWithCallback:(void (^)(NSArray *categories, id error))callback;
 

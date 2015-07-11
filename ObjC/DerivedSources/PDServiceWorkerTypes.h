@@ -14,70 +14,70 @@
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
 
-// ServiceWorker registration.
+/// ServiceWorker registration.
 @interface PDServiceWorkerServiceWorkerRegistration : PDObject
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *registrationId;
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *scopeURL;
 
-// Type: boolean
+/// Type: boolean
 @property (nonatomic, strong) NSNumber *isDeleted;
 
 @end
 
 
-// ServiceWorker version.
+/// ServiceWorker version.
 @interface PDServiceWorkerServiceWorkerVersion : PDObject
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *versionId;
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *registrationId;
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *scriptURL;
 
 @property (nonatomic, strong) NSString *runningStatus;
 
 @property (nonatomic, strong) NSString *status;
 
-// The Last-Modified header value of the main script.
-// Type: number
+/// The Last-Modified header value of the main script.
+/// Type: number
 @property (nonatomic, strong) NSNumber *scriptLastModified;
 
-// The time at which the response headers of the main script were received from the server.  For cached script it is the last time the cache entry was validated.
-// Type: number
+/// The time at which the response headers of the main script were received from the server.  For cached script it is the last time the cache entry was validated.
+/// Type: number
 @property (nonatomic, strong) NSNumber *scriptResponseTime;
 
-// Type: array
+/// Type: array
 @property (nonatomic, strong) NSArray *controlledClients;
 
 @end
 
 
-// ServiceWorker error message.
+/// ServiceWorker error message.
 @interface PDServiceWorkerServiceWorkerErrorMessage : PDObject
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *errorMessage;
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *registrationId;
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *versionId;
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *sourceURL;
 
-// Type: integer
+/// Type: integer
 @property (nonatomic, strong) NSNumber *lineNumber;
 
-// Type: integer
+/// Type: integer
 @property (nonatomic, strong) NSNumber *columnNumber;
 
 @end
@@ -87,13 +87,13 @@
 
 @property (nonatomic, strong) NSString *identifier;
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *type;
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *title;
 
-// Type: string
+/// Type: string
 @property (nonatomic, strong) NSString *url;
 
 @end

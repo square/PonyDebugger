@@ -33,13 +33,13 @@
 @protocol PDTimelineCommandDelegate <PDCommandDelegate>
 @optional
 
-// Deprecated.
+/// Deprecated.
 - (void)domain:(PDTimelineDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Deprecated.
+/// Deprecated.
 - (void)domain:(PDTimelineDomain *)domain disableWithCallback:(void (^)(id error))callback;
 
-// Deprecated.
+/// Deprecated.
 // Param maxCallStackDepth: Samples JavaScript stack traces up to <code>maxCallStackDepth</code>, defaults to 5.
 // Param bufferEvents: Whether instrumentation events should be buffered and returned upon <code>stop</code> call.
 // Param liveEvents: Coma separated event types to issue although bufferEvents is set.
@@ -47,7 +47,7 @@
 // Param includeGPUEvents: Whether events from GPU process should be collected.
 - (void)domain:(PDTimelineDomain *)domain startWithMaxCallStackDepth:(NSNumber *)maxCallStackDepth bufferEvents:(NSNumber *)bufferEvents liveEvents:(NSString *)liveEvents includeCounters:(NSNumber *)includeCounters includeGPUEvents:(NSNumber *)includeGPUEvents callback:(void (^)(id error))callback;
 
-// Deprecated.
+/// Deprecated.
 - (void)domain:(PDTimelineDomain *)domain stopWithCallback:(void (^)(id error))callback;
 
 @end

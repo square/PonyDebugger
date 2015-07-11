@@ -30,10 +30,10 @@
 @protocol PDDatabaseCommandDelegate <PDCommandDelegate>
 @optional
 
-// Enables database tracking, database events will now be delivered to the client.
+/// Enables database tracking, database events will now be delivered to the client.
 - (void)domain:(PDDatabaseDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Disables database tracking, prevents database events from being sent to the client.
+/// Disables database tracking, prevents database events from being sent to the client.
 - (void)domain:(PDDatabaseDomain *)domain disableWithCallback:(void (^)(id error))callback;
 - (void)domain:(PDDatabaseDomain *)domain getDatabaseTableNamesWithDatabaseId:(NSString *)databaseId callback:(void (^)(NSArray *tableNames, id error))callback;
 - (void)domain:(PDDatabaseDomain *)domain executeSQLWithDatabaseId:(NSString *)databaseId query:(NSString *)query callback:(void (^)(NSArray *columnNames, NSArray *values, PDDatabaseError *sqlError, id error))callback;

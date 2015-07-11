@@ -25,12 +25,12 @@
 @protocol PDScreenOrientationCommandDelegate <PDCommandDelegate>
 @optional
 
-// Overrides the Screen Orientation.
+/// Overrides the Screen Orientation.
 // Param angle: Orientation angle
 // Param type: Orientation type
 - (void)domain:(PDScreenOrientationDomain *)domain setScreenOrientationOverrideWithAngle:(NSNumber *)angle type:(NSString *)type callback:(void (^)(id error))callback;
 
-// Clears the overridden Screen Orientation.
+/// Clears the overridden Screen Orientation.
 - (void)domain:(PDScreenOrientationDomain *)domain clearScreenOrientationOverrideWithCallback:(void (^)(id error))callback;
 
 @end

@@ -25,13 +25,13 @@
 @protocol PDDeviceOrientationCommandDelegate <PDCommandDelegate>
 @optional
 
-// Overrides the Device Orientation.
+/// Overrides the Device Orientation.
 // Param alpha: Mock alpha
 // Param beta: Mock beta
 // Param gamma: Mock gamma
 - (void)domain:(PDDeviceOrientationDomain *)domain setDeviceOrientationOverrideWithAlpha:(NSNumber *)alpha beta:(NSNumber *)beta gamma:(NSNumber *)gamma callback:(void (^)(id error))callback;
 
-// Clears the overridden Device Orientation.
+/// Clears the overridden Device Orientation.
 - (void)domain:(PDDeviceOrientationDomain *)domain clearDeviceOrientationOverrideWithCallback:(void (^)(id error))callback;
 
 @end

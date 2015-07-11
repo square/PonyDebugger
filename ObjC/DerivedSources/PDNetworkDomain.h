@@ -13,12 +13,12 @@
 #import <PonyDebugger/PDDebugger.h>
 #import <PonyDebugger/PDDynamicDebuggerDomain.h>
 
+@class PDNetworkWebSocketFrame;
 @class PDNetworkRequest;
 @class PDNetworkInitiator;
 @class PDNetworkResponse;
 @class PDNetworkWebSocketRequest;
 @class PDNetworkWebSocketResponse;
-@class PDNetworkWebSocketFrame;
 
 @protocol PDNetworkCommandDelegate;
 
@@ -130,73 +130,73 @@
 @protocol PDNetworkCommandDelegate <PDCommandDelegate>
 @optional
 
-// Enables network tracking, network events will now be delivered to the client.
+/// Enables network tracking, network events will now be delivered to the client.
 - (void)domain:(PDNetworkDomain *)domain enableWithCallback:(void (^)(id error))callback;
 
-// Disables network tracking, prevents network events from being sent to the client.
+/// Disables network tracking, prevents network events from being sent to the client.
 - (void)domain:(PDNetworkDomain *)domain disableWithCallback:(void (^)(id error))callback;
 
-// Allows overriding user agent with the given string.
+/// Allows overriding user agent with the given string.
 // Param userAgent: User agent to use.
 - (void)domain:(PDNetworkDomain *)domain setUserAgentOverrideWithUserAgent:(NSString *)userAgent callback:(void (^)(id error))callback;
 
-// Specifies whether to always send extra HTTP headers with the requests from this page.
+/// Specifies whether to always send extra HTTP headers with the requests from this page.
 // Param headers: Map with extra HTTP headers.
 - (void)domain:(PDNetworkDomain *)domain setExtraHTTPHeadersWithHeaders:(NSDictionary *)headers callback:(void (^)(id error))callback;
 
-// Returns content served for the given request.
+/// Returns content served for the given request.
 // Param requestId: Identifier of the network request to get content for.
 // Callback Param body: Response body.
 // Callback Param base64Encoded: True, if content was sent as base64.
 - (void)domain:(PDNetworkDomain *)domain getResponseBodyWithRequestId:(NSString *)requestId callback:(void (^)(NSString *body, NSNumber *base64Encoded, id error))callback;
 
-// This method sends a new XMLHttpRequest which is identical to the original one. The following parameters should be identical: method, url, async, request body, extra headers, withCredentials attribute, user, password.
+/// This method sends a new XMLHttpRequest which is identical to the original one. The following parameters should be identical: method, url, async, request body, extra headers, withCredentials attribute, user, password.
 // Param requestId: Identifier of XHR to replay.
 - (void)domain:(PDNetworkDomain *)domain replayXHRWithRequestId:(NSString *)requestId callback:(void (^)(id error))callback;
 
-// Toggles monitoring of XMLHttpRequest. If <code>true</code>, console will receive messages upon each XHR issued.
+/// Toggles monitoring of XMLHttpRequest. If <code>true</code>, console will receive messages upon each XHR issued.
 // Param enabled: Monitoring enabled state.
 - (void)domain:(PDNetworkDomain *)domain setMonitoringXHREnabledWithEnabled:(NSNumber *)enabled callback:(void (^)(id error))callback;
 
-// Tells whether clearing browser cache is supported.
+/// Tells whether clearing browser cache is supported.
 // Callback Param result: True if browser cache can be cleared.
 - (void)domain:(PDNetworkDomain *)domain canClearBrowserCacheWithCallback:(void (^)(NSNumber *result, id error))callback;
 
-// Clears browser cache.
+/// Clears browser cache.
 - (void)domain:(PDNetworkDomain *)domain clearBrowserCacheWithCallback:(void (^)(id error))callback;
 
-// Tells whether clearing browser cookies is supported.
+/// Tells whether clearing browser cookies is supported.
 // Callback Param result: True if browser cookies can be cleared.
 - (void)domain:(PDNetworkDomain *)domain canClearBrowserCookiesWithCallback:(void (^)(NSNumber *result, id error))callback;
 
-// Clears browser cookies.
+/// Clears browser cookies.
 - (void)domain:(PDNetworkDomain *)domain clearBrowserCookiesWithCallback:(void (^)(id error))callback;
 
-// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field.
+/// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field.
 // Callback Param cookies: Array of cookie objects.
 - (void)domain:(PDNetworkDomain *)domain getCookiesWithCallback:(void (^)(NSArray *cookies, id error))callback;
 
-// Deletes browser cookie with given name, domain and path.
+/// Deletes browser cookie with given name, domain and path.
 // Param cookieName: Name of the cookie to remove.
 // Param url: URL to match cooke domain and path.
 - (void)domain:(PDNetworkDomain *)domain deleteCookieWithCookieName:(NSString *)cookieName url:(NSString *)url callback:(void (^)(id error))callback;
 
-// Tells whether emulation of network conditions is supported.
+/// Tells whether emulation of network conditions is supported.
 // Callback Param result: True if emulation of network conditions is supported.
 - (void)domain:(PDNetworkDomain *)domain canEmulateNetworkConditionsWithCallback:(void (^)(NSNumber *result, id error))callback;
 
-// Activates emulation of network conditions.
+/// Activates emulation of network conditions.
 // Param offline: True to emulate internet disconnection.
 // Param latency: Additional latency (ms).
 // Param downloadThroughput: Maximal aggregated download throughput.
 // Param uploadThroughput: Maximal aggregated upload throughput.
 - (void)domain:(PDNetworkDomain *)domain emulateNetworkConditionsWithOffline:(NSNumber *)offline latency:(NSNumber *)latency downloadThroughput:(NSNumber *)downloadThroughput uploadThroughput:(NSNumber *)uploadThroughput callback:(void (^)(id error))callback;
 
-// Toggles ignoring cache for each request. If <code>true</code>, cache will not be used.
+/// Toggles ignoring cache for each request. If <code>true</code>, cache will not be used.
 // Param cacheDisabled: Cache disabled state.
 - (void)domain:(PDNetworkDomain *)domain setCacheDisabledWithCacheDisabled:(NSNumber *)cacheDisabled callback:(void (^)(id error))callback;
 
-// For testing.
+/// For testing.
 // Param maxTotalSize: Maximum total buffer size.
 // Param maxResourceSize: Maximum per-resource size.
 - (void)domain:(PDNetworkDomain *)domain setDataSizeLimitsForTestWithMaxTotalSize:(NSNumber *)maxTotalSize maxResourceSize:(NSNumber *)maxResourceSize callback:(void (^)(id error))callback;
