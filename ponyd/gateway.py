@@ -29,22 +29,26 @@ args = None
 
 class AppState(object):
     def __init__(self):
-        self.currentPageNumber = 1
         self.lobbies = set()
-        self.devices = set()
-        self.devTools = set()
+        self.devices = dict()
+        self.devTools = dict()
 
     def registerDevice(self, device):
-        device.page = self.currentPageNumber
-        self.currentPageNumber += 1
+        info = device.deviceInfo
+        self._sendToWeb('Gateway.deviceAdded', info)
 
-        self._sendToWeb('Gateway.deviceAdded', device.deviceInfo)
+        logger.info("Device info %s", repr(info))
 
-        self.devices.add(device)
+        self.devices[self.deviceKey(device)] = device
+
+    def deviceKey(self, device):
+        return device.deviceInfo["device_id"], device.deviceInfo["app_id"]
 
     def unregisterDevice(self, device):
-        if device in self.devices:
-            self.devices.remove(device)
+        key = self.deviceKey(device)
+
+        if key in self.devices:
+            del self.devices[key]
 
         self._sendToWeb('Gateway.deviceRemoved', device.deviceInfo)
 
@@ -54,7 +58,7 @@ class AppState(object):
 
     def addLobby(self, lobby):
         self.lobbies.add(lobby)
-        for device in self.devices:
+        for device in self.devices.values():
             lobby.write_method('Gateway.deviceAdded', device.deviceInfo)
 
     def removeLobby(self, lobby):
@@ -63,15 +67,15 @@ class AppState(object):
     def devToolsConnected(self, devTools):
         devTools.waiting = True
 
-        for device in self.devices:
-            if device.page == devTools.page:
-                devTools.waiting = False
+        if devTools.deviceKey in self.devices:
+            device = self.devices[devTools.deviceKey]
 
-                logger.info("Dev tools connecting to device %s",
-                            device.deviceID)
-                devTools.device = device
-                device.devTools = devTools
-                break
+            devTools.waiting = False
+
+            logger.info("Dev tools connecting to device %s",
+                        device.deviceID)
+            devTools.device = device
+            device.devTools = devTools
 
     def devToolsClosed(self, devTools):
         # some cleanup
@@ -91,7 +95,7 @@ class DeviceHandler(tornado.websocket.WebSocketHandler):
     app_state = global_app_state
 
     deviceID = None
-    page = None
+    deviceKey = None
     devTools = None
 
     def open(self):
@@ -160,8 +164,7 @@ class DeviceHandler(tornado.websocket.WebSocketHandler):
           app_name=self.app_name,
           app_version=self.app_version,
           app_build=self.app_build,
-          app_icon_base64=self.app_icon_base64,
-          page=self.page)
+          app_icon_base64=self.app_icon_base64)
 
 
 class DevToolsHandler(tornado.websocket.WebSocketHandler):
@@ -169,8 +172,8 @@ class DevToolsHandler(tornado.websocket.WebSocketHandler):
 
     device = None
 
-    def open(self, page):
-        self.page = int(page)
+    def open(self, deviceId, appId):
+        self.deviceKey = (deviceId, appId)
         self.app_state.devToolsConnected(self)
 
     def on_close(self):
@@ -250,7 +253,7 @@ class Gateway(PonydCommand):
             logger.setLevel(logging.DEBUG)
 
         application = tornado.web.Application([
-            (r"/devtools/page/([0-9]*)/?", DevToolsHandler),
+            (r"/devtools/ws/(.*)/(.*)?", DevToolsHandler),
             (r"/lobby", LobbyHandler),
             (r"/device", DeviceHandler),
             (r"/devtools/(.*)", tornado.web.StaticFileHandler, {"path": self.devtools_path}),

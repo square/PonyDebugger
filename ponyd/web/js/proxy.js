@@ -12,8 +12,10 @@ $(function() {
     debuggerURL: function() {
       return "devtools/inspector.html?ws="
           + document.location.host
-          + "/devtools/page/"
-          + this.get('page');
+          + "/devtools/ws/"
+          + this.get('device_id')
+          + "/"
+          + this.get('app_id');
     }
   });
 
