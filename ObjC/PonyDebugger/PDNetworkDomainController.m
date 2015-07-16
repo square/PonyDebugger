@@ -34,12 +34,6 @@
 //
 //@end
 
-@interface NSURLSessionTask (PrivateStuff)
-
-- (NSTimeInterval)startTime;
-
-@end
-
 @interface __NSCFURLSessionConnection_Swizzles : NSObject
 
 @property(copy) NSURLSessionTask *task; // @synthesize task=_task;
@@ -77,6 +71,13 @@
     [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] task:self.task didCompleteWithError:arg1];
     [self PD__didFinishWithError:arg1];
 }
+
+@end
+
+
+@interface NSURLSessionTask (PrivateStuff)
+
+- (NSTimeInterval)startTime;
 
 @end
 
