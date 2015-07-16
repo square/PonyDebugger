@@ -18,6 +18,7 @@
 #import <objc/message.h>
 #import <dispatch/queue.h>
 
+
 // For reference from the private class dump
 //@interface __NSCFURLSessionConnection : NSObject
 //
@@ -32,6 +33,12 @@
 //- (void)_didReceiveResponse:(id)arg1 sniff:(BOOL)arg2;
 //
 //@end
+
+@interface NSURLSessionTask (PrivateStuff)
+
+- (NSTimeInterval)startTime;
+
+@end
 
 @interface __NSCFURLSessionConnection_Swizzles : NSObject
 
@@ -875,13 +882,26 @@ static NSArray *prettyStringPrinters = nil;
         [self setRequest:newRequest forTask:task];
         PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
         PDNetworkResponse *networkRedirectResponse = response ? [[PDNetworkResponse alloc] initWithURLResponse:response request:request] : nil;
-
+        
+        
+        NSDate *startDate = nil;
+        if ([task respondsToSelector:@selector(startTime)]) {
+            startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:[task startTime]];
+        } else {
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                NSLog(@"PonyDebugger Warning: Some requests' timestamps may be inaccurate. See Known Issues in the README for more information.");
+            });
+            
+            startDate = [NSDate date];
+        }
+        
         [self.domain requestWillBeSentWithRequestId:[self requestIDForTask:task]
                                             frameId:@""
                                            loaderId:@""
                                         documentURL:[request.URL absoluteString]
                                             request:networkRequest
-                                          timestamp:[NSDate PD_timestamp]
+                                          timestamp:@(startDate.timeIntervalSince1970)
                                           initiator:nil
                                    redirectResponse:networkRedirectResponse];
     }];
@@ -895,11 +915,6 @@ static NSArray *prettyStringPrinters = nil;
         NSURLRequest *request = [self requestForTask:dataTask];
         if (!request && [dataTask respondsToSelector:@selector(currentRequest)]) {
 
-            static BOOL hasLoggedTimestampWarning = NO;
-            if (!hasLoggedTimestampWarning) {
-                hasLoggedTimestampWarning = YES;
-                NSLog(@"PonyDebugger Warning: Some requests' timestamps may be inaccurate. See Known Issues in the README for more information.");
-            }
             /// We need to set headers from the session configuration
             NSMutableURLRequest *request = [dataTask.currentRequest mutableCopy];
             
@@ -916,13 +931,25 @@ static NSArray *prettyStringPrinters = nil;
 
             [self setRequest:request forTask:dataTask];
 
+            NSDate *startDate = nil;
+            if ([dataTask respondsToSelector:@selector(startTime)]) {
+                startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:[dataTask startTime]];
+            } else {
+                static dispatch_once_t onceToken;
+                dispatch_once(&onceToken, ^{
+                    NSLog(@"PonyDebugger Warning: Some requests' timestamps may be inaccurate. See Known Issues in the README for more information.");
+                });
+                
+                startDate = [NSDate date];
+            }
+            
             PDNetworkRequest *networkRequest = [PDNetworkRequest networkRequestWithURLRequest:request];
             [self.domain requestWillBeSentWithRequestId:[self requestIDForTask:dataTask]
                                                 frameId:@""
                                                loaderId:@""
                                             documentURL:[request.URL absoluteString]
                                                 request:networkRequest
-                                              timestamp:[NSDate PD_timestamp]
+                                              timestamp:@(startDate.timeIntervalSince1970)
                                               initiator:nil
                                        redirectResponse:nil];
         }
