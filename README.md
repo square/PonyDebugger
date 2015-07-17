@@ -72,7 +72,7 @@ automatically work with AFNetworking, and other libraries that use
 
 ### Core Data Browser
 
-The Core Data browsing feature allows you to register your applcation's
+The Core Data browsing feature allows you to register your application's
 `NSManagedObjectContext`s and browse all of its entities and managed objects.
 You browse data from the IndexedDB section in the Resource tab in Chrome
 Developer Tools.
