@@ -99,3 +99,7 @@ Known Issues / Improvements
   ``ponyd update-devtools`` could possibly be updated to patch the incoming
   chrome developer tools to hide these unused tabs.
 
+
+Contributing
+------------
+We’re glad you’re interested in PonyDebugger, and we’d love to see where you take it. Please read our `contributing guidelines <https://github.com/square/PonyDebugger/blob/master/Contributing.md>`_ prior to submitting a Pull Request.
