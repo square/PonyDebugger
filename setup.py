@@ -25,7 +25,7 @@ setup(
     url='https://github.com/square/PonyDebugger',
     license='Apache Licence 2.0',
     install_requires=['tornado', 'pybonjour==1.1.1'],
-    dependency_links=['https://github.com/Eichhoernchen/pybonjour/tarball/master#egg=pybonjour-1.1.1'],
+    dependency_links=['https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/pybonjour/pybonjour-1.1.1.tar.gz'],
     packages=['ponyd'],
     include_package_data=True,
     zip_safe=False,
