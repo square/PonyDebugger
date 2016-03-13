@@ -110,7 +110,7 @@ but the current functionality should prove useful nonetheless.
 
 PonyDebugger lets you remotely log text and object dumps via the `PDLog` and
 `PDLogObjects` function. This lets you reduce the amount of content being
-loggedin `NSLog`, while also allowing you dynamically introspect objects.
+logged in `NSLog`, while also allowing you to dynamically introspect objects.
 
 ![PonyDebugger Remote Login Screenshot](https://github.com/square/PonyDebugger/raw/master/Documentation/Images/RemoteLogging.png)
 
