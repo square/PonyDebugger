@@ -366,6 +366,6 @@ We’re glad you’re interested in PonyDebugger, and we’d love to see where y
 Some useful links:
 
 - [Chrome Remote Debugging Documentation](https://developer.chrome.com/devtools/docs/protocol/tot)
-- [WebKit Inspector Protocol Definition on GitHub](https://github.com/WebKit/webkit/blob/master/Source/WebCore/inspector/Inspector.json)
+- [WebKit Inspector Protocol Definition on GitHub](https://github.com/WebKit/webkit/blob/master/Source/JavaScriptCore/inspector/protocol/Inspector.json)
 
 
