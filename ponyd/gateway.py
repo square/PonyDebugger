@@ -94,6 +94,9 @@ class DeviceHandler(tornado.websocket.WebSocketHandler):
     page = None
     devTools = None
 
+    def check_origin(self, origin):
+        return True
+
     def open(self):
         logger.info("Device Connected")
         self.deviceID = None
@@ -169,6 +172,9 @@ class DevToolsHandler(tornado.websocket.WebSocketHandler):
 
     device = None
 
+    def check_origin(self, origin):
+        return True
+
     def open(self, page):
         self.page = int(page)
         self.app_state.devToolsConnected(self)
@@ -186,6 +192,9 @@ class DevToolsHandler(tornado.websocket.WebSocketHandler):
 class LobbyHandler(tornado.websocket.WebSocketHandler):
     app_state = global_app_state
     message_id = 0
+
+    def check_origin(self, origin):
+        return True
 
     def open(self):
         logger.info('Lobby Connected')
@@ -209,13 +218,14 @@ class Gateway(PonydCommand):
     """Runs PonyDebugger's gateway"""
     __subcommand__  = 'serve'
 
+    print "Running command-line. ok."
     static_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'web'))
 
     verbose = Arg('-v', '--verbose',
                   help='verbose logging',
                   action='store_true')
 
-    satic_path = Arg('-s', '--static-path',
+    static_path = Arg('-s', '--static-path',
                      help='path for static files [default: %(default)s]',
                      default=static_path)
 
