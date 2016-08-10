@@ -24,8 +24,8 @@
 
 - (id)PD_valueForKey:(NSString *)key;
 
-- (NSArray *)PD_propertiesForPropertyDescriptors;
-- (NSArray *)PD_propertyDescriptors;
+- (NSArray *)PD_propertiesForPropertyDescriptorsWithOwnProperties:(BOOL)ownProperties;
+- (NSArray *)PD_propertyDescriptorsWithOwnProperties:(BOOL)ownProperties;
 
 - (PDRuntimeRemoteObject *)PD_propertyDescriptorValueForSelector:(SEL)selector;
 - (PDRuntimeRemoteObject *)PD_propertyDescriptorValueForObject:(id)object;

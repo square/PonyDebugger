@@ -82,13 +82,12 @@ NSDictionary *PDExtractPropertyAttributes(objc_property_t property);
     return [self valueForKey:key];
 }
 
-- (NSArray *)PD_propertiesForPropertyDescriptors;
++ (NSArray *)PD_propertiesForClassPropertyDescriptors;
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    [array addObject:@"class"];
 
     unsigned int outCount, i;
-    objc_property_t *properties = class_copyPropertyList([self class], &outCount);
+    objc_property_t *properties = class_copyPropertyList(self, &outCount);
     for (i = 0; i < outCount; i++) {
     	objc_property_t property = properties[i];
     	const char *propName = property_getName(property);
@@ -103,9 +102,24 @@ NSDictionary *PDExtractPropertyAttributes(objc_property_t property);
     return array;
 }
 
-- (NSArray *)PD_propertyDescriptors;
+- (NSArray *)PD_propertiesForPropertyDescriptorsWithOwnProperties:(BOOL)ownProperties;
 {
-    NSArray *properties = [self PD_propertiesForPropertyDescriptors];
+    Class klass = self.class;
+    NSArray *properties = @[@"class"];
+
+    do
+    {
+        properties = [properties arrayByAddingObjectsFromArray:[klass PD_propertiesForClassPropertyDescriptors]];
+        klass = [klass superclass];
+    }
+    while (klass != [NSObject class] && ownProperties == NO);
+    
+    return properties;
+}
+
+- (NSArray *)PD_propertyDescriptorsWithOwnProperties:(BOOL)ownProperties;
+{
+    NSArray *properties = [self PD_propertiesForPropertyDescriptorsWithOwnProperties:ownProperties];
     NSMutableArray *descriptors = [[NSMutableArray alloc] initWithCapacity:properties.count];
     for (NSObject *property in properties) {
         PDRuntimePropertyDescriptor *descriptor = [self PD_propertyDescriptorForPropertyObject:property];

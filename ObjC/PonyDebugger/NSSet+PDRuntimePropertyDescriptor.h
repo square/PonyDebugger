@@ -17,7 +17,7 @@
 - (id)PD_valueForKey:(NSString *)key;
 - (id)PD_objectAtIndex:(NSUInteger)index;
 - (NSArray *)PD_sortedArrayRepresentation;
-- (NSArray *)PD_propertiesForPropertyDescriptors;
+- (NSArray *)PD_propertiesForPropertyDescriptorsWithOwnProperties:(BOOL)ownProperties;
 - (PDRuntimePropertyDescriptor *)PD_propertyDescriptorForPropertyObject:(NSObject *)property;
 
 @end

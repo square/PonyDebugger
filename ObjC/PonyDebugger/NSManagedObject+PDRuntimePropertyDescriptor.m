@@ -20,9 +20,9 @@
 
 @implementation NSManagedObject (PDRuntimePropertyDescriptor)
 
-- (NSArray *)PD_propertiesForPropertyDescriptors;
+- (NSArray *)PD_propertiesForPropertyDescriptorsWithOwnProperties:(BOOL)ownProperties;
 {
-    NSMutableArray *properties = (NSMutableArray *)[super PD_propertiesForPropertyDescriptors];
+    NSMutableArray *properties = (NSMutableArray *)[super PD_propertiesForPropertyDescriptorsWithOwnProperties:ownProperties];
     if (properties) {
         // NSObject's implementation will catch the @property definitions, so replace those with the
         // NSPropertyDescription instance.
