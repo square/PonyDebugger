@@ -36,6 +36,11 @@
 
 extern void _PDLogObjectsImpl(NSString *severity, NSArray *arguments);
 
+typedef NS_ENUM(NSInteger, PDDebuggerLog) {
+    PDDebuggerLogToSocket = 0,
+    PDDebuggerLogToConsoleWhenDisconnected,
+    PDDebuggerLogToConsoleAlways
+};
 
 #pragma mark - Public Interface
 
@@ -73,5 +78,11 @@ extern void _PDLogObjectsImpl(NSString *severity, NSArray *arguments);
 #pragma mark Remote Logging
 - (void)enableRemoteLogging;
 - (void)clearConsole;
+
+#pragma mark Console Logging
+- (void)enableLogToConsoleWhenDisconnected;
+- (void)enableLogToConsoleAlways;
+- (void)enableLogOnlyToSocket;
+- (int)activeLogOptions;
 
 @end
