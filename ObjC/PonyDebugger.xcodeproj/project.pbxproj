@@ -123,6 +123,8 @@
 		3DE2293015D5874C0035A508 /* PDRuntimeDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE228C815D5874C0035A508 /* PDRuntimeDomainController.m */; };
 		3DE2293115D5874C0035A508 /* PonyDebugger-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228C915D5874C0035A508 /* PonyDebugger-Prefix.pch */; };
 		3DE2293215D5874C0035A508 /* PonyDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DE228CA15D5874C0035A508 /* PonyDebugger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		86128C191875D90700951C5E /* NSNumber+PD_JSONObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 86128C171875D90700951C5E /* NSNumber+PD_JSONObject.h */; };
+		86128C1A1875D90700951C5E /* NSNumber+PD_JSONObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 86128C181875D90700951C5E /* NSNumber+PD_JSONObject.m */; };
 		943D444D160A73810091CA77 /* PDDOMDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = 943D444B160A73810091CA77 /* PDDOMDomainController.h */; };
 		943D444E160A73810091CA77 /* PDDOMDomainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943D444C160A73810091CA77 /* PDDOMDomainController.m */; };
 		947CE06F163CA24E0035FB90 /* PDInspectorDomainController.h in Headers */ = {isa = PBXBuildFile; fileRef = 947CE06D163CA24E0035FB90 /* PDInspectorDomainController.h */; };
@@ -288,6 +290,8 @@
 		3DE228C915D5874C0035A508 /* PonyDebugger-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PonyDebugger-Prefix.pch"; sourceTree = "<group>"; };
 		3DE228CA15D5874C0035A508 /* PonyDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PonyDebugger.h; sourceTree = "<group>"; };
 		3DE2294915D5885C0035A508 /* SocketRocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SocketRocket.xcodeproj; path = SocketRocket/SocketRocket.xcodeproj; sourceTree = "<group>"; };
+		86128C171875D90700951C5E /* NSNumber+PD_JSONObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+PD_JSONObject.h"; sourceTree = "<group>"; };
+		86128C181875D90700951C5E /* NSNumber+PD_JSONObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+PD_JSONObject.m"; sourceTree = "<group>"; };
 		943D444B160A73810091CA77 /* PDDOMDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDDOMDomainController.h; sourceTree = "<group>"; };
 		943D444C160A73810091CA77 /* PDDOMDomainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDDOMDomainController.m; sourceTree = "<group>"; };
 		947CE06D163CA24E0035FB90 /* PDInspectorDomainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDInspectorDomainController.h; sourceTree = "<group>"; };
@@ -488,6 +492,8 @@
 				3DE228AA15D5874C0035A508 /* NSDate+PD_JSONObject.m */,
 				3DE228AB15D5874C0035A508 /* NSError+PD_JSONObject.h */,
 				3DE228AC15D5874C0035A508 /* NSError+PD_JSONObject.m */,
+				86128C171875D90700951C5E /* NSNumber+PD_JSONObject.h */,
+				86128C181875D90700951C5E /* NSNumber+PD_JSONObject.m */,
 			);
 			name = PDObject;
 			sourceTree = "<group>";
@@ -582,6 +588,7 @@
 				2516716C15E61023002F2F95 /* PDDOMDomain.h in Headers */,
 				2516716E15E61023002F2F95 /* PDDOMStorageDomain.h in Headers */,
 				2516717015E61023002F2F95 /* PDDOMStorageTypes.h in Headers */,
+				86128C191875D90700951C5E /* NSNumber+PD_JSONObject.h in Headers */,
 				2516717215E61023002F2F95 /* PDDOMTypes.h in Headers */,
 				2516717415E61023002F2F95 /* PDFileSystemDomain.h in Headers */,
 				2516717615E61023002F2F95 /* PDFileSystemTypes.h in Headers */,
@@ -763,6 +770,7 @@
 				2560D51716BE53EB001BAE89 /* NSSet+PDRuntimePropertyDescriptor.m in Sources */,
 				2560D51B16BE56BF001BAE89 /* NSOrderedSet+PDRuntimePropertyDescriptor.m in Sources */,
 				E8D8B39416E00C9600081F80 /* PDPrettyStringPrinter.m in Sources */,
+				86128C1A1875D90700951C5E /* NSNumber+PD_JSONObject.m in Sources */,
 				25F6AADB172DD5E100515EF7 /* PDContainerIndex.m in Sources */,
 				2EE4493CE303EA19811912CD /* NSData+PDDebugger.m in Sources */,
 			);
