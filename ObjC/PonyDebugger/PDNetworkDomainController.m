@@ -362,6 +362,10 @@ static NSArray *prettyStringPrinters = nil;
                 continue;
             }
             
+            if (![class instancesRespondToSelector:@selector(currentRequest)]) {
+                continue;
+            }
+            
             for (int selectorIndex = 0; selectorIndex < numSelectors; ++selectorIndex) {
                 if ([class instancesRespondToSelector:selectors[selectorIndex]]) {
                     [self injectIntoDelegateClass:class];
