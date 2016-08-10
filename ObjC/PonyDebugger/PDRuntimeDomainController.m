@@ -89,7 +89,40 @@
     self.objectGroups = nil;
 }
 
++ (NSError *)defaultErrorForFailedExpression:(NSString *)expression;
+{
+    NSString *errorMessage = [NSString stringWithFormat:@"Must specify a keypath that starts with a class name and a singleton selector.  Recieved '%@'", expression];
+    NSError *error = [NSError errorWithDomain:PDDebuggerErrorDomain code:100 userInfo:[NSDictionary dictionaryWithObject:errorMessage forKey:NSLocalizedDescriptionKey]];
+    return error;
+}
 #pragma mark - PDRuntimeCommandDelegate
+
+- (void)domain:(PDRuntimeDomain *)domain evaluateWithExpression:(NSString *)expression objectGroup:(NSString *)objectGroup includeCommandLineAPI:(NSNumber *)includeCommandLineAPI doNotPauseOnExceptionsAndMuteConsole:(NSNumber *)doNotPauseOnExceptionsAndMuteConsole contextId:(NSNumber *)contextId returnByValue:(NSNumber *)returnByValue callback:(void (^)(PDRuntimeRemoteObject *result, NSNumber *wasThrown, id error))callback;
+{
+    PDRuntimeRemoteObject *result = nil;
+    NSNumber *wasThrown = @NO;
+    NSError *error = nil;
+
+    NSInteger dotPosition = [expression rangeOfString:@"."].location;
+
+    if (dotPosition != NSNotFound) {
+        NSString *class = [expression substringToIndex:dotPosition];
+        NSString *keypath = [expression substringFromIndex:dotPosition + 1];
+        keypath = [keypath stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+
+        Class klass = NSClassFromString(class);
+        @try {
+            NSObject *keypathValue = [(NSObject *)klass valueForKeyPath:keypath];
+            result = [NSObject PD_remoteObjectRepresentationForObject:keypathValue];
+        }
+        @catch (...) {
+            error = [self.class defaultErrorForFailedExpression:expression];
+        }
+    } else {
+        error = [self.class defaultErrorForFailedExpression:expression];
+    }
+    callback(result, wasThrown, error);
+}
 
 - (void)domain:(PDRuntimeDomain *)domain getPropertiesWithObjectId:(NSString *)objectId ownProperties:(NSNumber *)ownProperties callback:(void (^)(NSArray *result, id error))callback;
 {
