@@ -544,13 +544,6 @@ static NSArray *prettyStringPrinters = nil;
     return self;
 }
 
-- (void)dealloc;
-{
-    if (_queue) {
-        dispatch_release(_queue);
-    }
-}
-
 #pragma mark - PDNetworkCommandDelegate
 
 - (void)domain:(PDNetworkDomain *)domain canClearBrowserCacheWithCallback:(void (^)(NSNumber *, id))callback;

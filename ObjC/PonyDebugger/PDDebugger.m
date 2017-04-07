@@ -177,9 +177,7 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
         }
 
         NSData *data = [NSJSONSerialization dataWithJSONObject:response options:0 error:nil];
-        NSString *encodedData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-
-        [webSocket send:encodedData];
+        [webSocket sendData:data error:nil];
     };
 
     PDDynamicDebuggerDomain *domain = [self domainForName:domainName];
@@ -279,12 +277,10 @@ void _PDLogObjectsImpl(NSString *severity, NSArray *arguments)
 - (void)sendEventWithName:(NSString *)methodName parameters:(id)params;
 {
     NSDictionary *obj = [[NSDictionary alloc] initWithObjectsAndKeys:methodName, @"method", [params PD_JSONObject], @"params", nil];
-
     NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:nil];
-    NSString *encodedData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    
+
     if (_socket.readyState == SR_OPEN) {
-        [_socket send:encodedData];
+        [_socket sendData:data error:nil];
     }
 }
 
