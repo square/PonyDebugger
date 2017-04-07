@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.license         =  'Apache License, Version 2.0'
 
   s.requires_arc = true
-  s.ios.deployment_target = '5.0'
+  s.ios.deployment_target = '8.0'
   s.source_files = 'ObjC/{DerivedSources,PonyDebugger}/**/*.{h,m}'
   s.frameworks = 'CoreData', 'CoreGraphics'
   s.dependency 'SocketRocket'
