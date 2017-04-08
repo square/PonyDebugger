@@ -4,6 +4,8 @@ before_script:
     - bundle install
 rvm:
     - 2.2
+before_install:
+    - gem install cocoapods -v '0.32.1'
 script:
     - xcodebuild -project Objc/PonyDebugger.xcodeproj -scheme PonyDebugger -sdk iphonesimulator -configuration Debug -PBXBuildsContinueAfterErrors=0 ACTIVE_ARCH_ONLY=0 build
     - pod lib lint --verbose --fail-fast --allow-warnings

@@ -12,6 +12,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '8.0'
   s.source_files = 'ObjC/{DerivedSources,PonyDebugger}/**/*.{h,m}'
   s.frameworks = 'CoreData', 'CoreGraphics'
-  s.dependency 'SocketRocket'
+  s.dependency 'SocketRocket' '0.5.1'
   s.xcconfig = { 'ENABLE_NS_ASSERTIONS' => 'YES' }
 end
