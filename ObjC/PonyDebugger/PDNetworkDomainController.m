@@ -32,11 +32,14 @@
 //- (void)_didReceiveData:(id)arg1;
 //- (void)_didReceiveResponse:(id)arg1 sniff:(BOOL)arg2;
 //
+// On iOS 13+, this last method signature changes to:
+//- (void)_didReceiveResponse:(id)arg1 sniff:(BOOL)arg2 rewrite:(BOOL)arg3;
+//
 //@end
 
 @interface __NSCFURLSessionConnection_Swizzles : NSObject
 
-@property(copy) NSURLSessionTask *task; // @synthesize task=_task;
+@property(copy) NSURLSessionTask *task;
 
 @end
 
@@ -64,6 +67,47 @@
     [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] dataTask:(id)self.task didReceiveResponse:response];
 
     [self PD__didReceiveResponse:response sniff:sniff];
+}
+
+- (void)PD__didFinishWithError:(NSError *)arg1;
+{
+    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] task:self.task didCompleteWithError:arg1];
+    [self PD__didFinishWithError:arg1];
+}
+
+@end
+
+
+@interface __NSCFURLSessionConnection_iOS13_Swizzles : NSObject
+
+@property(copy) NSURLSessionTask *task;
+
+@end
+
+@implementation __NSCFURLSessionConnection_iOS13_Swizzles
+
+@dynamic task;
+
+- (void)PD__redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 completion:(id)arg3;
+{
+    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] task:self.task willPerformHTTPRedirection:(id)arg2 newRequest:arg1];
+    
+    [self PD__redirectRequest:arg1 redirectResponse:arg2 completion:arg3];
+}
+
+- (void)PD__didReceiveData:(id)arg1;
+{
+    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] dataTask:(id)self.task didReceiveData:arg1];
+    
+    [self PD__didReceiveData:arg1];
+}
+
+- (void)PD__didReceiveResponse:(NSURLResponse *)response sniff:(BOOL)sniff rewrite:(BOOL)rewrite;
+{
+    // This can be called multiple times for the same request. Make sure it doesn't
+    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] dataTask:(id)self.task didReceiveResponse:response];
+
+    [self PD__didReceiveResponse:response sniff:sniff rewrite:rewrite];
 }
 
 - (void)PD__didFinishWithError:(NSError *)arg1;
@@ -291,7 +335,10 @@ static NSArray *prettyStringPrinters = nil;
     }
     
     unsigned int outCount = 0;
-    Method *methods = class_copyMethodList([__NSCFURLSessionConnection_Swizzles class], &outCount);
+    
+    // In iOS 13, the signature of one of our method swizzling targets has changed.
+    Class swizzlesClass = [[[UIDevice currentDevice] systemVersion] floatValue] >= 13.0 ? [__NSCFURLSessionConnection_iOS13_Swizzles class] : [__NSCFURLSessionConnection_Swizzles class];
+    Method *methods = class_copyMethodList(swizzlesClass, &outCount);
     
     for (int i = 0; i < outCount; i++) {
         Method m = methods[i];
