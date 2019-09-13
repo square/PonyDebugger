@@ -337,7 +337,7 @@ static NSArray *prettyStringPrinters = nil;
     unsigned int outCount = 0;
     
     // In iOS 13, the signature of one of our method swizzling targets has changed.
-    Class swizzlesClass = [[[UIDevice currentDevice] systemVersion] floatValue] >= 13.0 ? [__NSCFURLSessionConnection_iOS13_Swizzles class] : [__NSCFURLSessionConnection_Swizzles class];
+    Class swizzlesClass = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 13 ? [__NSCFURLSessionConnection_iOS13_Swizzles class] : [__NSCFURLSessionConnection_Swizzles class];
     Method *methods = class_copyMethodList(swizzlesClass, &outCount);
     
     for (int i = 0; i < outCount; i++) {
@@ -589,13 +589,6 @@ static NSArray *prettyStringPrinters = nil;
     _queue = dispatch_queue_create("com.squareup.ponydebugger.PDNetworkDomainController", DISPATCH_QUEUE_SERIAL);
     
     return self;
-}
-
-- (void)dealloc;
-{
-    if (_queue) {
-        dispatch_release(_queue);
-    }
 }
 
 #pragma mark - PDNetworkCommandDelegate
