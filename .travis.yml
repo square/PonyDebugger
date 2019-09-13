@@ -1,7 +1,9 @@
 language: objective-c
-osx_image: xcode6.4
+osx_image: xcode10.3
+rvm:
+    - 2.4.3
 before_script:
     - bundle install
 script:
     - xcodebuild -project Objc/PonyDebugger.xcodeproj -scheme PonyDebugger -sdk iphonesimulator -configuration Debug -PBXBuildsContinueAfterErrors=0 ACTIVE_ARCH_ONLY=0 build
-    - pod lib lint --verbose --fail-fast --allow-warnings
+    - bundle exec pod lib lint --verbose --fail-fast --allow-warnings
