@@ -35,6 +35,10 @@
 // On iOS 13+, this last method signature changes to:
 //- (void)_didReceiveResponse:(id)arg1 sniff:(BOOL)arg2 rewrite:(BOOL)arg3;
 //
+// On iOS 14+, the _task property loses all visibility, causing crashes when we call self.task, so we need to use
+// [valueForKey:@"_task"] instead of self.task. Since that code also works in iOS 13, rather than have three
+// swizzles (<13, 13 and >13), we kept it down to two.
+//
 //@end
 
 @interface __NSCFURLSessionConnection_Swizzles : NSObject
@@ -80,39 +84,39 @@
 
 @interface __NSCFURLSessionConnection_iOS13_Swizzles : NSObject
 
-@property(copy) NSURLSessionTask *task;
-
 @end
 
 @implementation __NSCFURLSessionConnection_iOS13_Swizzles
 
-@dynamic task;
-
 - (void)PD__redirectRequest:(NSURLRequest *)arg1 redirectResponse:(NSURLResponse *)arg2 completion:(id)arg3;
 {
-    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] task:self.task willPerformHTTPRedirection:(id)arg2 newRequest:arg1];
-    
+    NSURLSessionTask *task = [self valueForKey:@"_task"];
+    [[PDNetworkDomainController defaultInstance] URLSession:[task valueForKey:@"session"] task:task willPerformHTTPRedirection:(id)arg2 newRequest:arg1];
+
     [self PD__redirectRequest:arg1 redirectResponse:arg2 completion:arg3];
 }
 
 - (void)PD__didReceiveData:(id)arg1;
 {
-    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] dataTask:(id)self.task didReceiveData:arg1];
-    
+    NSURLSessionTask *task = [self valueForKey:@"_task"];
+    [[PDNetworkDomainController defaultInstance] URLSession:[task valueForKey:@"session"] dataTask:(id)task didReceiveData:arg1];
+
     [self PD__didReceiveData:arg1];
 }
 
 - (void)PD__didReceiveResponse:(NSURLResponse *)response sniff:(BOOL)sniff rewrite:(BOOL)rewrite;
 {
+    NSURLSessionTask *task = [self valueForKey:@"_task"];
     // This can be called multiple times for the same request. Make sure it doesn't
-    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] dataTask:(id)self.task didReceiveResponse:response];
+    [[PDNetworkDomainController defaultInstance] URLSession:[task valueForKey:@"session"] dataTask:(id)task didReceiveResponse:response];
 
     [self PD__didReceiveResponse:response sniff:sniff rewrite:rewrite];
 }
 
 - (void)PD__didFinishWithError:(NSError *)arg1;
 {
-    [[PDNetworkDomainController defaultInstance] URLSession:[self.task valueForKey:@"session"] task:self.task didCompleteWithError:arg1];
+    NSURLSessionTask *task = [self valueForKey:@"_task"];
+    [[PDNetworkDomainController defaultInstance] URLSession:[task valueForKey:@"session"] task:task didCompleteWithError:arg1];
     [self PD__didFinishWithError:arg1];
 }
 
@@ -359,7 +363,7 @@ static NSArray *prettyStringPrinters = nil;
         BOOL success = class_addMethod(cfURLSessionConnectionClass, sourceMethod, originalImp, encoding);
         NSAssert(success, @"Should be successful");
         IMP replacedImp = class_replaceMethod(cfURLSessionConnectionClass, originalMethod, sourceImp, encoding);
-        NSAssert(replacedImp, @"Expected originam method to have been replaced");
+        NSAssert(replacedImp, @"Expected original method to have been replaced");
     }
     
     if (methods) {
